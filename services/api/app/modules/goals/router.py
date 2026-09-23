@@ -19,6 +19,7 @@ from app.modules.goals.service import (
 from app.modules.identity.deps import current_user
 from app.modules.identity.models import User
 from app.modules.learning.accept import accept_proposal, activities_for, latest_accepted
+from app.modules.learning.copy import reason_text
 from app.modules.learning.models import PlanVersion
 from app.modules.learning.overview import build_overview
 from app.modules.learning.proposals import propose_for_goal
@@ -297,10 +298,12 @@ class ProposalIn(BaseModel):
 class ProposalItemOut(BaseModel):
     competency_key: str
     name: str
+    competency_name: str | None = None
     effort_low: int
     effort_high: int
     position: int | None = None
     reason_code: str | None = None
+    reason_text: str | None = None
 
 
 class ProposalOut(BaseModel):
@@ -338,6 +341,7 @@ def post_plan_proposal(
             ProposalItemOut(
                 competency_key=item.key,
                 name=item.name,
+                competency_name=item.name,
                 effort_low=item.effort_low,
                 effort_high=item.effort_high,
                 position=item.position,
@@ -348,9 +352,11 @@ def post_plan_proposal(
             ProposalItemOut(
                 competency_key=item.key,
                 name=item.name,
+                competency_name=item.name,
                 effort_low=item.effort_low,
                 effort_high=item.effort_high,
                 reason_code=item.reason_code,
+                reason_text=reason_text(item.reason_code),
             )
             for item in proposal.deferred
         ],
@@ -431,11 +437,16 @@ class OverviewActivityOut(BaseModel):
     title: str
     label: str
     competency_key: str
+    competency_name: str = ""
+    lesson_title: str = ""
+    facet_label: str = ""
 
 
 class DeferredOut(BaseModel):
     competency_key: str
+    competency_name: str = ""
     reason_code: str
+    reason_text: str = ""
 
 
 class ContinueOut(BaseModel):

@@ -13,8 +13,14 @@ type SavedGoal = {
 };
 
 type Proposal = {
-  included: { competency_key: string; name: string }[];
-  deferred: { competency_key: string; name: string; reason_code: string }[];
+  included: { competency_key: string; name: string; competency_name?: string }[];
+  deferred: {
+    competency_key: string;
+    name: string;
+    competency_name?: string;
+    reason_code: string;
+    reason_text?: string;
+  }[];
 };
 
 type DomainOption = {
@@ -219,7 +225,9 @@ export function GoalWizard() {
               <p className={styles.label}>Included</p>
               <ul>
                 {proposal.included.map((item) => (
-                  <li key={item.competency_key}>{item.competency_key}</li>
+                  <li key={item.competency_key}>
+                    {item.competency_name ?? item.name}
+                  </li>
                 ))}
               </ul>
               <p className={styles.label}>Deferred</p>
@@ -229,7 +237,8 @@ export function GoalWizard() {
                 <ul>
                   {proposal.deferred.map((item) => (
                     <li key={item.competency_key}>
-                      {item.competency_key} ({item.reason_code})
+                      {item.competency_name ?? item.name} (
+                      {item.reason_text ?? item.reason_code})
                     </li>
                   ))}
                 </ul>

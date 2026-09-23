@@ -89,6 +89,8 @@ def _payload(db: Session, item: ReviewItem, *, due_now: bool) -> dict[str, objec
     return {
         "id": str(item.id),
         "competency_key": competency.key if competency is not None else "",
+        "competency_name": competency.name if competency is not None else "",
+        "lesson_title": lesson.title if lesson is not None else "",
         "due_at": item.due_at.isoformat(),
         "interval_days": item.interval_days,
         "reason": _reason(item.interval_days, due_now),

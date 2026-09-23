@@ -32,7 +32,7 @@ test("goal path shows deferred work and continue opens the session", async ({ pa
   await page.goto(`/app/goals/${goalId}`);
   await expect(page.getByRole("heading", { name: "Learn Python" })).toBeVisible();
   await expect(page.getByText("Why this next?")).toBeVisible();
-  await expect(page.getByText("python.calls. insufficient_minutes")).toBeVisible();
+  await expect(page.getByText("Calling a function. Not enough minutes this time")).toBeVisible();
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL(/\/app\/learn\//);
   await expect(page.getByRole("heading", { name: "Names point at values" })).toBeVisible();

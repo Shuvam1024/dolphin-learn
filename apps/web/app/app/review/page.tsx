@@ -8,6 +8,8 @@ import styles from "../../auth.module.css";
 type ReviewItem = {
   id: string;
   competency_key: string;
+  competency_name: string;
+  lesson_title: string;
   due_at: string;
   interval_days: number;
   reason: string;
@@ -57,8 +59,8 @@ export default async function ReviewPage() {
             <h1 className={styles.title}>Due now</h1>
             <p className={styles.lede}>{current.reason}</p>
             <p className={styles.meta}>
-              {current.competency_key}. {current.title}. Interval {current.interval_days} day
-              {current.interval_days === 1 ? "" : "s"}.
+              {current.competency_name}. {current.lesson_title || current.title}. Interval{" "}
+              {current.interval_days} day{current.interval_days === 1 ? "" : "s"}.
             </p>
             <p className={styles.meta}>{current.prompt}</p>
             {current.revealed_choice ? (
@@ -105,7 +107,7 @@ export default async function ReviewPage() {
             </p>
             {queue.scheduled.map((item) => (
               <p key={item.id} className={styles.meta}>
-                {item.competency_key}. {item.reason}
+                {item.competency_name}. {item.reason}
               </p>
             ))}
           </>

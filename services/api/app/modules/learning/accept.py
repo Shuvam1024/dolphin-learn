@@ -3,6 +3,7 @@
 from app.modules.curriculum.models import Competency
 from app.modules.goals.models import Goal, TimeBudget
 from app.modules.identity.models import User
+from app.modules.learning.copy import reason_text
 from app.modules.learning.models import (
     ActivityVersion,
     LearningPath,
@@ -31,7 +32,7 @@ def rationale_for(proposal: PlanProposal) -> str:
     else:
         lines.append("Deferred:")
         for item in proposal.deferred:
-            lines.append(f"- {item.key} ({item.reason_code})")
+            lines.append(f"- {item.name} ({reason_text(item.reason_code)})")
     return "\n".join(lines)
 
 

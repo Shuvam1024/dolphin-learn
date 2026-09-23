@@ -7,7 +7,9 @@ import styles from "../../auth.module.css";
 
 type Facet = {
   competency_key: string;
+  competency_name: string;
   status_facet: string;
+  facet_label: string;
 };
 
 type ProgressSnapshot = {
@@ -49,7 +51,7 @@ export default async function ProgressPage() {
           <ul>
             {progress.facets.map((item) => (
               <li key={item.competency_key}>
-                {item.competency_key}: {item.status_facet}
+                {item.competency_name}: {item.facet_label}
               </li>
             ))}
           </ul>
@@ -60,7 +62,7 @@ export default async function ProgressPage() {
             <ul>
               {progress.unassessed.map((item) => (
                 <li key={item.competency_key}>
-                  {item.competency_key}: unassessed
+                  {item.competency_name}: {item.facet_label}
                 </li>
               ))}
             </ul>

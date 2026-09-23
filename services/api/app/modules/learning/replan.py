@@ -12,9 +12,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 
-def _demonstrated(db: Session, user: User) -> list[str]:
+def _demonstrated(db: Session, user: User) -> list[tuple[str, str]]:
     rows = db.execute(
-        select(Competency.key)
+        select(Competency.key, Competency.name)
         .join(CompetencyState, CompetencyState.competency_id == Competency.id)
         .where(
             CompetencyState.user_id == user.id,
@@ -23,8 +23,8 @@ def _demonstrated(db: Session, user: User) -> list[str]:
             ),
         )
         .order_by(Competency.key)
-    ).scalars()
-    return list(rows)
+    ).all()
+    return [(key, name) for key, name in rows]
 
 
 def replan_goal(
@@ -34,16 +34,17 @@ def replan_goal(
     budget: TimeBudget,
 ) -> tuple[PlanVersion, PlanProposal]:
     demonstrated = _demonstrated(db, user)
+    demonstrated_keys = {key for key, _name in demonstrated}
     work = [
         item
         for item in work_for_domain(db, resolve_domain_key(db, goal, None))
-        if item.key not in set(demonstrated)
+        if item.key not in demonstrated_keys
     ]
     budget_minutes = usable_minutes(budget)
     studied = studied_minutes_for_goal(db, user, goal)
     left = remaining_minutes(budget_minutes, studied)
     proposal = propose_plan(work, left)
-    shown = ", ".join(demonstrated) if demonstrated else "none"
+    shown = ", ".join(name for _key, name in demonstrated) if demonstrated else "none"
     note = (
         f"Already demonstrated: {shown}. "
         f"Studied minutes: {studied}. Remaining minutes: {left}. "

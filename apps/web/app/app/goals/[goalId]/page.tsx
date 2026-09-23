@@ -22,8 +22,16 @@ type Overview = {
     title: string;
     label: string;
     competency_key: string;
+    competency_name: string;
+    lesson_title: string;
+    facet_label: string;
   }[];
-  deferred: { competency_key: string; reason_code: string }[];
+  deferred: {
+    competency_key: string;
+    competency_name: string;
+    reason_code: string;
+    reason_text: string;
+  }[];
 };
 
 async function loadOverview(goalId: string): Promise<Overview | null> {
@@ -110,7 +118,7 @@ export default async function GoalPathPage({
           <ul>
             {overview.deferred.map((item) => (
               <li key={item.competency_key}>
-                {item.competency_key}. {item.reason_code}
+                {item.competency_name}. {item.reason_text}
               </li>
             ))}
           </ul>

@@ -6,6 +6,7 @@ from app.modules.goals.models import Goal
 from app.modules.goals.service import budget_for
 from app.modules.identity.models import User
 from app.modules.learning.accept import activities_for, latest_accepted
+from app.modules.learning.copy import facet_label, reason_text
 from app.modules.learning.models import (
     ActivityVersion,
     CompetencyState,
@@ -24,17 +25,19 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 
-def _competency_key(db: Session, activity: PlanActivity) -> str:
+def _competency(db: Session, activity: PlanActivity) -> tuple[str, str, str]:
     if activity.activity_version_id is None:
-        return ""
+        return "", "", ""
     version = db.get(ActivityVersion, activity.activity_version_id)
     if version is None:
-        return ""
+        return "", "", ""
     lesson = db.get(Lesson, version.lesson_id)
     if lesson is None:
-        return ""
+        return "", "", ""
     competency = db.get(Competency, lesson.competency_id)
-    return competency.key if competency is not None else ""
+    if competency is None:
+        return "", "", lesson.title
+    return competency.key, competency.name, lesson.title
 
 
 def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
@@ -46,7 +49,12 @@ def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
     if budget is not None:
         proposal = propose_for_goal(db, goal, budget, None)
         deferred = [
-            {"competency_key": item.key, "reason_code": item.reason_code}
+            {
+                "competency_key": item.key,
+                "competency_name": item.name,
+                "reason_code": item.reason_code,
+                "reason_text": reason_text(item.reason_code),
+            }
             for item in proposal.deferred
         ]
     facets = {
@@ -64,7 +72,7 @@ def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
     }
     activities: list[dict[str, object]] = []
     for row in activities_for(db, version):
-        key = _competency_key(db, row)
+        key, name, lesson_title = _competency(db, row)
         facet = facets.get(key, "")
         if facet in ("independently_demonstrated", "retained", "applied"):
             label = "demonstrated" if facet == "independently_demonstrated" else facet
@@ -79,6 +87,9 @@ def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
                 "title": row.title,
                 "label": label,
                 "competency_key": key,
+                "competency_name": name,
+                "lesson_title": lesson_title,
+                "facet_label": facet_label(facet) if facet else "",
             }
         )
     done = {"demonstrated", "retained", "applied"}

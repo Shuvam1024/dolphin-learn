@@ -22,8 +22,8 @@ test("120-minute python quick learn proves evidence without an AI key", async ({
   await page.getByLabel("Preferred session length (minutes)").fill("30");
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await page.getByRole("button", { name: "Save goal" }).click();
-  await expect(page.getByText("python.names")).toBeVisible();
-  await expect(page.getByText("python.calls")).toBeVisible();
+  await expect(page.getByText("Names and values")).toBeVisible();
+  await expect(page.getByText("Calling a function")).toBeVisible();
   await expect(page.getByText("Nothing is deferred.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Accept plan" })).toBeEnabled();
   await page.getByRole("button", { name: "Accept plan" }).click();
@@ -69,8 +69,8 @@ test("120-minute python quick learn proves evidence without an AI key", async ({
   await expect(page.getByText("Answer recorded: a")).toBeVisible();
 
   await page.goto("/app");
-  await expect(page.getByText("python.names: independently_demonstrated")).toBeVisible();
+  await expect(page.getByText("Names and values: Shown on your own")).toBeVisible();
   await page.goto("/app/progress");
-  await expect(page.getByText("python.names: independently_demonstrated")).toBeVisible();
+  await expect(page.getByText("Names and values: Shown on your own")).toBeVisible();
   await expect(page.getByText("% mastered")).toHaveCount(0);
 });

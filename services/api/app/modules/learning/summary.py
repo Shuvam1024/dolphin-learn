@@ -29,7 +29,7 @@ def _plan_version_id(db: Session, session: LearningSession):
 
 def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
     rows = db.execute(
-        select(Attempt, Evaluation, Competency.key, Lesson.title)
+        select(Attempt, Evaluation, Competency.key, Competency.name, Lesson.title)
         .join(Evaluation, Evaluation.attempt_id == Attempt.id)
         .join(ActivityVersion, Attempt.activity_version_id == ActivityVersion.id)
         .join(Lesson, ActivityVersion.lesson_id == Lesson.id)
@@ -42,15 +42,25 @@ def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
     seen_topics: set[str] = set()
     independent: list[dict[str, str]] = []
     demonstrated: set[str] = set()
-    for attempt, evaluation, key, title in rows:
+    names: dict[str, str] = {}
+    for attempt, evaluation, key, name, title in rows:
+        names[key] = name
         if key not in seen_topics:
             seen_topics.add(key)
-            topics.append({"competency_key": key, "title": title})
+            topics.append(
+                {
+                    "competency_key": key,
+                    "competency_name": name,
+                    "lesson_title": title,
+                    "title": title,
+                }
+            )
         if evaluation.assistance == "independent":
             independent.append(
                 {
                     "attempt_id": str(attempt.id),
                     "competency_key": key,
+                    "competency_name": name,
                     "outcome": evaluation.outcome,
                     "choice": str(attempt.response.get("choice", "")),
                 }
@@ -62,7 +72,7 @@ def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
     version_id = _plan_version_id(db, session)
     if version_id is not None:
         planned = db.execute(
-            select(PlanActivity, ActivityVersion, Competency.key)
+            select(PlanActivity, ActivityVersion, Competency.key, Competency.name)
             .join(ActivityVersion, PlanActivity.activity_version_id == ActivityVersion.id)
             .join(Lesson, ActivityVersion.lesson_id == Lesson.id)
             .join(Competency, Lesson.competency_id == Competency.id)
@@ -74,16 +84,17 @@ def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
         ).all()
         solved_activities = {
             attempt.activity_version_id
-            for attempt, evaluation, _key, _title in rows
+            for attempt, evaluation, _key, _name, _title in rows
             if evaluation.assistance == "independent" and evaluation.outcome == "correct"
         }
-        for plan, activity, key in planned:
+        for plan, activity, key, name in planned:
             if activity.id in solved_activities:
                 continue
             unresolved.append(
                 {
                     "title": plan.title,
                     "competency_key": key,
+                    "competency_name": name,
                     "reason": "No independent correct attempt in this session",
                 }
             )
@@ -91,6 +102,7 @@ def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
     suggested = [
         {
             "competency_key": key,
+            "competency_name": names.get(key, key),
             "reason": "Independent success in this session. Not retention.",
         }
         for key in sorted(demonstrated)

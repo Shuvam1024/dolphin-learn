@@ -58,7 +58,7 @@ test("progress explains unassessed gaps and shows a real facet", async ({ page }
   });
 
   await page.goto("/app/progress");
-  await expect(page.getByText("python.names: independently_demonstrated")).toBeVisible();
-  await expect(page.getByText("python.calls: unassessed")).toBeVisible();
+  await expect(page.getByText("Names and values: Shown on your own")).toBeVisible();
+  await expect(page.getByText("Calling a function: Not tried yet")).toBeVisible();
   await expect(page.getByText("% mastered")).toHaveCount(0);
 });

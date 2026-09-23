@@ -92,7 +92,12 @@ def test_home_empty_then_live_next_action_without_streak() -> None:
     assert body["due_reviews"][0]["competency_key"] == "python.names"
     assert "Not retention" in body["due_reviews"][0]["reason"]
     assert body["recent_evidence"] == [
-        {"competency_key": "python.names", "status_facet": "independently_demonstrated"}
+        {
+            "competency_key": "python.names",
+            "competency_name": "Names and values",
+            "status_facet": "independently_demonstrated",
+            "facet_label": "Shown on your own",
+        }
     ]
     assert "streak" not in live.text
 

@@ -22,6 +22,8 @@ router = APIRouter(prefix="/reviews", tags=["reviews"])
 class ReviewOut(BaseModel):
     id: str
     competency_key: str
+    competency_name: str = ""
+    lesson_title: str = ""
     due_at: str
     interval_days: int
     reason: str

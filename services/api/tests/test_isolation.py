@@ -104,7 +104,9 @@ def test_cross_user_goal_session_and_attempt_are_not_found() -> None:
     facets = client.get("/api/v1/progress", headers=owner).json()["facets"]
     demonstrated = {
         "competency_key": "python.names",
+        "competency_name": "Names and values",
         "status_facet": "independently_demonstrated",
+        "facet_label": "Shown on your own",
     }
     assert demonstrated in facets
 

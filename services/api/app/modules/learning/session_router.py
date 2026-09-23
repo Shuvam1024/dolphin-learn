@@ -73,6 +73,8 @@ class ActivityOut(BaseModel):
 
 class SummaryItemOut(BaseModel):
     competency_key: str
+    competency_name: str = ""
+    lesson_title: str = ""
     title: str = ""
     reason: str = ""
     attempt_id: str = ""

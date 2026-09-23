@@ -45,5 +45,5 @@ test("update plan writes the next version after a budget change", async ({ page 
   expect(patched.ok()).toBeTruthy();
   await page.getByRole("button", { name: "Update plan" }).click();
   await expect(page.getByText("Plan version 2")).toBeVisible();
-  await expect(page.getByText("python.calls. insufficient_minutes")).toBeVisible();
+  await expect(page.getByText("Calling a function. Not enough minutes this time")).toBeVisible();
 });

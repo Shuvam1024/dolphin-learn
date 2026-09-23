@@ -5,6 +5,7 @@ from app.modules.goals.models import Goal
 from app.modules.goals.service import list_goals
 from app.modules.identity.models import User
 from app.modules.learning.accept import latest_accepted
+from app.modules.learning.copy import facet_label
 from app.modules.learning.models import CompetencyState, LearningSession
 from app.modules.learning.reviews import queue_for_user
 from app.modules.learning.study_time import studied_minutes_for_goal
@@ -51,11 +52,15 @@ def build_home(db: Session, user: User) -> dict[str, object]:
 
     reviews = queue_for_user(db, user)
     due = [
-        {"competency_key": str(item["competency_key"]), "reason": str(item["reason"])}
+        {
+            "competency_key": str(item["competency_key"]),
+            "competency_name": str(item.get("competency_name") or item["competency_key"]),
+            "reason": str(item["reason"]),
+        }
         for item in reviews["due"]
     ]
     evidence_rows = db.execute(
-        select(Competency.key, CompetencyState.status_facet)
+        select(Competency.key, Competency.name, CompetencyState.status_facet)
         .join(Competency, Competency.id == CompetencyState.competency_id)
         .where(
             CompetencyState.user_id == user.id,
@@ -64,14 +69,20 @@ def build_home(db: Session, user: User) -> dict[str, object]:
         .order_by(Competency.key)
     ).all()
     evidence = [
-        {"competency_key": key, "status_facet": facet} for key, facet in evidence_rows
+        {
+            "competency_key": key,
+            "competency_name": name,
+            "status_facet": facet,
+            "facet_label": facet_label(facet),
+        }
+        for key, name, facet in evidence_rows
     ]
     session = _open_session(db, user)
     if due:
         first = due[0]
         action = {
             "kind": "review",
-            "title": f"Review {first['competency_key']}",
+            "title": f"Review {first['competency_name']}",
             "href": "/app/review",
             "goal_id": "",
         }

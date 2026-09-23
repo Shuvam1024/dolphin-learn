@@ -29,7 +29,8 @@ test("software subject plans software competencies, not python", async ({ page }
 
   await expect(page.getByRole("heading", { name: "Goal saved" })).toBeVisible();
   await expect(page.getByText("Subject: software")).toBeVisible();
-  await expect(page.getByText("software.failing_test")).toBeVisible();
+  await expect(page.getByText("Read a failing test", { exact: true })).toBeVisible();
+  await expect(page.getByText("Names and values", { exact: true })).toHaveCount(0);
   await expect(page.getByText("python.names")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Accept plan" })).toBeEnabled();
   await page.getByRole("button", { name: "Accept plan" }).click();

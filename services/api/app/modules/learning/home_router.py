@@ -28,12 +28,15 @@ class GoalCardOut(BaseModel):
 
 class DueReviewOut(BaseModel):
     competency_key: str
+    competency_name: str
     reason: str
 
 
 class EvidenceOut(BaseModel):
     competency_key: str
+    competency_name: str
     status_facet: str
+    facet_label: str
 
 
 class QuickLearnOut(BaseModel):

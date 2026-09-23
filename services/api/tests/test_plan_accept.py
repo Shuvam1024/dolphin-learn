@@ -45,8 +45,10 @@ def test_accept_creates_version_one_and_lists_deferred() -> None:
     body = accepted.json()
     assert body["version_number"] == 1
     assert body["status"] == "accepted"
-    assert "python.calls" in body["rationale"]
-    assert "insufficient_minutes" in body["rationale"]
+    assert "Calling a function" in body["rationale"]
+    assert "Not enough minutes this time" in body["rationale"]
+    assert "insufficient_minutes" not in body["rationale"]
+    assert "python.calls" not in body["rationale"]
     assert any(item["title"].startswith("Names point at values") for item in body["activities"])
 
     refreshed = client.get(f"/api/v1/goals/{goal_id}/plan", headers=headers)

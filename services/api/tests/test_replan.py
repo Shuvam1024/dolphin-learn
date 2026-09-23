@@ -95,9 +95,11 @@ def test_replan_after_budget_edit_creates_next_version_without_touching_attempts
     assert replanned.status_code == 200
     body = replanned.json()
     assert body["version_number"] == 2
-    assert "insufficient_minutes" in body["rationale"]
-    assert "Already demonstrated: python.names" in body["rationale"]
+    assert "Not enough minutes this time" in body["rationale"]
+    assert "Already demonstrated: Names and values" in body["rationale"]
     assert "still need an explicit accept" in body["rationale"]
+    assert "insufficient_minutes" not in body["rationale"]
+    assert "python.names" not in body["rationale"]
 
     proposed = client.post(f"/api/v1/goals/{goal_id}/plan-proposals", headers=headers)
     assert proposed.status_code == 200

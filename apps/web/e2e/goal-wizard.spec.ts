@@ -72,7 +72,7 @@ test("keyboard-only wizard saves a goal and keeps fields on back", async ({ page
   expect(saved?.time_budget?.one_off_minutes).toBe(120);
 
   await expect(page.getByRole("button", { name: "Accept plan" })).toBeEnabled();
-  await expect(page.getByText("python.names")).toBeVisible();
+  await expect(page.getByText("Names and values", { exact: true })).toBeVisible();
   await expect(page.getByText("Nothing is deferred.")).toBeVisible();
   await page.getByRole("button", { name: "Accept plan" }).focus();
   await page.keyboard.press("Enter");

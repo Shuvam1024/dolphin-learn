@@ -119,7 +119,12 @@ def test_due_independent_review_sets_retained() -> None:
     assert _facet(headers) == "retained"
     home = client.get("/api/v1/home", headers=headers)
     assert home.json()["recent_evidence"] == [
-        {"competency_key": "python.names", "status_facet": "retained"}
+        {
+            "competency_key": "python.names",
+            "competency_name": "Names and values",
+            "status_facet": "retained",
+            "facet_label": "Remembered later",
+        }
     ]
     assert "%" not in home.text
     assert "mastered" not in home.text

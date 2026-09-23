@@ -29,6 +29,8 @@ function questionChoices(prompt: string): { value: string; label: string }[] {
 
 type SummaryItem = {
   competency_key: string;
+  competency_name: string;
+  lesson_title: string;
   title: string;
   reason: string;
   attempt_id: string;
@@ -103,7 +105,7 @@ export default async function StudioPage({
           <ul>
             {summary.independent_attempts.map((item) => (
               <li key={item.attempt_id}>
-                {item.competency_key}: {item.outcome} ({item.choice})
+                {item.competency_name}: {item.outcome} ({item.choice})
               </li>
             ))}
           </ul>
@@ -123,7 +125,7 @@ export default async function StudioPage({
           <ul>
             {summary.suggested_review.map((item) => (
               <li key={item.competency_key}>
-                {item.competency_key}. {item.reason}
+                {item.competency_name}. {item.reason}
               </li>
             ))}
           </ul>

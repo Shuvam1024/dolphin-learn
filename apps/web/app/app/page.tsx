@@ -24,8 +24,13 @@ type HomeSnapshot = {
     usable_minutes: number;
     studied_minutes: number;
   }[];
-  due_reviews: { competency_key: string; reason: string }[];
-  recent_evidence: { competency_key: string; status_facet: string }[];
+  due_reviews: { competency_key: string; competency_name: string; reason: string }[];
+  recent_evidence: {
+    competency_key: string;
+    competency_name: string;
+    status_facet: string;
+    facet_label: string;
+  }[];
   quick_learn: { href: string; label: string };
 };
 
@@ -122,7 +127,7 @@ export default async function AppHomePage() {
               <ul>
                 {home.due_reviews.map((item) => (
                   <li key={item.competency_key}>
-                    {item.competency_key}. {item.reason}
+                    {item.competency_name}. {item.reason}
                   </li>
                 ))}
               </ul>
@@ -134,7 +139,7 @@ export default async function AppHomePage() {
               <ul>
                 {home.recent_evidence.map((item) => (
                   <li key={item.competency_key}>
-                    {item.competency_key}: {item.status_facet}
+                    {item.competency_name}: {item.facet_label}
                   </li>
                 ))}
               </ul>
