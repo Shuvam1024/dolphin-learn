@@ -1,10 +1,10 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S16 (layout through Prove Loop tables)
+- **Milestone completed:** S01–S17 (layout through seeded curricula)
 - **Verified working user journey:** Sign in → adult acknowledgment → home; goal page stays blocked until acknowledgment
-- **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, and review tables
-- **Stubbed or unavailable features:** Goal wizard is a placeholder after the gate. No seeded lessons or Prove Loop UI yet. Dev sign-in is email-only (no password store)
+- **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, and review tables; seeded Python and math lessons (reading + objective)
+- **Stubbed or unavailable features:** Goal wizard is a placeholder after the gate. No Prove Loop UI yet. Dev sign-in is email-only (no password store)
 - **Schema/API changes:** Alembic through `98b0fc485c6b` (plans, sessions, append-only attempts, evidence, review) plus `0006_goals_time_budgets` and the curriculum graph; `POST /api/v1/me/adult-acknowledgment`
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
@@ -23,10 +23,11 @@
   - S14: `alembic upgrade head` applied `0005_curriculum_graph`; pytest duplicate domain key, duplicate competency key, self-loop, bad edge type, and duplicate edge each raise `IntegrityError`; a valid `REQUIRES` edge commits; pytest 11 passed; ruff and mypy clean
   - S15: `alembic upgrade head` applied `0006_goals_time_budgets`; validator rejects negative one-off and weekly minutes and accepts 120-minute one-off plus 14×30 weekly; inserting a goal with no `user_id` raises `IntegrityError`; a negative `one_off_minutes` row raises `IntegrityError`; a valid 120-minute budget commits; pytest 14 passed; ruff and mypy clean
   - S16: `alembic upgrade head` applied `98b0fc485c6b`; models import; ownership foreign keys present on paths, sessions, attempts, evidence, state, and review items; attempts and review events have no `updated_at`; pytest 15 passed; ruff and mypy clean
+  - S17: `python -m app.seed` twice; pytest confirms domains `python` and `math`, activity types `reading` and `objective`, and at least two answer keys; pytest 16 passed; ruff and mypy clean; no LLM key used
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S16**
-- **Next step:** **S17 — Seed reviewed Python and math competencies + activities**
+- **Completed steps:** **S01–S17**
+- **Next step:** **S18 — Ship Learn / Review / Library / Progress nav with honest empty states**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -36,7 +37,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 
 | Phase | Milestone | Status |
 |---|---|---|
-| 0 | Foundation (S01–S19) | In progress (S01–S16 done) |
+| 0 | Foundation (S01–S19) | In progress (S01–S17 done) |
 | 1A | Prove Loop (S20–S40) | Not started |
 | Later | Vault / labs / community | Not started |
 
@@ -62,3 +63,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S14** | `feat(db): migrate domains competencies and edges` | Unique keys; self-loop and bad edge type fail |
 | **S15** | `feat(db): migrate goals and time budgets` | Goal requires user; negative minutes rejected |
 | **S16** | `feat(db): migrate plans sessions attempts evidence review` | Upgrade head; models import; ownership FKs present |
+| **S17** | `feat(seed): add python and math mini curricula` | Python and math paths; reading and objective items |

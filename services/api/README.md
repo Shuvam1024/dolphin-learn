@@ -20,6 +20,12 @@ Checks (from the repo root, after `pip install -r requirements-dev.txt` inside t
 make api-lint api-type api-test
 ```
 
+Load the reviewed Python and math mini-curricula (no AI key):
+
+```bash
+python -m app.seed
+```
+
 Apply schema changes against the Compose (or local) Postgres URL:
 
 ```bash
