@@ -58,13 +58,15 @@ dolphin-learn/
 
    `GET http://localhost:8000/health` returns `{"status":"ok"}`.
 
-4. **Web** (after S05 — Next.js shell):
+4. **Web** (Next.js shell):
 
    ```bash
    cd apps/web
    npm install
    npm run dev
    ```
+
+   Or from the repo root: `npm run dev:web`. Placeholder is at `http://localhost:3000`.
 
 Exact package pins and migrate commands land in later build-plan steps. Until then, this README is the truthful install story: stack, env copy, optional AI keys.
 
