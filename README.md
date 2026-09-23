@@ -76,7 +76,7 @@ dolphin-learn/
    alembic upgrade head
    ```
 
-   The first revision is an empty baseline. Later steps add tables on that chain. `DATABASE_URL` in `.env` is what Alembic uses.
+   `DATABASE_URL` in `.env` is what Alembic uses. The chain includes `users`, keyed by the managed auth subject (`auth_subject`). Local development can mint a bearer token with `POST /api/v1/dev/token` (`{"email":"you@example.com"}`) and call `GET /api/v1/me`. That path is off when `ENVIRONMENT=production` (use `AUTH_JWKS_URL` instead). There is no password store.
 
 Exact package pins live in `services/api/requirements.txt`. AI keys stay optional.
 
