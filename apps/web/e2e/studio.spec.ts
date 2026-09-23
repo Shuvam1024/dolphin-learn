@@ -43,6 +43,8 @@ test("reading studio shows the explanation and pause survives refresh", async ({
   await expect(page.getByText("binds the name")).toBeVisible();
   await expect(page.getByText("Mode: Guided")).toBeVisible();
   await expect(page.getByText("No countdown")).toBeVisible();
+  await expect(page.getByText("The clock stops when you pause")).toBeVisible();
+  await expect(page.getByText("Studied in this session: 0 minutes")).toBeVisible();
   await expect(page.getByText("time remaining")).toHaveCount(0);
 
   await page.getByRole("button", { name: "Pause" }).click();
@@ -116,6 +118,7 @@ test("finish shows an honest summary and pause does not finish", async ({ page }
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "I am 18 or older and I understand" }).click();
+  await expect(page.getByRole("heading", { name: "You are in" })).toBeVisible();
 
   const token = (await page.context().cookies()).find(
     (cookie) => cookie.name === "dolphin_access_token",

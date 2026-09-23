@@ -12,6 +12,7 @@ from app.modules.learning.models import (
     LearningSession,
     Lesson,
     PlanActivity,
+    SessionEvent,
 )
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -114,6 +115,21 @@ def finish_session(
     if session.status != "finished":
         session.status = "finished"
         session.updated_at = datetime.now(timezone.utc)
+        already = db.scalar(
+            select(SessionEvent).where(
+                SessionEvent.session_id == session.id,
+                SessionEvent.client_event_id == "server-finish",
+            )
+        )
+        if already is None:
+            db.add(
+                SessionEvent(
+                    session_id=session.id,
+                    client_event_id="server-finish",
+                    event_type="finish",
+                    payload={},
+                )
+            )
         db.commit()
         db.refresh(session)
     return session, build_summary(db, session)

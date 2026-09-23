@@ -1,7 +1,7 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S40 Prove Loop (Phase 1A exit); S41–S42 delayed retention
+- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S40 Prove Loop (Phase 1A exit); S41–S42 delayed retention; S43 active study minutes
 - **Verified working user journey:** A due independent review is retained on Progress and Home. The page calls that a later check, not a permanent promise and not a mastery percent. The same rules apply to any subject, not only the seeded Python lesson.
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, an honest session-finish summary, a review due queue with 1/3/7/14-day intervals, a Home snapshot of the next action, a Progress ledger of facets plus unassessed plan gaps, a goal path overview, replan that writes the next plan version, and a Studio control to move to the next activity or a different question; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
 - **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Next phase is 1C, physical study minutes, not a deadline date and not Vault
@@ -48,11 +48,12 @@
   - S39: User B receives 404 `not_found` on A’s goal, plan, overview, replan, accept, session, pause, attempt, advance, independent check, and finish; B’s Home, Progress, and review queue are empty; A still has one attempt and `independently_demonstrated`; a repeated idempotency key returns the original choice `b`; Playwright reload keeps the reading, then keeps “Answer recorded: b” with no second submit button; pytest 41 passed; ruff clean
   - S41: same-session correct stays `independently_demonstrated`; a review that is not yet due can extend the interval and stays that facet; a due independent review returns `retained` true and Progress shows `retained`; a due assisted review stays `independently_demonstrated`; pytest 44 passed; ruff and mypy clean
   - S42: after that due review, Home `recent_evidence` is `python.names` / `retained` and the payload has no mastery percent; Progress explains retained as a later due review and not a permanent promise; Playwright shows that sentence and not “% mastered”; ruff, mypy, tsc, and eslint clean
+  - S43: ten active minutes plus a thirty-minute pause count as 10; a finished session of 10 + 5 active minutes stays at 15 after later wall time; a repeated pause event does not add time; Studio says “Studied in this session: 0 minutes” and “The clock stops when you pause”; pytest 46 passed, 1 warning; ruff, mypy, tsc, and eslint clean; Playwright studio reading and finish passed
   - S40 exit, September 23, 2026: `cd services/api && .venv/bin/ruff check app tests` → `All checks passed!`; `.venv/bin/mypy app` → `Success: no issues found in 40 source files`; `.venv/bin/pytest --tb=no` → `41 passed, 1 warning in 2.41s`. `cd apps/web && npx playwright test e2e/phase0.spec.ts e2e/quick-learn.spec.ts e2e/math-windows.spec.ts e2e/refresh-resume.spec.ts --reporter=line` → `4 passed (10.4s)`. Demo script `docs/prove-loop-demo.md`. Next phase is 1B, not Vault
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S42**
-- **Next step:** **S43 — Measure active study minutes, excluding pauses**
+- **Completed steps:** **S01–S43**
+- **Next step:** **S44 — Show studied minutes beside the usable budget**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -65,7 +66,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | 0 | Foundation (S01–S19) | Done (S01–S19) |
 | 1A | Prove Loop (S20–S40) | Done (S20–S40) |
 | 1B | Delayed retention (S41–S42) | Done (S42) |
-| 1C | Physical study time (S43–S46) | Next (S43) |
+| 1C | Physical study time (S43–S46) | In progress (S43) |
 | Later | 1D computing curriculum, then scope, tutor, programming lab, Vault | Not started |
 
 ---
@@ -117,3 +118,6 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S41** | `feat(assess): award retained only after a due review` | Due independent review sets retained; same-session, early, and assisted reviews do not |
 | **S42** | `feat(progress): show retained facet from delayed review` | Home and Progress name retained; neither shows a mastery percent |
 | **Plan** | `docs: plan physical study time as phase 1c` | S43–S46 measure active minutes, show them beside the budget, replan the remainder, snooze by hours |
+| **Subjects** | `docs: prioritize computing subjects first` | Next curricula are CS, software engineering, then machine learning |
+| **Path** | `docs: keep the core subject-agnostic on the way to any field` | The clock, ledger, and graph stay shared; computing is the first curriculum, not a special case |
+| **S43** | `feat(sessions): measure active study minutes excluding pauses` | Pause gaps are excluded; finish freezes the total; Studio says time away is not counted |

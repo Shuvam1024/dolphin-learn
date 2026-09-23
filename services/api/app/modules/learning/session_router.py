@@ -20,6 +20,7 @@ from app.modules.learning.sessions import (
     start_session,
     submit_attempt,
 )
+from app.modules.learning.study_time import session_active_minutes
 from app.modules.learning.summary import build_summary, finish_session
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator
@@ -93,6 +94,7 @@ class SessionOut(BaseModel):
     goal_id: uuid.UUID | None = None
     plan_activity_id: uuid.UUID | None
     event_count: int
+    active_minutes: int
     applied: bool
     activity: ActivityOut | None = None
     summary: SummaryOut | None = None
@@ -111,6 +113,7 @@ def _out(
         goal_id=goal_id,
         plan_activity_id=row.plan_activity_id,
         event_count=event_count(db, row.id),
+        active_minutes=session_active_minutes(db, row),
         applied=applied,
         activity=ActivityOut.model_validate(snap) if (snap := activity_snapshot(db, row)) else None,
         summary=(

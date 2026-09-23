@@ -47,6 +47,7 @@ type StudioSummary = {
 type StudioSession = {
   id: string;
   status: string;
+  active_minutes: number;
   activity: StudioActivity | null;
   summary: StudioSummary | null;
 };
@@ -143,7 +144,9 @@ export default async function StudioPage({
         <p className={styles.kicker}>Session Studio</p>
         <h1 className={styles.title}>{session.activity.title}</h1>
         <p className={styles.meta}>
-          Mode: Guided. {paused ? "Paused." : "In progress."} No countdown.
+          Mode: Guided. {paused ? "Paused." : "In progress."} Studied in this session:{" "}
+          {session.active_minutes} {session.active_minutes === 1 ? "minute" : "minutes"}. The
+          clock stops when you pause. No countdown.
         </p>
         {reading ? (
           <article className={styles.body}>{session.activity.body}</article>
