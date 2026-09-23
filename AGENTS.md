@@ -4,11 +4,12 @@ Guidance for humans and coding agents working in this repository.
 
 ## Source of truth
 
-- Product + architecture: `docs/dolphin-master-design.md`
-- Sequential build steps: `docs/build-plan.md` (execute `S01` → `S40` in order)
-- Progress tracker: `docs/implementation-status.md` (update after every completed step)
-- Locks / constraints: `docs/project-context.md`
-- Brand: `docs/brand-shortlist.md`
+- Design package index: `docs/design/README.md`
+- Vision / UX / architecture: `docs/design/00`–`02`
+- Sequential build steps: `docs/design/03-build-plan.md` (execute `S01` → `S40` in order)
+- Progress tracker: `docs/design/04-implementation-status.md` (update after every completed step)
+- Locks / constraints: `docs/design/project-context.md`
+- Brand: `docs/design/brand.md`
 
 ## Working rules
 
@@ -19,6 +20,7 @@ Guidance for humans and coding agents working in this repository.
 5. Seeded Prove Loop content must work without an LLM API key.
 6. Server-side ownership checks on every nested resource id; no cross-user retrieval by similarity.
 7. Never execute untrusted learner code in the API process.
+8. Product name is **Dolphin** only — see `docs/design/brand.md` retired appendix; do not revive old working names in titles or active specs.
 
 ## Stack (target)
 
