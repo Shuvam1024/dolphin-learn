@@ -4,7 +4,14 @@ from app.db import get_db
 from app.modules.curriculum.models import Competency
 from app.modules.identity.deps import current_user
 from app.modules.identity.models import User
-from app.modules.learning.models import CompetencyState
+from app.modules.learning.models import (
+    ActivityVersion,
+    CompetencyState,
+    LearningPath,
+    Lesson,
+    PlanActivity,
+    PlanVersion,
+)
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy import select
@@ -20,6 +27,21 @@ class FacetOut(BaseModel):
 
 class ProgressOut(BaseModel):
     facets: list[FacetOut]
+    unassessed: list[FacetOut]
+
+
+def _unassessed(db: Session, user: User, known: set[str]) -> list[FacetOut]:
+    rows = db.execute(
+        select(Competency.key)
+        .join(Lesson, Lesson.competency_id == Competency.id)
+        .join(ActivityVersion, ActivityVersion.lesson_id == Lesson.id)
+        .join(PlanActivity, PlanActivity.activity_version_id == ActivityVersion.id)
+        .join(PlanVersion, PlanActivity.plan_version_id == PlanVersion.id)
+        .join(LearningPath, PlanVersion.learning_path_id == LearningPath.id)
+        .where(LearningPath.user_id == user.id, PlanVersion.status == "accepted")
+    ).scalars()
+    keys = sorted({key for key in rows if key not in known})
+    return [FacetOut(competency_key=key, status_facet="unassessed") for key in keys]
 
 
 @router.get("/progress", response_model=ProgressOut)
@@ -33,6 +55,8 @@ def get_progress(
         .where(CompetencyState.user_id == user.id)
         .order_by(Competency.key)
     ).all()
+    facets = [FacetOut(competency_key=key, status_facet=facet) for key, facet in rows]
     return ProgressOut(
-        facets=[FacetOut(competency_key=key, status_facet=facet) for key, facet in rows]
+        facets=facets,
+        unassessed=_unassessed(db, user, {item.competency_key for item in facets}),
     )
