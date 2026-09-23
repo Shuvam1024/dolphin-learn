@@ -14,6 +14,12 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
+Apply schema changes against the Compose (or local) Postgres URL:
+
+```bash
+alembic upgrade head
+```
+
 `GET http://localhost:8000/health` → `200` `{"status":"ok"}` (outside the version prefix).
 
 Versioned routes live at `/api/v1`. Failures use one envelope:

@@ -1,0 +1,20 @@
+"""Empty baseline so later schema steps share one migration history.
+
+Revision ID: 0001_baseline
+Revises:
+Create Date: 2026-09-23
+
+"""
+
+revision: str = "0001_baseline"
+down_revision: str | None = None
+branch_labels = None
+depends_on = None
+
+
+def upgrade() -> None:
+    pass
+
+
+def downgrade() -> None:
+    pass
