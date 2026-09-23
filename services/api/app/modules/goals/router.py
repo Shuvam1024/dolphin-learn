@@ -441,6 +441,8 @@ class OverviewOut(BaseModel):
     goal_id: str
     title: str
     version_number: int
+    usable_minutes: int
+    studied_minutes: int
     feasibility_note: str
     why_next: str
     continue_action: ContinueOut

@@ -11,6 +11,8 @@ type Overview = {
   goal_id: string;
   title: string;
   version_number: number;
+  usable_minutes: number;
+  studied_minutes: number;
   feasibility_note: string;
   why_next: string;
   continue_action: { kind: string; href: string; goal_id: string };
@@ -70,6 +72,10 @@ export default async function GoalPathPage({
         <p className={styles.kicker}>Goal path</p>
         <h1 className={styles.title}>{overview.title}</h1>
         <p className={styles.meta}>Plan version {overview.version_number}</p>
+        <p className={styles.meta}>
+          Usable minutes: {overview.usable_minutes}. Studied: {overview.studied_minutes}{" "}
+          {overview.studied_minutes === 1 ? "minute" : "minutes"}. A date is not study time.
+        </p>
         <p className={styles.lede}>{overview.feasibility_note}</p>
         <p className={styles.meta}>{overview.why_next}</p>
         <form action={`/api/goals/${overview.goal_id}/replan`} method="post">

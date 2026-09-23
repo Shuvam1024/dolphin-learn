@@ -2,7 +2,15 @@
 
 from datetime import datetime, timedelta, timezone
 
-from app.modules.learning.models import LearningSession, SessionEvent
+from app.modules.goals.models import Goal
+from app.modules.identity.models import User
+from app.modules.learning.models import (
+    LearningPath,
+    LearningSession,
+    PlanActivity,
+    PlanVersion,
+    SessionEvent,
+)
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -59,3 +67,36 @@ def session_active_minutes(
     finished = any(kind == "finish" for _, kind in events)
     end = row.updated_at if row.status == "finished" and not finished else clock
     return active_minutes(row.started_at, events, now=end)
+
+
+def sessions_for_goal(db: Session, user: User, goal: Goal) -> list[LearningSession]:
+    """Every session on any plan version of this goal."""
+    rows = db.scalars(
+        select(LearningSession)
+        .join(PlanActivity, LearningSession.plan_activity_id == PlanActivity.id)
+        .join(PlanVersion, PlanActivity.plan_version_id == PlanVersion.id)
+        .join(LearningPath, PlanVersion.learning_path_id == LearningPath.id)
+        .where(
+            LearningSession.user_id == user.id,
+            LearningPath.goal_id == goal.id,
+        )
+        .order_by(LearningSession.started_at, LearningSession.id)
+    ).all()
+    return list(rows)
+
+
+def studied_minutes_for_goal(
+    db: Session,
+    user: User,
+    goal: Goal,
+    *,
+    now: datetime | None = None,
+) -> int:
+    return sum(
+        session_active_minutes(db, row, now=now) for row in sessions_for_goal(db, user, goal)
+    )
+
+
+def remaining_minutes(usable: int, studied: int) -> int:
+    left = usable - studied
+    return left if left > 0 else 0

@@ -13,7 +13,13 @@ from app.modules.learning.models import (
     Lesson,
     PlanActivity,
 )
-from app.modules.learning.proposals import domain_key_for, propose_for_goal, work_for_domain
+from app.modules.learning.proposals import (
+    domain_key_for,
+    propose_for_goal,
+    usable_minutes,
+    work_for_domain,
+)
+from app.modules.learning.study_time import studied_minutes_for_goal
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -60,8 +66,8 @@ def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
     for row in activities_for(db, version):
         key = _competency_key(db, row)
         facet = facets.get(key, "")
-        if facet == "independently_demonstrated":
-            label = "demonstrated"
+        if facet in ("independently_demonstrated", "retained", "applied"):
+            label = "demonstrated" if facet == "independently_demonstrated" else facet
         elif key in prereq_keys:
             label = "prereq"
         else:
@@ -75,9 +81,13 @@ def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
                 "competency_key": key,
             }
         )
-    pending = next((item for item in activities if item["label"] != "demonstrated"), None)
+    done = {"demonstrated", "retained", "applied"}
+    pending = next((item for item in activities if item["label"] not in done), None)
     if pending is None:
-        why = "Why this next? Every activity on this plan is already independently demonstrated."
+        why = (
+            "Why this next? Every activity on this plan already has an independent "
+            "check or a later review."
+        )
     elif pending["label"] == "prereq":
         why = f"Why this next? {pending['title']} is a prerequisite for a later topic."
     else:
@@ -103,10 +113,18 @@ def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
             "href": f"/app/learn/{session.id}",
             "goal_id": str(goal.id),
         }
+    studied = studied_minutes_for_goal(db, user, goal)
+    usable = version.usable_minutes
+    if usable is None and budget is not None:
+        usable = usable_minutes(budget)
+    if usable is None:
+        usable = 0
     return {
         "goal_id": str(goal.id),
         "title": goal.title,
         "version_number": version.version_number,
+        "usable_minutes": usable,
+        "studied_minutes": studied,
         "feasibility_note": " ".join(version.rationale.split()),
         "why_next": why,
         "continue_action": continue_action,

@@ -7,6 +7,7 @@ from app.modules.identity.models import User
 from app.modules.learning.accept import latest_accepted
 from app.modules.learning.models import CompetencyState, LearningSession
 from app.modules.learning.reviews import queue_for_user
+from app.modules.learning.study_time import studied_minutes_for_goal
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -28,17 +29,24 @@ def _open_session(db: Session, user: User) -> LearningSession | None:
 
 def build_home(db: Session, user: User) -> dict[str, object]:
     goals = list_goals(db, user)
-    cards: list[dict[str, str]] = []
+    cards: list[dict[str, object]] = []
     start_goal: Goal | None = None
     for goal in goals:
+        version = latest_accepted(db, user, goal)
+        usable = version.usable_minutes if version is not None else 0
+        if usable is None:
+            usable = 0
+        studied = studied_minutes_for_goal(db, user, goal)
         cards.append(
             {
                 "id": str(goal.id),
                 "title": goal.title,
                 "feasibility_note": _note(db, user, goal),
+                "usable_minutes": usable,
+                "studied_minutes": studied,
             }
         )
-        if start_goal is None and latest_accepted(db, user, goal) is not None:
+        if start_goal is None and version is not None:
             start_goal = goal
 
     reviews = queue_for_user(db, user)

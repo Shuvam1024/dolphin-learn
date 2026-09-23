@@ -22,6 +22,8 @@ class GoalCardOut(BaseModel):
     id: str
     title: str
     feasibility_note: str
+    usable_minutes: int = 0
+    studied_minutes: int = 0
 
 
 class DueReviewOut(BaseModel):

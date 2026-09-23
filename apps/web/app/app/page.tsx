@@ -16,7 +16,13 @@ type NextAction = {
 
 type HomeSnapshot = {
   next_action: NextAction;
-  goals: { id: string; title: string; feasibility_note: string }[];
+  goals: {
+    id: string;
+    title: string;
+    feasibility_note: string;
+    usable_minutes: number;
+    studied_minutes: number;
+  }[];
   due_reviews: { competency_key: string; reason: string }[];
   recent_evidence: { competency_key: string; status_facet: string }[];
   quick_learn: { href: string; label: string };
@@ -102,7 +108,8 @@ export default async function AppHomePage() {
             <ul>
               {home.goals.map((goal) => (
                 <li key={goal.id}>
-                  <Link href={`/app/goals/${goal.id}`}>{goal.title}</Link>. {goal.feasibility_note}
+                  <Link href={`/app/goals/${goal.id}`}>{goal.title}</Link>. Usable minutes:{" "}
+                  {goal.usable_minutes}. Studied: {goal.studied_minutes}. {goal.feasibility_note}
                 </li>
               ))}
             </ul>
