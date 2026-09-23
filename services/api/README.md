@@ -14,6 +14,12 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
+Checks (from the repo root, after `pip install -r requirements-dev.txt` inside this virtualenv):
+
+```bash
+make api-lint api-type api-test
+```
+
 Apply schema changes against the Compose (or local) Postgres URL:
 
 ```bash

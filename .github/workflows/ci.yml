@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: dolphin
+          POSTGRES_PASSWORD: dolphin
+          POSTGRES_DB: dolphin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dolphin -d dolphin"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://dolphin:dolphin@localhost:5432/dolphin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install API dependencies
+        run: python -m pip install -r services/api/requirements-dev.txt
+      - name: Lint, typecheck, migrate, test
+        run: |
+          python -m ruff check services/api/app services/api/tests
+          cd services/api && python -m mypy app && python -m alembic upgrade head && python -m pytest
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install and check web
+        run: |
+          npm --prefix apps/web ci
+          npm --prefix apps/web run lint
+          npm --prefix apps/web exec -- tsc --noEmit
+          npm --prefix apps/web test

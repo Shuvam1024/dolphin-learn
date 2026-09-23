@@ -92,6 +92,15 @@ All names are listed in [`.env.example`](.env.example). Placeholders only — pu
 | Auth | `AUTH_*` / OIDC placeholders | Managed auth (S10+) |
 | AI (optional) | `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc. | Leave empty; seeded content must still work |
 
+## Checks
+
+From the repo root, after web `npm install` and `pip install -r services/api/requirements-dev.txt` inside `services/api/.venv`:
+
+```bash
+make web-lint web-type web-test
+make api-lint api-type api-test
+```
+
 ## Product locks (short)
 
 - Adults **18+** until a child product is designed and reviewed.
