@@ -3,7 +3,7 @@
 **Document status:** Learning-oriented implementation sequence — not a claim of shipped code  
 **Last updated:** September 23, 2026  
 **Audience:** Learner building Dolphin step by step with Cursor  
-**Scope:** Phase 0 (foundation) → Phase 1A Prove Loop only. Stop before Vault/RAG/sandbox.
+**Scope:** Phase 0 through Phase 1B (S01–S44). Stop before Vault, RAG, a tutor gateway, or a sandbox. Later phases are named in `05-direction.md` and are not steps in this file yet.
 
 ---
 
@@ -743,7 +743,7 @@ Phase 1A is demonstrated. These steps earn the `retained` facet only from a revi
 
 ## Stop line
 
-Do **not** start Vault, RAG, a tutor gateway, or a code sandbox in Phase 1B. Those stay later.
+Do **not** start Vault, RAG, a tutor gateway, or a code sandbox in Phase 1B. Those stay later. `05-direction.md` names the order: finish S43 and S44, then 1C time honesty, then a tutor that cannot grade itself, then Vault, then one isolated lab.
 
 Tiny seams allowed only as listed (e.g. S36 replan, honest Library empty state). No upload pipelines, embeddings, or in-process code execution in this plan.
 

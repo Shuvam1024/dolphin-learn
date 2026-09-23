@@ -125,6 +125,10 @@ Vs generic AI tutors, flashcard apps, and planner-only tools:
 
 ---
 
+## Direction lock
+
+An external brief (working name ATLAS) restated this same product and added a time-adaptive pass. Dolphin keeps the name, the stack, and the evidence rules. Priorities may later narrow scope. They do not create a mastery percent, a learning-style label, or extra minutes. Phase order after the current build is in `05-direction.md`.
+
 ## Near-term non-goals
 
-Accredited credentials; replacing human teachers; training a foundation model; social feed; child/school accounts; “all subjects fully assessed” marketing; microservice fleet; punitive gamification; Vault/RAG/code sandbox before Phase 1A Prove Loop is demonstrated.
+Accredited credentials; replacing human teachers; training a foundation model; social feed; child/school accounts; “all subjects fully assessed” marketing; microservice fleet; punitive gamification; Vault/RAG/code sandbox before the written phase in `03-build-plan.md` is finished.
