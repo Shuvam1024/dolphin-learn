@@ -86,6 +86,15 @@ export default async function ReviewPage() {
                 Submit review
               </button>
             </form>
+            <form action={`/api/reviews/${current.id}/snooze`} method="post">
+              <input type="hidden" name="hours" value="24" />
+              <button className={styles.button} type="submit">
+                Not now
+              </button>
+            </form>
+            <p className={styles.meta}>
+              Not now waits 24 hours. Skipping is not study and does not count as remembering.
+            </p>
           </>
         ) : (
           <>

@@ -6,7 +6,12 @@ from typing import Literal
 from app.db import get_db
 from app.modules.identity.deps import current_user
 from app.modules.identity.models import User
-from app.modules.learning.reviews import queue_for_user, reveal_solution, submit_review_attempt
+from app.modules.learning.reviews import (
+    queue_for_user,
+    reveal_solution,
+    snooze_review,
+    submit_review_attempt,
+)
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator
 from sqlalchemy.orm import Session
@@ -59,6 +64,29 @@ class AttemptOut(BaseModel):
     retained: bool
 
 
+class SnoozeIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    hours: int
+
+    @field_validator("hours")
+    @classmethod
+    def _hours(cls, value: int) -> int:
+        if value < 1 or value > 168:
+            raise ValueError("hours must be between 1 and 168")
+        return value
+
+
+class SnoozeOut(BaseModel):
+    id: str
+    due_at: str
+    interval_days: int
+    hours: int
+    retained: bool
+    extended: bool
+    unchanged_interval: bool
+
+
 @router.get("/due", response_model=QueueOut)
 def get_due(
     user: User = Depends(current_user),
@@ -87,3 +115,13 @@ def post_attempt(
     return AttemptOut.model_validate(
         submit_review_attempt(db, user, review_id, choice=body.choice)
     )
+
+
+@router.post("/{review_id}/snooze", response_model=SnoozeOut)
+def post_snooze(
+    review_id: uuid.UUID,
+    body: SnoozeIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> SnoozeOut:
+    return SnoozeOut.model_validate(snooze_review(db, user, review_id, hours=body.hours))

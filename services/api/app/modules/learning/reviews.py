@@ -212,3 +212,34 @@ def submit_review_attempt(
         "extended": extended,
         "retained": retained,
     }
+
+
+def snooze_review(
+    db: Session,
+    user: User,
+    review_id: uuid.UUID,
+    *,
+    hours: int,
+) -> dict[str, object]:
+    """Move due_at by a duration. Interval and evidence stay untouched."""
+    if hours < 1 or hours > 168:
+        raise ApiError(
+            "validation_error",
+            "Snooze hours must be between 1 and 168",
+            status_code=422,
+        )
+    item = get_owned_review(db, user, review_id)
+    interval_before = item.interval_days
+    item.due_at = datetime.now(timezone.utc) + timedelta(hours=hours)
+    db.add(ReviewEvent(review_item_id=item.id, outcome="snooze"))
+    db.commit()
+    db.refresh(item)
+    return {
+        "id": str(item.id),
+        "due_at": item.due_at.isoformat(),
+        "interval_days": item.interval_days,
+        "hours": hours,
+        "retained": False,
+        "extended": False,
+        "unchanged_interval": item.interval_days == interval_before,
+    }

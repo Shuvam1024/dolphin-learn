@@ -1,8 +1,8 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S40 Prove Loop (Phase 1A exit); S41–S42 delayed retention; S43–S44 physical study minutes
-- **Verified working user journey:** A 14×30 plan still shows 420 usable minutes. Studied minutes come from the session clock and sit beside that budget on Home and the goal path. There is no mastery percent and no deadline date.
+- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S40 Prove Loop (Phase 1A exit); S41–S42 delayed retention; S43–S45 physical study minutes
+- **Verified working user journey:** After 30 studied minutes on a 420-minute budget, Update plan writes version 2 with 390 usable minutes. The budget row stays 420. Studied and remaining are named in the rationale. Evidence is untouched.
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, an honest session-finish summary, a review due queue with 1/3/7/14-day intervals, a Home snapshot of the next action, a Progress ledger of facets plus unassessed plan gaps, a goal path overview, replan that writes the next plan version, and a Studio control to move to the next activity or a different question; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
 - **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Next phase is 1C, physical study minutes, not a deadline date and not Vault
 - **Schema/API changes:** Alembic through `0008_attempt_idempotency`; `POST /api/v1/goals/{id}/replan` writes accepted plan version N+1 from the current budget and demonstrated competencies and leaves older versions in place; `GET /api/v1/goals/{id}/overview` returns the path, deferred topics, and the session to continue
@@ -48,12 +48,13 @@
   - S39: User B receives 404 `not_found` on A’s goal, plan, overview, replan, accept, session, pause, attempt, advance, independent check, and finish; B’s Home, Progress, and review queue are empty; A still has one attempt and `independently_demonstrated`; a repeated idempotency key returns the original choice `b`; Playwright reload keeps the reading, then keeps “Answer recorded: b” with no second submit button; pytest 41 passed; ruff clean
   - S41: same-session correct stays `independently_demonstrated`; a review that is not yet due can extend the interval and stays that facet; a due independent review returns `retained` true and Progress shows `retained`; a due assisted review stays `independently_demonstrated`; pytest 44 passed; ruff and mypy clean
   - S42: after that due review, Home `recent_evidence` is `python.names` / `retained` and the payload has no mastery percent; Progress explains retained as a later due review and not a permanent promise; Playwright shows that sentence and not “% mastered”; ruff, mypy, tsc, and eslint clean
-  - S44: a 14×30 accept keeps usable minutes 420; after a 30-minute finished session, overview and Home both show studied 30; payloads have no mastery percent and no deadline; Playwright shows “Usable minutes: 420” and “Studied: 0 minutes”
+  - S45: after 30 studied minutes on a 420 budget, replan returns version 2 with usable 390, rationale names studied and remaining, the weekly budget row stays 30×14, evidence and attempts are unchanged; a 30-minute budget fully spent replans at 0 with a scope conflict
+  - S44: a 14×30 accept keeps usable minutes 420; after a 30-minute finished session, overview and Home both show studied 30; payloads have no mastery percent and no deadline; Playwright shows “Usable minutes: 420. Studied: 0 minutes”; pytest 47 passed
   - S40 exit, September 23, 2026: `cd services/api && .venv/bin/ruff check app tests` → `All checks passed!`; `.venv/bin/mypy app` → `Success: no issues found in 40 source files`; `.venv/bin/pytest --tb=no` → `41 passed, 1 warning in 2.41s`. `cd apps/web && npx playwright test e2e/phase0.spec.ts e2e/quick-learn.spec.ts e2e/math-windows.spec.ts e2e/refresh-resume.spec.ts --reporter=line` → `4 passed (10.4s)`. Demo script `docs/prove-loop-demo.md`. Next phase is 1B, not Vault
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S44**
-- **Next step:** **S45 — Replan from minutes remaining after study**
+- **Completed steps:** **S01–S45**
+- **Next step:** **S46 — Snooze a due review for a duration without awarding retention**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -66,7 +67,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | 0 | Foundation (S01–S19) | Done (S01–S19) |
 | 1A | Prove Loop (S20–S40) | Done (S20–S40) |
 | 1B | Delayed retention (S41–S42) | Done (S42) |
-| 1C | Physical study time (S43–S46) | In progress (S44) |
+| 1C | Physical study time (S43–S46) | In progress (S45) |
 | Later | 1D computing curriculum, then scope, tutor, programming lab, Vault | Not started |
 
 ---
@@ -123,3 +124,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **Quality** | `docs: judge each step by learning quality and usability` | Content, technique, time fit, and plain use are part of done, not a later polish pass |
 | **S43** | `feat(sessions): measure active study minutes excluding pauses` | Pause gaps are excluded; finish freezes the total; Studio says the clock stops when you pause |
 | **S44** | `feat(progress): show studied minutes beside the usable budget` | 14×30 stays 420 usable; studied minutes match the clock; no percent and no date |
+| **S45** | `feat(plan): replan from minutes remaining after study` | 30 studied on 420 replans at 390; budget row stays; evidence untouched |
