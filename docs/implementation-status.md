@@ -1,11 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S19 (Phase 0 foundation)
-- **Verified working user journey:** Sign in → adult acknowledgment → Home prompts “Create a goal”; Learn, Review, Library, and Progress are honest empty states
-- **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, and review tables; seeded Python and math lessons (reading + objective)
+- **Milestone completed:** S01–S19 (Phase 0 foundation); S20 of the Prove Loop
+- **Verified working user journey:** Sign in → adult acknowledgment → Home prompts “Create a goal”; a signed-in learner can create, list, and read only their own goals
+- **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, and review tables; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals` and `GET /api/v1/goals/{id}`
 - **Stubbed or unavailable features:** Goal wizard is a placeholder after the gate. Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store)
-- **Schema/API changes:** Alembic through `98b0fc485c6b` (plans, sessions, append-only attempts, evidence, review) plus `0006_goals_time_budgets` and the curriculum graph; `POST /api/v1/me/adult-acknowledgment`
+- **Schema/API changes:** Alembic through `98b0fc485c6b`; `POST/GET /api/v1/goals`, `GET /api/v1/goals/{id}` (owner-scoped; other owners 404); `POST /api/v1/me/adult-acknowledgment`
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
   - S02: README lists Next.js + FastAPI + Postgres; `.env.example` placeholders; AI keys optional
@@ -26,10 +26,11 @@
   - S17: `python -m app.seed` twice; pytest confirms domains `python` and `math`, activity types `reading` and `objective`, and at least two answer keys; pytest 16 passed; ruff and mypy clean; no LLM key used
   - S18: `tsc` and eslint exit 0; signed-in acknowledged `GET /app` 200 contains Learn, Review, Library, Progress, More, and “Create a goal”; `/app/library` 200 “Coming later” and “Knowledge Vault” with no file input; `/app/learn`, `/app/review`, `/app/progress`, `/app/more` each 200
   - S19: pytest `test_phase0_smoke` health 200 and unauthenticated `GET /api/v1/me` 401; full pytest 18 passed; `npx playwright test` 1 passed — anonymous `/app` lands on `/sign-in`, email sign-in shows “Before you start”, adult acknowledgment shows “You are in”, primary nav, and “Create a goal”
+  - S20: User A `POST /api/v1/goals` 201 with stripped title, `raw_request`, and `normalized_objective`; list and get return that goal; User B `GET` of A’s id → 404 `not_found` and B’s list omits it; empty title and empty request → 422 `validation_error` and no row; pytest 21 passed; ruff and mypy clean
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S19**
-- **Next step:** **S20 — Implement create/list/get goals API** (Phase 1A; not started)
+- **Completed steps:** **S01–S20**
+- **Next step:** **S21 — Validate and store time budgets**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -40,7 +41,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | Phase | Milestone | Status |
 |---|---|---|
 | 0 | Foundation (S01–S19) | Done (S01–S19) |
-| 1A | Prove Loop (S20–S40) | Not started |
+| 1A | Prove Loop (S20–S40) | In progress (S20) |
 | Later | Vault / labs / community | Not started |
 
 ---
@@ -68,3 +69,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S17** | `feat(seed): add python and math mini curricula` | Python and math paths; reading and objective items |
 | **S18** | `feat(web): add p0 nav shell with honest empty states` | Four primary nav items; Library has no upload; Home asks for a goal |
 | **S19** | `test: add phase 0 auth and health smoke tests` | Health 200; anonymous `/app` blocked; signed-in shell loads |
+| **S20** | `feat(goals): add create list and get goal endpoints` | Owner creates, lists, and reads a goal; another user gets 404; empty title or request is 422 |
