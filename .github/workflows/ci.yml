@@ -157,3 +157,34 @@ jobs:
         run: |
           python -m pip install -r services/api/requirements.txt
           cd services/api && python -m app.content.validate
+
+  ai-fake:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: dolphin
+          POSTGRES_PASSWORD: dolphin
+          POSTGRES_DB: dolphin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dolphin -d dolphin"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://dolphin:dolphin@localhost:5432/dolphin
+      AI_GATEWAY_ENABLED: "true"
+      AI_PROVIDER: fake
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install API dependencies
+        run: python -m pip install -r services/api/requirements-dev.txt
+      - name: AI fake provider suite
+        run: |
+          cd services/api && python -m alembic upgrade head && python -m pytest tests/test_ai_gateway.py tests/test_ai_import_graph.py -q

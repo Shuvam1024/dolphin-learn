@@ -57,6 +57,7 @@ class MeOut(BaseModel):
     auth_subject: str
     email: str | None
     profile: ProfileOut
+    ai_enabled: bool = False
 
 
 class PreferencesIn(BaseModel):
@@ -116,12 +117,15 @@ def _profile_out(profile: LearnerProfile) -> ProfileOut:
     )
 
 
-def _me(user: User, profile: LearnerProfile) -> MeOut:
+def _me(user: User, profile: LearnerProfile, db: Session) -> MeOut:
+    from app.modules.ai_gateway.service import is_enabled
+
     return MeOut(
         id=user.id,
         auth_subject=user.auth_subject,
         email=user.email,
         profile=_profile_out(profile),
+        ai_enabled=is_enabled(db, user),
     )
 
 
@@ -138,7 +142,7 @@ def me(
     user: User = Depends(current_user),
     db: Session = Depends(get_db),
 ) -> MeOut:
-    return _me(user, ensure_profile(db, user))
+    return _me(user, ensure_profile(db, user), db)
 
 
 @router.patch("/me/preferences", response_model=MeOut)
@@ -157,7 +161,7 @@ def patch_preferences(
         a11y_prefs=body.a11y_prefs.model_dump() if body.a11y_prefs is not None else None,
         set_display_name="display_name" in sent,
     )
-    return _me(user, profile)
+    return _me(user, profile, db)
 
 
 @router.post("/me/adult-acknowledgment", response_model=MeOut)
@@ -166,4 +170,4 @@ def adult_acknowledgment(
     db: Session = Depends(get_db),
 ) -> MeOut:
     """Record that this adult learner accepted the 18+ enrollment notice."""
-    return _me(user, acknowledge_adult(db, user))
+    return _me(user, acknowledge_adult(db, user), db)

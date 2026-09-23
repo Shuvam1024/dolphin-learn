@@ -22,5 +22,14 @@ class Settings(BaseSettings):
     auth_jwks_url: str = ""
     auth_dev_secret: str = "dev-only-not-a-password"
 
+    # AI gateway — off by default; FakeProvider in CI via AI_PROVIDER=fake
+    ai_gateway_enabled: bool = False
+    ai_provider: str = ""
+    ai_base_url: str = "https://api.openai.com/v1"
+    ai_api_key: str = ""
+    ai_model: str = "gpt-4.1-mini"
+    ai_daily_cap: int = 50
+    ai_timeout_s: float = 12.0
+
 
 settings = Settings()

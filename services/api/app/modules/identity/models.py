@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 
 from app.db import Base
-from sqlalchemy import DateTime, ForeignKey, String, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -35,3 +35,4 @@ class LearnerProfile(Base):
     adult_acknowledged_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    ai_opt_out: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
