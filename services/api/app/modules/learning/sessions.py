@@ -7,7 +7,13 @@ from app.errors import ApiError
 from app.modules.goals.models import Goal
 from app.modules.identity.models import User
 from app.modules.learning.accept import latest_accepted
-from app.modules.learning.models import LearningSession, PlanActivity, SessionEvent
+from app.modules.learning.models import (
+    ActivityVersion,
+    LearningSession,
+    Lesson,
+    PlanActivity,
+    SessionEvent,
+)
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -58,6 +64,26 @@ def get_owned_session(db: Session, user: User, session_id: uuid.UUID) -> Learnin
     if row is None:
         raise ApiError("not_found", "Session not found", status_code=404)
     return row
+
+
+def activity_snapshot(db: Session, row: LearningSession) -> dict[str, str] | None:
+    """Reading content for the current activity. Answer keys stay on the server."""
+    if row.plan_activity_id is None:
+        return None
+    plan = db.get(PlanActivity, row.plan_activity_id)
+    if plan is None or plan.activity_version_id is None:
+        return None
+    activity = db.get(ActivityVersion, plan.activity_version_id)
+    if activity is None:
+        return None
+    lesson = db.get(Lesson, activity.lesson_id)
+    return {
+        "activity_type": activity.activity_type,
+        "title": lesson.title if lesson is not None else plan.title,
+        "prompt": activity.prompt,
+        "body": lesson.body_markdown if lesson is not None else "",
+        "mode": "guided",
+    }
 
 
 def event_count(db: Session, session_id: uuid.UUID) -> int:

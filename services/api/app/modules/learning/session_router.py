@@ -8,7 +8,13 @@ from app.modules.goals.service import get_owned_goal
 from app.modules.identity.deps import current_user
 from app.modules.identity.models import User
 from app.modules.learning.models import LearningSession
-from app.modules.learning.sessions import apply_event, event_count, get_owned_session, start_session
+from app.modules.learning.sessions import (
+    activity_snapshot,
+    apply_event,
+    event_count,
+    get_owned_session,
+    start_session,
+)
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator
 from sqlalchemy.orm import Session
@@ -44,6 +50,14 @@ class SessionPatch(BaseModel):
     event: SessionEventIn
 
 
+class ActivityOut(BaseModel):
+    activity_type: str
+    title: str
+    prompt: str
+    body: str
+    mode: Literal["guided"]
+
+
 class SessionOut(BaseModel):
     id: uuid.UUID
     status: str
@@ -51,6 +65,7 @@ class SessionOut(BaseModel):
     plan_activity_id: uuid.UUID | None
     event_count: int
     applied: bool
+    activity: ActivityOut | None = None
 
 
 def _out(
@@ -67,6 +82,7 @@ def _out(
         plan_activity_id=row.plan_activity_id,
         event_count=event_count(db, row.id),
         applied=applied,
+        activity=ActivityOut.model_validate(snap) if (snap := activity_snapshot(db, row)) else None,
     )
 
 

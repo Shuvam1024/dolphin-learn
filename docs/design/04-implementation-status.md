@@ -1,10 +1,10 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S26 of the Prove Loop
-- **Verified working user journey:** Sign in → goal wizard → accept a plan → a session starts on the first activity and survives refresh and pause
+- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S27 of the Prove Loop
+- **Verified working user journey:** Open a session and read the seeded explanation; pause survives refresh; there is no countdown
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, and review tables; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
-- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Session Studio is not built yet
+- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Objective questions are not in the Studio yet
 - **Schema/API changes:** Alembic through `0007_diagnostic_runs`; plan propose/accept; `POST/GET/PATCH /api/v1/sessions` with idempotent `client_event_id` on append-only `session_events`
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
@@ -33,10 +33,11 @@
   - S24: 15 usable minutes includes only `python.names` and defers `python.calls` with `insufficient_minutes`; 120 minutes includes both and `scope_conflict` is false; a 5-minute budget has `estimated_required_low > usable`, empty included, and a scope-conflict payload; `POST …/plan-proposals` does not insert `plan_versions`; pytest 27 passed; ruff and mypy clean; no LLM
   - S25: before accept, `GET …/plan` is 404; accept of a 15-minute Python goal returns version 1 with rationale listing `python.calls` and `insufficient_minutes`; a second GET returns the same version; pytest 28 passed; Playwright keyboard wizard accepts a 120-minute plan (`Deferred: none.`, version 1) and phase 0 smoke still passes
   - S26: start from an accepted 120-minute plan lands on the first activity; a progress event moves to the next; GET returns that same activity; the same `client_event_id` does not move it back and does not add a second event; pause survives GET; another user gets 404; pytest 29 passed; ruff and mypy clean
+  - S27: session GET includes the reading body “binds the name”, mode `guided`, and no `answer_key`; Playwright opens `/app/learn/:sessionId`, shows the explanation and “No countdown”, Pause then reload still says Paused; phase 0 smoke passed; no AI key
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S26**
-- **Next step:** **S27 — Render Session Studio with reading/explanation activity**
+- **Completed steps:** **S01–S27**
+- **Next step:** **S28 — Add objective question activity and attempt submit**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -47,7 +48,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | Phase | Milestone | Status |
 |---|---|---|
 | 0 | Foundation (S01–S19) | Done (S01–S19) |
-| 1A | Prove Loop (S20–S40) | In progress (S26) |
+| 1A | Prove Loop (S20–S40) | In progress (S27) |
 | Later | Vault / labs / community | Not started |
 
 ---
@@ -82,3 +83,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S24** | `feat(plan): add deterministic feasibility plan proposal` | 15- and 120-minute Python budgets differ; over-budget returns a scope conflict; no plan row yet |
 | **S25** | `feat(plan): add plan preview and explicit accept` | Preview is not active; accept creates version 1; refresh returns it; rationale lists deferred items |
 | **S26** | `feat(sessions): create and resume persisted sessions` | Start from an accepted plan; refresh keeps progress; duplicate client event id does not double-apply |
+| **S27** | `feat(studio): render session studio reading activity` | Seeded explanation shows; pause persists; no countdown; no AI |

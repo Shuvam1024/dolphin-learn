@@ -52,6 +52,11 @@ def test_start_pause_and_ignore_duplicate_event() -> None:
     session_id = started.json()["id"]
     assert started.json()["plan_activity_id"] == first_id
     assert started.json()["status"] == "active"
+    activity = started.json()["activity"]
+    assert activity["activity_type"] == "reading"
+    assert activity["mode"] == "guided"
+    assert "binds the name" in activity["body"]
+    assert "answer_key" not in started.text
 
     moved = client.patch(
         f"/api/v1/sessions/{session_id}",
