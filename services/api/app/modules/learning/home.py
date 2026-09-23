@@ -51,7 +51,7 @@ def build_home(db: Session, user: User) -> dict[str, object]:
         .join(Competency, Competency.id == CompetencyState.competency_id)
         .where(
             CompetencyState.user_id == user.id,
-            CompetencyState.status_facet == "independently_demonstrated",
+            CompetencyState.status_facet.in_(("independently_demonstrated", "retained")),
         )
         .order_by(Competency.key)
     ).all()

@@ -116,6 +116,12 @@ def test_due_independent_review_sets_retained() -> None:
     assert done.json()["retained"] is True
     assert done.json()["extended"] is True
     assert _facet(headers) == "retained"
+    home = client.get("/api/v1/home", headers=headers)
+    assert home.json()["recent_evidence"] == [
+        {"competency_key": "python.names", "status_facet": "retained"}
+    ]
+    assert "%" not in home.text
+    assert "mastered" not in home.text
 
 
 def test_early_or_assisted_review_does_not_retain() -> None:

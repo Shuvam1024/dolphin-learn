@@ -41,8 +41,9 @@ export default async function ProgressPage() {
         <h1 className={styles.title}>{empty ? "No evidence yet" : "Evidence"}</h1>
         <p className={styles.lede}>
           Exposed means an attempt that was not correct. Practicing means a correct answer after
-          help. Independently demonstrated means a correct answer with no help. Unassessed means
-          the plan has no stored attempt yet. There is no global mastery score.
+          help. Independently demonstrated means a correct answer with no help. Retained means a
+          later review, already due, was answered with no help. It is not a permanent promise.
+          Unassessed means the plan has no stored attempt yet. There is no global mastery score.
         </p>
         {progress.facets.length > 0 ? (
           <ul>
