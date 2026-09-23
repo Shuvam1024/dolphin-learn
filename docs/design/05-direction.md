@@ -74,6 +74,27 @@ Scale, here, means new subjects and new checks plug in. It does not mean a servi
 
 ---
 
+## What every step has to be good at
+
+Two things decide whether a step is done. Neither one is a polish pass at the end.
+
+**The learning itself.** Content, technique, and time have to help a person get better at the thing.
+
+- A lesson, a practice item, and a check should teach the skill. A correct endpoint with thin or confusing material is not finished.
+- Technique stays visible. The learner tries, help is labeled as help, a later check is a different question, and a review waits long enough to mean something.
+- Time adaptivity is felt, not only stored. The plan fits the minutes they actually have. The clock matches time they were studying. A shorter budget changes what fits. It does not lower what “you can do this” means.
+
+**The person using it.** Usability is part of the same step.
+
+- They can tell what to do next, what a result means, and what happens if they pause, ask for help, or leave.
+- The words are about their study. Internal names can appear only when a plain sentence is next to them.
+- Keyboard use, a phone-width screen, and the path through sign-in stay intact.
+- The app should feel quick in a study session. That is responsiveness a person notices, not a made-up benchmark.
+
+Phase 1C is the time half of this. The screen has to say what the clock did, in language a learner can use.
+
+---
+
 ## Next phase (build this)
 
 **Phase 1C — Physical study time. S43, then S44, then S45, then S46.**
