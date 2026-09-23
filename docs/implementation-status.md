@@ -54,8 +54,8 @@
   - S40 exit, September 23, 2026: `cd services/api && .venv/bin/ruff check app tests` → `All checks passed!`; `.venv/bin/mypy app` → `Success: no issues found in 40 source files`; `.venv/bin/pytest --tb=no` → `41 passed, 1 warning in 2.41s`. `cd apps/web && npx playwright test e2e/phase0.spec.ts e2e/quick-learn.spec.ts e2e/math-windows.spec.ts e2e/refresh-resume.spec.ts --reporter=line` → `4 passed (10.4s)`. Demo script `docs/prove-loop-demo.md`. Next phase is 1B, not Vault
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S48**
-- **Next step:** **S49 — Seed software practice mini curriculum**
+- **Completed steps:** **S01–S49**
+- **Next step:** **S50 — Pick a domain in the goal wizard**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -69,7 +69,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | 1A | Prove Loop (S20–S40) | Done (S20–S40) |
 | 1B | Delayed retention (S41–S42) | Done (S42) |
 | 1C | Physical study time (S43–S46) | Done (S46) |
-| 1D | Honest demo content (S47–S50) | In progress (S48 done) |
+| 1D | Honest demo content (S47–S50) | In progress (S49 done) |
 | Later | 1E scope, tutor, lab, Vault | Later |
 
 ---
@@ -132,3 +132,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S46** | `feat(review): snooze a due item for a duration without retention` | Hours move due time only; interval and evidence stay; Not now is not memory |
 | **S47** | `feat(goals): require an explicit domain for plans` | Domain stored on goal; GET /domains; cooking is not Python; wizard picks a subject |
 | **S48** | `feat(seed): add python conditionals with real checks` | Conditionals lesson with reading + graded items; short plans defer it |
+| **S49** | `feat(seed): add software practice mini curriculum` | software domain on shared ledger; plans only software competencies |

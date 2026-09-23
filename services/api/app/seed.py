@@ -268,6 +268,113 @@ CURRICULA: tuple[DomainSpec, ...] = (
             ),
         ),
     ),
+    DomainSpec(
+        key="software",
+        name="Software practice",
+        competencies=(
+            CompetencySpec("software.failing_test", "Read a failing test"),
+            CompetencySpec("software.bug_name", "Name what the test caught"),
+        ),
+        requires=(("software.bug_name", "software.failing_test"),),
+        lessons=(
+            LessonSpec(
+                key="software.failing_test.intro",
+                title="A failing test is a claim",
+                competency_key="software.failing_test",
+                body=(
+                    "A failing automated test is a claim about the program that did not hold. "
+                    "Read the test name and the assertion first. They say what should be true. "
+                    "The stack or failure message says what was true instead. You are not "
+                    "running code here; you are reading what the check expected."
+                ),
+                activities=(
+                    ActivitySpec(
+                        1,
+                        "reading",
+                        "Read the note on failing tests. You are not scored for reading.",
+                        None,
+                        6,
+                        10,
+                    ),
+                    ActivitySpec(
+                        2,
+                        "objective",
+                        (
+                            "A test named `adds_two_numbers` fails with "
+                            "`expected 5, got 4`. What should you read first?\n\n"
+                            "a) Only the production code, and ignore the test name\n"
+                            "b) The test name and the assertion that expected 5\n"
+                            "c) A random line from a different file"
+                        ),
+                        {"correct": "b"},
+                        4,
+                        6,
+                    ),
+                    ActivitySpec(
+                        3,
+                        "objective",
+                        (
+                            "What does a failing test claim?\n\n"
+                            "a) That the learner has mastered the topic\n"
+                            "b) That some expected condition about the program did not hold\n"
+                            "c) That the calendar date is a study deadline"
+                        ),
+                        {"correct": "b"},
+                        3,
+                        5,
+                    ),
+                ),
+            ),
+            LessonSpec(
+                key="software.bug_name.intro",
+                title="Name the mismatch",
+                competency_key="software.bug_name",
+                body=(
+                    "After you read the failing claim, name the mismatch in plain words: "
+                    "what was expected, and what happened. A clear name helps you fix the "
+                    "right thing. Do not award yourself mastery for guessing; wait for a "
+                    "check that asks you to identify the mismatch."
+                ),
+                activities=(
+                    ActivitySpec(
+                        1,
+                        "reading",
+                        "Read the note on naming the mismatch. You are not scored for reading.",
+                        None,
+                        8,
+                        12,
+                    ),
+                    ActivitySpec(
+                        2,
+                        "objective",
+                        (
+                            "The test expected the list `[1, 2]` but got `[2, 1]`. "
+                            "Which plain description fits?\n\n"
+                            "a) The items are present but in the wrong order\n"
+                            "b) The program crashed before returning\n"
+                            "c) The test never ran"
+                        ),
+                        {"correct": "a"},
+                        5,
+                        8,
+                    ),
+                    ActivitySpec(
+                        3,
+                        "objective",
+                        (
+                            "Why name the mismatch before changing code?\n\n"
+                            "a) So you fix the behavior the test actually checked\n"
+                            "b) So the product can invent a mastery percent\n"
+                            "c) So a calendar deadline becomes study time"
+                        ),
+                        {"correct": "a"},
+                        4,
+                        6,
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
 
 
@@ -351,7 +458,7 @@ def seed(db: Session) -> None:
 def main() -> None:
     with SessionLocal() as db:
         seed(db)
-    print("seeded python and math mini-curricula")
+    print("seeded python, math, and software mini-curricula")
 
 
 if __name__ == "__main__":

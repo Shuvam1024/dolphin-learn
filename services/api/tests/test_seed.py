@@ -13,7 +13,7 @@ def test_seed_loads_python_and_math_without_a_model() -> None:
         seed(db)
         seed(db)
         keys = set(db.scalars(select(Domain.key)).all())
-        assert {"python", "math"} <= keys
+        assert {"python", "math", "software"} <= keys
         types = set(db.scalars(select(ActivityVersion.activity_type)).all())
         assert {"reading", "objective"} <= types
         keyed = db.scalar(
