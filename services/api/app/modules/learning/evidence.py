@@ -58,6 +58,10 @@ def record_evidence(
             status_facet=facet,
         )
     )
+    if facet == "independently_demonstrated":
+        from app.modules.learning.reviews import schedule_independent_success
+
+        schedule_independent_success(db, user.id, lesson.competency_id)
     state = db.get(CompetencyState, (user.id, lesson.competency_id))
     if state is None:
         db.add(

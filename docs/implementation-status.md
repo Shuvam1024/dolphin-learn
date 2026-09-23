@@ -1,11 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S31 of the Prove Loop
-- **Verified working user journey:** Finish is idempotent. The Studio summary lists stored independent attempts and does not celebrate. Pause before finish leaves the session open.
-- **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, and an honest session-finish summary; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
-- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). The review due queue is not built yet
-- **Schema/API changes:** Alembic through `0008_attempt_idempotency`; `POST /api/v1/sessions/{id}/attempts` stores an immutable answer snapshot keyed by `idempotency_key`; `POST /api/v1/sessions/{id}/finish` marks the session finished and returns a summary built from stored attempts; `GET /api/v1/progress` lists competency facets; `POST /api/v1/sessions/{id}/independent-check` moves to another objective item
+- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S32 of the Prove Loop
+- **Verified working user journey:** An independent correct answer schedules a review one day later. When that review is due, the queue states why. An assisted review does not lengthen the interval.
+- **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, an honest session-finish summary, and a review due queue with 1/3/7/14-day intervals; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
+- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Home still uses the empty-state copy after a plan exists. Progress is still the empty ledger page. Goal path detail and replan are not built yet
+- **Schema/API changes:** Alembic through `0008_attempt_idempotency`; `POST /api/v1/sessions/{id}/finish` returns a summary from stored attempts; `GET /api/v1/reviews/due` lists due and scheduled reviews with a reason; `POST /api/v1/reviews/{id}/attempts` grades a review and lengthens the interval only after an independent correct answer
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
   - S02: README lists Next.js + FastAPI + Postgres; `.env.example` placeholders; AI keys optional
@@ -38,10 +38,11 @@
   - S29: correct choice `b` with no help is `independent` / `correct` and eligible; challenge mode refuses the solution and does not reveal it; after an explicit solution the next attempt is `assisted` and not eligible; hint text does not reveal the letter; studio browser tests still passed; no LLM
   - S30: solution then a correct answer stays `practicing` and Progress does not show `independently_demonstrated`; `POST …/independent-check` moves to a different question with no revealed letter; an unassisted correct answer on that item sets `independently_demonstrated`; no evidence facet is `retained` or `applied`; pytest 33 passed; ruff and mypy clean
   - S31: pause before finish leaves status `paused` and summary null; `POST …/finish` returns stored independent attempts and the note that the summary is not retention; a second finish returns the same attempts and does not add a row; pause after finish is 422; Playwright shows “Session finished” with no celebration copy; pytest 34 passed; ruff, mypy, tsc, and eslint clean
+  - S32: independent correct schedules `interval_days` 1 with `due_at` in the future; after that item is due, `GET /reviews/due` includes `python.names` and “Not retention” and no answer key; completing it sets interval 3; a second same-session success does not move the due time; assisted session success creates no review; challenge mode is 403; an assisted review stays at interval 1; another user gets 404; Playwright shows “Nothing is due” and “Not retention”; pytest 36 passed; ruff, mypy, tsc, and eslint clean
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S31**
-- **Next step:** **S32 — Schedule reviews and show due queue**
+- **Completed steps:** **S01–S32**
+- **Next step:** **S33 — Build Home next-action dashboard from live data**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -52,7 +53,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | Phase | Milestone | Status |
 |---|---|---|
 | 0 | Foundation (S01–S19) | Done (S01–S19) |
-| 1A | Prove Loop (S20–S40) | In progress (S31) |
+| 1A | Prove Loop (S20–S40) | In progress (S32) |
 | Later | Vault / labs / community | Not started |
 
 ---
@@ -92,3 +93,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S29** | `feat(assess): deterministic grading and assistance labels` | Unassisted correct is eligible; after show-solution the next attempt is assisted |
 | **S30** | `feat(assess): independent check and evidence ledger updates` | Assisted success is not independent demonstration; an unseen item can be; Progress shows facets |
 | **S31** | `feat(sessions): add finish endpoint and summary ui` | Finish is idempotent; summary matches stored attempts; pause does not finish |
+| **S32** | `feat(review): due queue and review attempt flow` | Independent success schedules a future due; due list shows a reason; assisted review does not extend the interval |
