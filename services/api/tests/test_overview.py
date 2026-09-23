@@ -23,6 +23,7 @@ def test_goal_overview_lists_deferred_work_and_continue_session() -> None:
         headers=headers,
         json={
             "title": "Learn Python",
+            "domain_key": "python",
             "raw_request": "Names and calls.",
             "time_budget": {
                 "mode": "one_off",

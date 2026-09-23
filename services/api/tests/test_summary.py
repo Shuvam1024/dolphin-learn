@@ -25,6 +25,7 @@ def test_finish_is_idempotent_and_pause_does_not_finish() -> None:
         headers=headers,
         json={
             "title": "Learn Python",
+            "domain_key": "python",
             "raw_request": "Names and calls.",
             "time_budget": {
                 "mode": "one_off",

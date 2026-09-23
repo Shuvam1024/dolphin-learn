@@ -14,14 +14,18 @@ NOTE = "This sample does not claim mastery."
 
 
 def items_for_goal(db: Session, goal: Goal) -> list[ActivityVersion]:
-    text = f"{goal.title} {goal.raw_request}".lower()
-    domain_key = "math" if "math" in text or "fraction" in text else "python"
+    if not goal.domain_key:
+        raise ApiError(
+            "validation_error",
+            "Choose a subject before starting a diagnostic",
+            status_code=422,
+        )
     rows = db.scalars(
         select(ActivityVersion)
         .join(Lesson, ActivityVersion.lesson_id == Lesson.id)
         .join(Competency, Lesson.competency_id == Competency.id)
         .join(Domain, Competency.domain_id == Domain.id)
-        .where(Domain.key == domain_key, ActivityVersion.activity_type == "objective")
+        .where(Domain.key == goal.domain_key, ActivityVersion.activity_type == "objective")
         .order_by(ActivityVersion.version, ActivityVersion.id)
     )
     return list(rows)[:8]

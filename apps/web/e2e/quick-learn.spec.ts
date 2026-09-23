@@ -16,6 +16,7 @@ test("120-minute python quick learn proves evidence without an AI key", async ({
 
   await page.getByLabel("Goal title").fill("Quick Learn Python");
   await page.getByLabel("What do you want to learn?").fill("Names and calls.");
+  await page.getByLabel("Subject").selectOption("python");
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await page.getByLabel("Total minutes").fill("120");
   await page.getByLabel("Preferred session length (minutes)").fill("30");

@@ -3,6 +3,7 @@
 import uuid
 
 from app.errors import ApiError
+from app.modules.curriculum.models import Domain
 from app.modules.goals.budget import TimeBudgetSpec
 from app.modules.goals.models import Goal, TimeBudget
 from app.modules.identity.models import User
@@ -44,12 +45,31 @@ def budget_for(db: Session, goal: Goal) -> TimeBudget | None:
     return db.scalar(select(TimeBudget).where(TimeBudget.goal_id == goal.id))
 
 
+def require_domain(db: Session, domain_key: str) -> str:
+    key = domain_key.strip()
+    if not key:
+        raise ApiError(
+            "validation_error",
+            "Choose a subject we can teach today",
+            status_code=422,
+        )
+    domain = db.scalar(select(Domain).where(Domain.key == key))
+    if domain is None:
+        raise ApiError(
+            "validation_error",
+            "We do not have lessons for that subject yet",
+            status_code=422,
+        )
+    return domain.key
+
+
 def create_goal(
     db: Session,
     user: User,
     *,
     title: str,
     raw_request: str,
+    domain_key: str,
     normalized_objective: str | None,
     time_budget: TimeBudgetSpec | None,
 ) -> Goal:
@@ -57,6 +77,7 @@ def create_goal(
         user_id=user.id,
         title=title,
         raw_request=raw_request,
+        domain_key=require_domain(db, domain_key),
         normalized_objective=normalized_objective,
         status="active",
     )
@@ -76,6 +97,8 @@ def update_goal(
     *,
     title: str | None,
     raw_request: str | None,
+    domain_key: str | None,
+    set_domain: bool,
     normalized_objective: str | None,
     set_objective: bool,
     time_budget: TimeBudgetSpec | None,
@@ -85,6 +108,14 @@ def update_goal(
         goal.title = title
     if raw_request is not None:
         goal.raw_request = raw_request
+    if set_domain:
+        if domain_key is None:
+            raise ApiError(
+                "validation_error",
+                "Choose a subject we can teach today",
+                status_code=422,
+            )
+        goal.domain_key = require_domain(db, domain_key)
     if set_objective:
         goal.normalized_objective = normalized_objective
     if time_budget is not None:

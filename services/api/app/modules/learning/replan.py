@@ -6,7 +6,7 @@ from app.modules.identity.models import User
 from app.modules.learning.accept import save_accepted_version
 from app.modules.learning.models import CompetencyState, PlanVersion
 from app.modules.learning.planner import PlanProposal, propose_plan
-from app.modules.learning.proposals import domain_key_for, usable_minutes, work_for_domain
+from app.modules.learning.proposals import resolve_domain_key, usable_minutes, work_for_domain
 from app.modules.learning.study_time import remaining_minutes, studied_minutes_for_goal
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -36,7 +36,7 @@ def replan_goal(
     demonstrated = _demonstrated(db, user)
     work = [
         item
-        for item in work_for_domain(db, domain_key_for(goal, None))
+        for item in work_for_domain(db, resolve_domain_key(db, goal, None))
         if item.key not in set(demonstrated)
     ]
     budget_minutes = usable_minutes(budget)

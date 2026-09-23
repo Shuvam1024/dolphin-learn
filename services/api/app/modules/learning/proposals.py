@@ -26,13 +26,23 @@ def usable_minutes(budget: TimeBudget) -> int:
     return spec.weekly_minutes_per_day * spec.horizon_days
 
 
-def domain_key_for(goal: Goal, override: str | None) -> str:
-    if override:
-        return override
-    text = f"{goal.title} {goal.raw_request}".lower()
-    if "math" in text or "fraction" in text:
-        return "math"
-    return "python"
+def resolve_domain_key(db: Session, goal: Goal, override: str | None) -> str:
+    """Use the goal’s domain, or an explicit override. Never guess from the title."""
+    key = (override or goal.domain_key or "").strip()
+    if not key:
+        raise ApiError(
+            "validation_error",
+            "Choose a subject before asking for a plan",
+            status_code=422,
+        )
+    domain = db.scalar(select(Domain).where(Domain.key == key))
+    if domain is None:
+        raise ApiError(
+            "validation_error",
+            "We do not have lessons for that subject yet",
+            status_code=422,
+        )
+    return domain.key
 
 
 def work_for_domain(db: Session, domain_key: str) -> list[CompetencyWork]:
@@ -87,5 +97,5 @@ def propose_for_goal(
     budget: TimeBudget,
     domain_key: str | None,
 ) -> PlanProposal:
-    work = work_for_domain(db, domain_key_for(goal, domain_key))
+    work = work_for_domain(db, resolve_domain_key(db, goal, domain_key))
     return propose_plan(work, usable_minutes(budget))

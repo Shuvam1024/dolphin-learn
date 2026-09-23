@@ -22,7 +22,11 @@ def _goal(headers: dict[str, str]) -> str:
     created = client.post(
         "/api/v1/goals",
         headers=headers,
-        json={"title": "Learn Python", "raw_request": "Bind names to values."},
+        json={
+            "title": "Learn Python",
+            "domain_key": "python",
+            "raw_request": "Bind names to values.",
+        },
     )
     assert created.status_code == 201
     return created.json()["id"]

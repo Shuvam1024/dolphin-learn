@@ -16,6 +16,7 @@ test("two-week math plan counts 30-minute days, not 14 times 24 hours", async ({
 
   await page.getByLabel("Goal title").fill("Fractions");
   await page.getByLabel("What do you want to learn?").fill("Add fractions with the same denominator.");
+  await page.getByLabel("Subject").selectOption("math");
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await page.getByLabel("Minutes each day for a set number of days").check();
   await page.getByLabel("Minutes per day").fill("30");

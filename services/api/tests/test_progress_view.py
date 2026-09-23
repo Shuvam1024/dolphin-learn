@@ -30,6 +30,7 @@ def test_progress_facets_match_evidence_and_leave_gaps_unassessed() -> None:
         headers=headers,
         json={
             "title": "Learn Python",
+            "domain_key": "python",
             "raw_request": "Names and calls.",
             "time_budget": {
                 "mode": "one_off",

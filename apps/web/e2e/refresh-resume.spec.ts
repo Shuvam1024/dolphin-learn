@@ -16,6 +16,7 @@ test("refresh resumes the lesson and a repeated submit stays one attempt", async
     headers,
     data: {
       title: "Learn Python",
+      domain_key: "python",
       raw_request: "Names and calls.",
       time_budget: {
         mode: "one_off",

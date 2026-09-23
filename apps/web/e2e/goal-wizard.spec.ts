@@ -20,6 +20,8 @@ test("keyboard-only wizard saves a goal and keeps fields on back", async ({ page
   await page.keyboard.type("Names and values");
   await page.keyboard.press("Tab");
   await page.keyboard.type("I want to bind names to values in Python.");
+  await page.keyboard.press("Tab");
+  await page.getByLabel("Subject").selectOption("python");
   await page.getByRole("button", { name: "Next", exact: true }).focus();
   await page.keyboard.press("Enter");
   await expect(page.getByText("Step 2 of 3")).toBeVisible();
@@ -30,6 +32,7 @@ test("keyboard-only wizard saves a goal and keeps fields on back", async ({ page
   await expect(page.getByLabel("What do you want to learn?")).toHaveValue(
     "I want to bind names to values in Python.",
   );
+  await expect(page.getByLabel("Subject")).toHaveValue("python");
 
   await page.getByRole("button", { name: "Next", exact: true }).focus();
   await page.keyboard.press("Enter");
@@ -92,6 +95,7 @@ test("wizard fits a narrow phone width", async ({ page }) => {
   await expect(page.locator("[data-hydrated='true']")).toBeVisible();
   await page.getByLabel("Goal title").fill("Fractions");
   await page.getByLabel("What do you want to learn?").fill("Add fractions with the same denominator.");
+  await page.getByLabel("Subject").selectOption("math");
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await page.getByLabel("Minutes each day for a set number of days").check();
   await expect(page.getByLabel("Minutes per day")).toBeVisible();

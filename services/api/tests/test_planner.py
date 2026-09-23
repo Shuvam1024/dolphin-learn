@@ -53,6 +53,7 @@ def test_proposal_endpoint_does_not_create_a_plan_version() -> None:
             headers=headers,
             json={
                 "title": "Learn Python",
+                "domain_key": "python",
                 "raw_request": "Names and function calls.",
                 "time_budget": {
                     "mode": "one_off",

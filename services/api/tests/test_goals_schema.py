@@ -7,6 +7,7 @@ from app.db import SessionLocal
 from app.modules.goals.budget import TimeBudgetSpec
 from app.modules.goals.models import Goal, TimeBudget
 from app.modules.identity.models import User
+from app.seed import seed
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
 
@@ -38,7 +39,8 @@ def test_validator_accepts_quick_learn_and_weekly_window() -> None:
 def test_goal_requires_user_and_budget_rejects_negative_in_database() -> None:
     db = SessionLocal()
     try:
-        db.add(Goal(title="Python", raw_request="Learn Python"))
+        seed(db)
+        db.add(Goal(title="Python", raw_request="Learn Python", domain_key="python"))
         with pytest.raises(IntegrityError):
             db.commit()
         db.rollback()
@@ -46,7 +48,12 @@ def test_goal_requires_user_and_budget_rejects_negative_in_database() -> None:
         user = User(auth_subject=f"dev|goals-{uuid.uuid4().hex[:8]}@example.com", email=None)
         db.add(user)
         db.commit()
-        goal = Goal(user_id=user.id, title="Python", raw_request="Learn Python in two hours")
+        goal = Goal(
+            user_id=user.id,
+            title="Python",
+            raw_request="Learn Python in two hours",
+            domain_key="python",
+        )
         db.add(goal)
         db.commit()
 

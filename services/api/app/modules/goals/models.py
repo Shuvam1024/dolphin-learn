@@ -26,6 +26,9 @@ class Goal(Base):
     )
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     raw_request: Mapped[str] = mapped_column(Text, nullable=False)
+    domain_key: Mapped[str] = mapped_column(
+        String(64), ForeignKey("domains.key"), nullable=False
+    )
     normalized_objective: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="active")
     created_at: Mapped[datetime] = mapped_column(

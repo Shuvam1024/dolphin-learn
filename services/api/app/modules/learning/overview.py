@@ -14,8 +14,8 @@ from app.modules.learning.models import (
     PlanActivity,
 )
 from app.modules.learning.proposals import (
-    domain_key_for,
     propose_for_goal,
+    resolve_domain_key,
     usable_minutes,
     work_for_domain,
 )
@@ -59,7 +59,7 @@ def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
     }
     prereq_keys = {
         key
-        for item in work_for_domain(db, domain_key_for(goal, None))
+        for item in work_for_domain(db, resolve_domain_key(db, goal, None))
         for key in item.prereq_keys
     }
     activities: list[dict[str, object]] = []

@@ -27,6 +27,7 @@ def _python_session(headers: dict[str, str]) -> tuple[str, list[dict[str, str]]]
         headers=headers,
         json={
             "title": "Learn Python",
+            "domain_key": "python",
             "raw_request": "Names and calls.",
             "time_budget": {
                 "mode": "one_off",

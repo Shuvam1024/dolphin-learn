@@ -43,6 +43,7 @@ def test_session_clock_ignores_time_away() -> None:
         headers=headers,
         json={
             "title": "Learn Python",
+            "domain_key": "python",
             "raw_request": "Names and calls.",
             "time_budget": {
                 "mode": "one_off",

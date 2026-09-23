@@ -15,6 +15,7 @@ test("goal path shows deferred work and continue opens the session", async ({ pa
     headers,
     data: {
       title: "Learn Python",
+      domain_key: "python",
       raw_request: "Names and calls.",
       time_budget: {
         mode: "one_off",

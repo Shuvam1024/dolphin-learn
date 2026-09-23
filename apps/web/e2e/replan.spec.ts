@@ -16,6 +16,7 @@ test("update plan writes the next version after a budget change", async ({ page 
     headers,
     data: {
       title: "Learn Python",
+      domain_key: "python",
       raw_request: "Names and calls.",
       time_budget: {
         mode: "one_off",

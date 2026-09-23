@@ -16,6 +16,7 @@ test("reading studio shows the explanation and pause survives refresh", async ({
     headers,
     data: {
       title: "Learn Python",
+      domain_key: "python",
       raw_request: "Names and calls.",
       time_budget: {
         mode: "one_off",
@@ -70,6 +71,7 @@ test("objective question records an answer", async ({ page }) => {
     headers,
     data: {
       title: "Learn Python",
+      domain_key: "python",
       raw_request: "Names and calls.",
       time_budget: {
         mode: "one_off",
@@ -128,6 +130,7 @@ test("finish shows an honest summary and pause does not finish", async ({ page }
     headers,
     data: {
       title: "Learn Python",
+      domain_key: "python",
       raw_request: "Names and calls.",
       time_budget: {
         mode: "one_off",

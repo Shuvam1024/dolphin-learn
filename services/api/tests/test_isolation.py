@@ -30,6 +30,7 @@ def test_cross_user_goal_session_and_attempt_are_not_found() -> None:
         headers=owner,
         json={
             "title": "Learn Python",
+            "domain_key": "python",
             "raw_request": "Names and calls.",
             "time_budget": {
                 "mode": "one_off",

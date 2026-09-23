@@ -34,6 +34,7 @@ def test_replan_uses_remaining_minutes_and_leaves_budget_and_evidence() -> None:
         headers=headers,
         json={
             "title": "Fractions",
+            "domain_key": "math",
             "raw_request": "Add fractions with the same denominator.",
             "time_budget": {
                 "mode": "weekly",
@@ -151,6 +152,7 @@ def test_replan_with_no_minutes_left_is_a_scope_conflict() -> None:
         headers=headers,
         json={
             "title": "Learn Python",
+            "domain_key": "python",
             "raw_request": "Names and calls.",
             "time_budget": {
                 "mode": "one_off",

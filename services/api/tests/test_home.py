@@ -39,6 +39,7 @@ def test_home_empty_then_live_next_action_without_streak() -> None:
         headers=headers,
         json={
             "title": "Learn Python",
+            "domain_key": "python",
             "raw_request": "Names and calls.",
             "time_budget": {
                 "mode": "one_off",

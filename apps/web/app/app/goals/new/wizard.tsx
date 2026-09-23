@@ -17,6 +17,11 @@ type Proposal = {
   deferred: { competency_key: string; name: string; reason_code: string }[];
 };
 
+type DomainOption = {
+  key: string;
+  name: string;
+};
+
 const PRIORITIES = ["Focus one topic", "Cover more ground", "Leave room for review"] as const;
 
 function wholeNumber(value: string): number | null {
@@ -30,6 +35,8 @@ export function GoalWizard() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [title, setTitle] = useState("");
   const [rawRequest, setRawRequest] = useState("");
+  const [domains, setDomains] = useState<DomainOption[]>([]);
+  const [domainKey, setDomainKey] = useState("");
   const [mode, setMode] = useState<Mode>("one_off");
   const [oneOffMinutes, setOneOffMinutes] = useState("120");
   const [weeklyMinutes, setWeeklyMinutes] = useState("30");
@@ -45,6 +52,24 @@ export function GoalWizard() {
 
   useEffect(() => {
     setReady(true);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const response = await fetch("/api/domains");
+      if (!response.ok || cancelled) {
+        return;
+      }
+      const body = (await response.json()) as DomainOption[];
+      if (cancelled) {
+        return;
+      }
+      setDomains(body);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -128,6 +153,10 @@ export function GoalWizard() {
       setError("Add a title and what you want to learn.");
       return;
     }
+    if (!domainKey) {
+      setError("Choose a subject we can check today.");
+      return;
+    }
     setError(null);
     setStep(2);
   }
@@ -158,6 +187,7 @@ export function GoalWizard() {
       body: JSON.stringify({
         title: title.trim(),
         raw_request: rawRequest.trim(),
+        domain_key: domainKey,
         normalized_objective: `Priority: ${priority}`,
         time_budget: timeBudget,
       }),
@@ -182,7 +212,7 @@ export function GoalWizard() {
           <p className={styles.kicker}>Goal</p>
           <h1 className={styles.title}>{accepted ? "Plan accepted" : "Goal saved"}</h1>
           <p className={styles.step}>
-            {saved.title}. {saved.summary}. Priority: {priority}.
+            {saved.title}. Subject: {domainKey}. {saved.summary}. Priority: {priority}.
           </p>
           {proposal ? (
             <>
@@ -271,8 +301,32 @@ export function GoalWizard() {
               rows={4}
               required
             />
+            <label className={styles.label} htmlFor="goal-domain">
+              Subject
+            </label>
+            <select
+              id="goal-domain"
+              className={styles.select}
+              value={domainKey}
+              onChange={(event) => setDomainKey(event.target.value)}
+              required
+            >
+              {domains.length === 0 ? (
+                <option value="">Loading subjects…</option>
+              ) : (
+                <option value="">Choose a subject</option>
+              )}
+              {domains.map((item) => (
+                <option key={item.key} value={item.key}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+            <p className={styles.meta}>
+              These are subjects we can check today. More come later on the same platform.
+            </p>
             <div className={styles.actions}>
-              <button className={styles.button} type="submit">
+              <button className={styles.button} type="submit" disabled={!domainKey}>
                 Next
               </button>
             </div>

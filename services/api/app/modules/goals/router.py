@@ -42,10 +42,11 @@ class GoalIn(BaseModel):
 
     title: str
     raw_request: str
+    domain_key: str
     normalized_objective: str | None = None
     time_budget: TimeBudgetSpec | None = None
 
-    @field_validator("title", "raw_request")
+    @field_validator("title", "raw_request", "domain_key")
     @classmethod
     def _required_text(cls, value: str) -> str:
         return _clean_required(value)
@@ -71,10 +72,11 @@ class GoalUpdate(BaseModel):
 
     title: str | None = None
     raw_request: str | None = None
+    domain_key: str | None = None
     normalized_objective: str | None = None
     time_budget: TimeBudgetSpec | None = None
 
-    @field_validator("title", "raw_request")
+    @field_validator("title", "raw_request", "domain_key")
     @classmethod
     def _optional_text(cls, value: str | None) -> str | None:
         if value is None:
@@ -109,6 +111,7 @@ class GoalOut(BaseModel):
     id: uuid.UUID
     title: str
     raw_request: str
+    domain_key: str
     normalized_objective: str | None
     status: str
     created_at: datetime
@@ -133,6 +136,7 @@ def _out(goal: Goal, budget: TimeBudget | None) -> GoalOut:
         id=goal.id,
         title=goal.title,
         raw_request=goal.raw_request,
+        domain_key=goal.domain_key,
         normalized_objective=goal.normalized_objective,
         status=goal.status,
         created_at=goal.created_at,
@@ -151,6 +155,7 @@ def post_goal(
         user,
         title=body.title,
         raw_request=body.raw_request,
+        domain_key=body.domain_key,
         normalized_objective=body.normalized_objective,
         time_budget=body.time_budget,
     )
@@ -181,6 +186,8 @@ def patch_goal(
         goal_id,
         title=body.title,
         raw_request=body.raw_request,
+        domain_key=body.domain_key,
+        set_domain="domain_key" in sent,
         normalized_objective=body.normalized_objective,
         set_objective="normalized_objective" in sent,
         time_budget=body.time_budget,

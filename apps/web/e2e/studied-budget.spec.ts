@@ -18,6 +18,7 @@ test("goal path shows usable and studied minutes without a mastery percent", asy
     headers,
     data: {
       title: "Fractions",
+      domain_key: "math",
       raw_request: "Add fractions with the same denominator.",
       time_budget: {
         mode: "weekly",

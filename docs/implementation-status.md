@@ -4,8 +4,8 @@
 - **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S40 Prove Loop (Phase 1A exit); S41–S42 delayed retention; S43–S46 physical study time (Phase 1C exit)
 - **Verified working user journey:** Study minutes are active session time. Home and the goal path show usable minutes beside studied minutes. Replan uses what remains. A due review can wait 24 hours with Not now, without retention or a longer interval.
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, an honest session-finish summary, a review due queue with 1/3/7/14-day intervals, a Home snapshot of the next action, a Progress ledger of facets plus unassessed plan gaps, a goal path overview, replan that writes the next plan version, and a Studio control to move to the next activity or a different question; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
-- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Phase 1D is next (S47–S50).
-- **Schema/API changes:** Alembic through `0008_attempt_idempotency`; `POST /api/v1/goals/{id}/replan` writes accepted plan version N+1 from remaining study minutes and demonstrated competencies and leaves older versions in place; `GET /api/v1/goals/{id}/overview` returns the path, deferred topics, usable and studied minutes, and the session to continue; `POST /api/v1/reviews/{id}/snooze` moves `due_at` by hours without retention
+- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Phase 1D in progress (S47 done; S48–S50 next).
+- **Schema/API changes:** Alembic through `0009_goal_domain_key`; goals require `domain_key`; `GET /api/v1/domains`; `POST /api/v1/goals/{id}/replan` writes accepted plan version N+1 from remaining study minutes and demonstrated competencies and leaves older versions in place; `GET /api/v1/goals/{id}/overview` returns the path, deferred topics, usable and studied minutes, and the session to continue; `POST /api/v1/reviews/{id}/snooze` moves `due_at` by hours without retention
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
   - S02: README lists Next.js + FastAPI + Postgres; `.env.example` placeholders; AI keys optional
@@ -54,8 +54,8 @@
   - S40 exit, September 23, 2026: `cd services/api && .venv/bin/ruff check app tests` → `All checks passed!`; `.venv/bin/mypy app` → `Success: no issues found in 40 source files`; `.venv/bin/pytest --tb=no` → `41 passed, 1 warning in 2.41s`. `cd apps/web && npx playwright test e2e/phase0.spec.ts e2e/quick-learn.spec.ts e2e/math-windows.spec.ts e2e/refresh-resume.spec.ts --reporter=line` → `4 passed (10.4s)`. Demo script `docs/prove-loop-demo.md`. Next phase is 1B, not Vault
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S46**
-- **Next step:** **S47 — Require an explicit domain for plans**
+- **Completed steps:** **S01–S47**
+- **Next step:** **S48 — Seed python conditionals with real checks**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -69,7 +69,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | 1A | Prove Loop (S20–S40) | Done (S20–S40) |
 | 1B | Delayed retention (S41–S42) | Done (S42) |
 | 1C | Physical study time (S43–S46) | Done (S46) |
-| 1D | Honest demo content (S47–S50) | Next (S47) |
+| 1D | Honest demo content (S47–S50) | In progress (S47 done) |
 | Later | 1E scope, tutor, lab, Vault | Later |
 
 ---
@@ -124,8 +124,10 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **Subjects** | `docs: prioritize computing subjects first` | Early demos may use computing seeds; not a required CS→SE→ML learner path |
 | **Path** | `docs: keep the core subject-agnostic on the way to any field` | The clock, ledger, and graph stay shared for any subject |
 | **Focus** | `docs: treat computing as demo focus not a learner path` | Product stays for anything; CS/SE/ML are build priority for demos only |
+| **1D plan** | `docs: plan phase 1d honest demo content on shared core` | S47–S50: explicit domain, deeper Python check, software domain, wizard picker |
 | **Quality** | `docs: judge each step by learning quality and usability` | Content, technique, time fit, and plain use are part of done, not a later polish pass |
 | **S43** | `feat(sessions): measure active study minutes excluding pauses` | Pause gaps are excluded; finish freezes the total; Studio says the clock stops when you pause |
 | **S44** | `feat(progress): show studied minutes beside the usable budget` | 14×30 stays 420 usable; studied minutes match the clock; no percent and no date |
 | **S45** | `feat(plan): replan from minutes remaining after study` | 30 studied on 420 replans at 390; budget row stays; evidence untouched |
 | **S46** | `feat(review): snooze a due item for a duration without retention` | Hours move due time only; interval and evidence stay; Not now is not memory |
+| **S47** | `feat(goals): require an explicit domain for plans` | Domain stored on goal; GET /domains; cooking is not Python; wizard picks a subject |

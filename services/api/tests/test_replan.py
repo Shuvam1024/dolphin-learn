@@ -25,6 +25,7 @@ def test_replan_after_budget_edit_creates_next_version_without_touching_attempts
         headers=headers,
         json={
             "title": "Learn Python",
+            "domain_key": "python",
             "raw_request": "Names and calls.",
             "time_budget": {
                 "mode": "one_off",

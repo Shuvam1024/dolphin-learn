@@ -25,6 +25,7 @@ def test_accept_creates_version_one_and_lists_deferred() -> None:
         headers=headers,
         json={
             "title": "Learn Python",
+            "domain_key": "python",
             "raw_request": "Names, then calls.",
             "time_budget": {
                 "mode": "one_off",

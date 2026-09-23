@@ -26,6 +26,7 @@ def test_studied_minutes_sit_beside_a_weekly_budget() -> None:
         headers=headers,
         json={
             "title": "Fractions",
+            "domain_key": "math",
             "raw_request": "Add fractions with the same denominator.",
             "time_budget": {
                 "mode": "weekly",

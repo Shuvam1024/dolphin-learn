@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter
 
+from app.modules.curriculum.router import router as domains_router
 from app.modules.goals.router import router as goals_router
 from app.modules.identity.router import router as identity_router
 from app.modules.learning.home_router import router as home_router
@@ -11,6 +12,7 @@ from app.modules.learning.session_router import router as sessions_router
 
 router = APIRouter()
 router.include_router(identity_router)
+router.include_router(domains_router)
 router.include_router(goals_router)
 router.include_router(sessions_router)
 router.include_router(progress_router)

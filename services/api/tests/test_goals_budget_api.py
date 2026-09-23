@@ -1,6 +1,8 @@
 """S21: time budgets are stored only when the mode rules hold."""
 
+from app.db import SessionLocal
 from app.main import app
+from app.seed import seed
 from fastapi.testclient import TestClient
 
 client = TestClient(app)
@@ -13,12 +15,15 @@ def _headers(email: str) -> dict[str, str]:
 
 
 def test_rejects_negative_minutes_and_double_counted_modes() -> None:
+    with SessionLocal() as db:
+        seed(db)
     headers = _headers("s21-bad@example.com")
     negative = client.post(
         "/api/v1/goals",
         headers=headers,
         json={
             "title": "Too small",
+            "domain_key": "python",
             "raw_request": "Learn Python",
             "time_budget": {
                 "mode": "one_off",
@@ -35,6 +40,7 @@ def test_rejects_negative_minutes_and_double_counted_modes() -> None:
         headers=headers,
         json={
             "title": "Both modes",
+            "domain_key": "python",
             "raw_request": "Learn Python",
             "time_budget": {
                 "mode": "one_off",
@@ -53,12 +59,15 @@ def test_rejects_negative_minutes_and_double_counted_modes() -> None:
 
 
 def test_accepts_quick_learn_and_two_week_window() -> None:
+    with SessionLocal() as db:
+        seed(db)
     headers = _headers("s21-ok@example.com")
     created = client.post(
         "/api/v1/goals",
         headers=headers,
         json={
             "title": "Quick Learn Python",
+            "domain_key": "python",
             "raw_request": "I have two hours today.",
             "time_budget": {
                 "mode": "one_off",

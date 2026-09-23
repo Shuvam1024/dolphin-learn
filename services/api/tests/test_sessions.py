@@ -31,6 +31,7 @@ def test_start_pause_and_ignore_duplicate_event() -> None:
         headers=headers,
         json={
             "title": "Learn Python",
+            "domain_key": "python",
             "raw_request": "Names and calls.",
             "time_budget": {
                 "mode": "one_off",

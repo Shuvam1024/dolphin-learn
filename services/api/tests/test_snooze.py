@@ -27,6 +27,7 @@ def _due_review(headers: dict[str, str]) -> uuid.UUID:
         headers=headers,
         json={
             "title": "Learn Python",
+            "domain_key": "python",
             "raw_request": "Names and calls.",
             "time_budget": {
                 "mode": "one_off",
