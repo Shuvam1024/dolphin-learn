@@ -68,7 +68,7 @@ dolphin-learn/
    npm run dev
    ```
 
-   Or from the repo root: `npm run dev:web`. Placeholder is at `http://localhost:3000`.
+   Or from the repo root: `npm run dev:web`. The public placeholder is at `http://localhost:3000`. `/app` redirects to `/sign-in` until you submit an email. Log out from the shell. The API must be running so sign-in can mint a dev token.
 
 5. **Migrations** (from `services/api`, with the virtualenv active):
 

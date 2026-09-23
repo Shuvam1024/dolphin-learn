@@ -10,6 +10,9 @@ export default function Home() {
         <p className={styles.note}>
           Web shell placeholder. Home, goals, and Session Studio arrive in later steps.
         </p>
+        <p className={styles.note}>
+          <a href="/sign-in">Sign in</a>
+        </p>
         <p className={`${styles.monoNote} mono`}>IBM Plex Mono reserved for code and math.</p>
       </section>
     </main>
