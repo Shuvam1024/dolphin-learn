@@ -12,6 +12,7 @@ from app.modules.learning.grading import eligible_for_independent_evidence
 from app.modules.learning.models import Evaluation, LearningSession
 from app.modules.learning.sessions import (
     activity_snapshot,
+    advance_session,
     apply_event,
     event_count,
     get_owned_session,
@@ -239,6 +240,16 @@ def post_finish(
     db: Session = Depends(get_db),
 ) -> SessionOut:
     row, _summary = finish_session(db, user, session_id)
+    return _out(row, db, applied=True)
+
+
+@router.post("/{session_id}/advance", response_model=SessionOut)
+def post_advance(
+    session_id: uuid.UUID,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> SessionOut:
+    row = advance_session(db, user, session_id)
     return _out(row, db, applied=True)
 
 

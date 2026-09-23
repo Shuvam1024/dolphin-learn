@@ -198,6 +198,18 @@ export default async function StudioPage({
             </button>
           </form>
         ) : null}
+        <form action={`/api/sessions/${session.id}/advance`} method="post">
+          <button className={styles.button} type="submit">
+            Next activity
+          </button>
+        </form>
+        {question ? (
+          <form action={`/api/sessions/${session.id}/independent-check`} method="post">
+            <button className={styles.button} type="submit">
+              Check a different question
+            </button>
+          </form>
+        ) : null}
         <form action={`/api/sessions/${session.id}/finish`} method="post">
           <button className={styles.button} type="submit">
             Finish session

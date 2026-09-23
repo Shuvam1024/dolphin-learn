@@ -285,6 +285,31 @@ def _activity_on_same_plan(
     return target
 
 
+def advance_session(db: Session, user: User, session_id: uuid.UUID) -> LearningSession:
+    """Move to the next activity on this plan version. Does not reveal an answer."""
+    session = get_owned_session(db, user, session_id)
+    if session.status == "finished":
+        raise ApiError("validation_error", "This session is already finished", status_code=422)
+    current = db.get(PlanActivity, session.plan_activity_id) if session.plan_activity_id else None
+    if current is None:
+        raise ApiError("validation_error", "Session has no activity", status_code=422)
+    nxt = db.scalar(
+        select(PlanActivity)
+        .where(
+            PlanActivity.plan_version_id == current.plan_version_id,
+            PlanActivity.position > current.position,
+        )
+        .order_by(PlanActivity.position)
+    )
+    if nxt is None:
+        raise ApiError("validation_error", "No later activity on this plan", status_code=422)
+    session.plan_activity_id = nxt.id
+    session.updated_at = datetime.now(timezone.utc)
+    db.commit()
+    db.refresh(session)
+    return session
+
+
 def apply_event(
     db: Session,
     user: User,
