@@ -12,6 +12,7 @@ from decimal import Decimal
 
 from app.db import Base
 from sqlalchemy import (
+    Boolean,
     CheckConstraint,
     DateTime,
     ForeignKey,
@@ -72,6 +73,9 @@ class PlanVersion(Base):
 
 class Lesson(Base):
     __tablename__ = "lessons"
+    __table_args__ = (
+        CheckConstraint("source IN ('seed', 'learner', 'ai')", name="ck_lessons_source"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     competency_id: Mapped[uuid.UUID] = mapped_column(
@@ -80,19 +84,28 @@ class Lesson(Base):
     key: Mapped[str] = mapped_column(String(128), unique=True, nullable=False)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     body_markdown: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    provisional: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    source: Mapped[str] = mapped_column(String(16), nullable=False, default="seed")
 
 
 class ActivityVersion(Base):
     __tablename__ = "activity_versions"
     __table_args__ = (
         UniqueConstraint("lesson_id", "version", name="uq_activity_versions_lesson"),
+        UniqueConstraint("lesson_id", "item_id", name="uq_activity_versions_item"),
         CheckConstraint(
-            "activity_type IN ('reading', 'objective')",
+            "activity_type IN ("
+            "'reading', 'worked_example', 'objective', 'short_answer', "
+            "'numeric', 'free_recall', 'reflection')",
             name="ck_activity_versions_type",
         ),
         CheckConstraint(
             "effort_minutes_low >= 0 AND effort_minutes_high >= effort_minutes_low",
             name="ck_activity_versions_effort",
+        ),
+        CheckConstraint(
+            "source IN ('seed', 'learner', 'ai')",
+            name="ck_activity_versions_source",
         ),
     )
 
@@ -101,9 +114,18 @@ class ActivityVersion(Base):
         ForeignKey("lessons.id", ondelete="CASCADE"), nullable=False
     )
     version: Mapped[int] = mapped_column(Integer, nullable=False)
+    item_id: Mapped[str] = mapped_column(String(64), nullable=False)
     activity_type: Mapped[str] = mapped_column(String(32), nullable=False)
     prompt: Mapped[str] = mapped_column(Text, nullable=False)
     answer_key: Mapped[dict[str, str] | None] = mapped_column(JSONB, nullable=True)
+    explanation: Mapped[str | None] = mapped_column(Text, nullable=True)
+    misconceptions: Mapped[list[object] | dict[str, object] | None] = mapped_column(
+        JSONB, nullable=True
+    )
+    payload: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False, default=dict)
+    provisional: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    source: Mapped[str] = mapped_column(String(16), nullable=False, default="seed")
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     effort_minutes_low: Mapped[int] = mapped_column(Integer, nullable=False)
     effort_minutes_high: Mapped[int] = mapped_column(Integer, nullable=False)
 

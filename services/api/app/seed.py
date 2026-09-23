@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
+from datetime import datetime, timezone
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -10,6 +12,18 @@ from sqlalchemy.orm import Session
 from app.db import SessionLocal
 from app.modules.curriculum.models import EDGE_REQUIRES, Competency, CompetencyEdge, Domain
 from app.modules.learning.models import ActivityVersion, Lesson
+
+_CHOICE_LINE = re.compile(r"^([a-c])\)\s*(.*)$", re.IGNORECASE)
+
+
+def _choices_from_prompt(prompt: str) -> list[dict[str, str]]:
+    found: list[dict[str, str]] = []
+    for raw in prompt.splitlines():
+        line = raw.strip()
+        match = _CHOICE_LINE.match(line)
+        if match:
+            found.append({"id": match.group(1).lower(), "label": match.group(2).strip() or line})
+    return found
 
 
 @dataclass(frozen=True)
@@ -441,13 +455,19 @@ def seed(db: Session) -> None:
                     )
                 )
                 if found is None:
+                    choices = _choices_from_prompt(activity.prompt)
                     db.add(
                         ActivityVersion(
                             lesson_id=lesson.id,
                             version=activity.version,
+                            item_id=f"{activity.activity_type}-{activity.version}",
                             activity_type=activity.activity_type,
                             prompt=activity.prompt,
                             answer_key=activity.answer_key,
+                            payload={"choices": choices} if choices else {},
+                            provisional=False,
+                            source="seed",
+                            reviewed_at=datetime.now(timezone.utc),
                             effort_minutes_low=activity.effort_low,
                             effort_minutes_high=activity.effort_high,
                         )
