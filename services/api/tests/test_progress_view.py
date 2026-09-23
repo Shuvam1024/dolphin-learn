@@ -46,7 +46,7 @@ def test_progress_facets_match_evidence_and_leave_gaps_unassessed() -> None:
     ]
     planned = client.get("/api/v1/progress", headers=headers)
     unassessed = {item["competency_key"] for item in planned.json()["unassessed"]}
-    assert unassessed == {"python.names", "python.calls"}
+    assert unassessed == {"python.names", "python.calls", "python.conditionals"}
     assert planned.json()["facets"] == []
 
     started = client.post("/api/v1/sessions", headers=headers, json={"goal_id": goal_id})
