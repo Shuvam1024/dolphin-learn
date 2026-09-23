@@ -8,7 +8,7 @@ from app.modules.learning.grading import eligible_for_independent_evidence, grad
 from app.modules.learning.models import CompetencyEvidence
 from app.seed import seed
 from fastapi.testclient import TestClient
-from sqlalchemy import func, select
+from sqlalchemy import select
 
 client = TestClient(app)
 
@@ -115,9 +115,12 @@ def test_unassisted_correct_is_eligible_and_solution_marks_assisted() -> None:
 
     me = client.get("/api/v1/me", headers=headers)
     with SessionLocal() as db:
-        evidence = db.scalar(
-            select(func.count())
-            .select_from(CompetencyEvidence)
-            .where(CompetencyEvidence.user_id == me.json()["id"])
+        facets = set(
+            db.scalars(
+                select(CompetencyEvidence.status_facet).where(
+                    CompetencyEvidence.user_id == me.json()["id"]
+                )
+            )
         )
-    assert evidence == 0
+    assert "retained" not in facets
+    assert "applied" not in facets

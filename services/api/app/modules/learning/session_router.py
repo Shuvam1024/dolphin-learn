@@ -7,6 +7,7 @@ from app.db import get_db
 from app.modules.goals.service import get_owned_goal
 from app.modules.identity.deps import current_user
 from app.modules.identity.models import User
+from app.modules.learning.evidence import move_to_unseen_question
 from app.modules.learning.grading import eligible_for_independent_evidence
 from app.modules.learning.models import Evaluation, LearningSession
 from app.modules.learning.sessions import (
@@ -207,6 +208,16 @@ class HelpOut(BaseModel):
     kind: str
     message: str
     revealed_choice: str
+
+
+@router.post("/{session_id}/independent-check", response_model=SessionOut)
+def post_independent_check(
+    session_id: uuid.UUID,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> SessionOut:
+    row = move_to_unseen_question(db, user, session_id)
+    return _out(row, db, applied=True)
 
 
 @router.post("/{session_id}/hint", response_model=HelpOut)

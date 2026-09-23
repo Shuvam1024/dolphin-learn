@@ -7,6 +7,7 @@ from app.errors import ApiError
 from app.modules.goals.models import Goal
 from app.modules.identity.models import User
 from app.modules.learning.accept import latest_accepted
+from app.modules.learning.evidence import record_evidence
 from app.modules.learning.grading import grade_choice
 from app.modules.learning.models import (
     ActivityVersion,
@@ -245,6 +246,7 @@ def submit_attempt(
             evaluator="deterministic",
         )
     )
+    record_evidence(db, user, session, activity, attempt, assistance, outcome)
     try:
         db.commit()
     except IntegrityError:
