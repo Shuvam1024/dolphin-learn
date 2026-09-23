@@ -53,8 +53,12 @@ CURRICULA: tuple[DomainSpec, ...] = (
         competencies=(
             CompetencySpec("python.names", "Names and values"),
             CompetencySpec("python.calls", "Calling a function"),
+            CompetencySpec("python.conditionals", "Choosing with if"),
         ),
-        requires=(("python.calls", "python.names"),),
+        requires=(
+            ("python.calls", "python.names"),
+            ("python.conditionals", "python.names"),
+        ),
         lessons=(
             LessonSpec(
                 key="python.names.intro",
@@ -145,6 +149,75 @@ CURRICULA: tuple[DomainSpec, ...] = (
                         {"correct": "b"},
                         15,
                         25,
+                    ),
+                ),
+            ),
+            LessonSpec(
+                key="python.conditionals.intro",
+                title="Choose a branch with if",
+                competency_key="python.conditionals",
+                body=(
+                    "An `if` statement checks a condition. When the condition is true, "
+                    "Python runs the indented block under `if`. When it is false, that "
+                    "block is skipped. An optional `else` runs only when the condition "
+                    "was false. The condition is an expression that evaluates to true "
+                    "or false; it does not permanently change a name unless you also "
+                    "write an assignment."
+                ),
+                activities=(
+                    ActivitySpec(
+                        1,
+                        "reading",
+                        "Read the note on if and else. You are not scored for reading.",
+                        None,
+                        8,
+                        12,
+                    ),
+                    ActivitySpec(
+                        2,
+                        "objective",
+                        (
+                            "Given `n = 3` and `if n > 2: print(\"big\")`, what happens?\n\n"
+                            "a) Nothing prints because if never runs print\n"
+                            "b) `print(\"big\")` runs because the condition is true\n"
+                            "c) Python rebinds `n` to True"
+                        ),
+                        {"correct": "b"},
+                        4,
+                        6,
+                    ),
+                    ActivitySpec(
+                        3,
+                        "objective",
+                        (
+                            "Given `n = 1` and this program:\n\n"
+                            "```\n"
+                            "if n > 2:\n"
+                            '    print("big")\n'
+                            "else:\n"
+                            '    print("small")\n'
+                            "```\n\n"
+                            "What prints?\n\n"
+                            "a) big\n"
+                            "b) small\n"
+                            "c) both big and small"
+                        ),
+                        {"correct": "b"},
+                        4,
+                        6,
+                    ),
+                    ActivitySpec(
+                        4,
+                        "objective",
+                        (
+                            "Which line is a condition, not an assignment?\n\n"
+                            "a) `n = 3`\n"
+                            "b) `n > 2`\n"
+                            "c) `print(n)`"
+                        ),
+                        {"correct": "b"},
+                        3,
+                        5,
                     ),
                 ),
             ),
