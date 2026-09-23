@@ -1,6 +1,6 @@
 # AGENTS.md — Dolphin
 
-Guidance for humans and coding agents working in this repository.
+Guidance for maintainers working in this repository.
 
 ## Source of truth
 
@@ -17,7 +17,7 @@ Guidance for humans and coding agents working in this repository.
 1. One build-plan step per commit; do not skip ahead of the current phase exit.
 2. Explain **what / how / why** from each step’s teach note while implementing.
 3. Prefer the modular monolith layout under `apps/web`, `services/api`, `packages/contracts`, `infra`.
-4. Do not start Vault/RAG/sandbox before v0.1 ships (`06-first-ship-plan.md`, S105). AI/ML is the integrated engine behind the learning (gateway from S56, tutor from S63); every model call goes through `ai_gateway`, is schema- and feature-validated, labeled in the UI, and never grades or writes evidence. Seeded content and every screen still work with no key.
+4. Do not start Vault/RAG/sandbox before v0.1 ships (`06-first-ship-plan.md`, S105). The adaptive tutor is the engine behind the learning (model gateway from S56, tutor from S63); every model call goes through `ai_gateway`, is schema- and feature-validated, labeled in the UI, and never grades or writes evidence. Seeded content and every screen still work with no key.
 4a. A step is done only when its acceptance holds — tests named in the step, plus the phase gate's accessibility, performance-budget, and design-review checks.
 5. Seeded Prove Loop content must work without an LLM API key.
 6. Server-side ownership checks on every nested resource id; no cross-user retrieval by similarity.

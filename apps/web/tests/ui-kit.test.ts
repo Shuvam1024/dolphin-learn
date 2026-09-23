@@ -45,7 +45,7 @@ describe("Clear Depth UI kit", () => {
   });
 
   it("renders chips, field, notice, stack, pending, markdown", () => {
-    expect(renderToStaticMarkup(h(Chip, { tone: "ai" }, "AI"))).toContain("AI");
+    expect(renderToStaticMarkup(h(Chip, { tone: "ai" }, "Tutor"))).toContain("Tutor");
     expect(
       renderToStaticMarkup(
         h(Field, { id: "email", label: "Email", name: "email", type: "email" }),

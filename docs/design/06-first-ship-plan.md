@@ -1,9 +1,9 @@
 # Dolphin — Final first-ship build plan (S51–S105)
 
-**Document status:** The sequential build plan the developer agent follows from S51 to the v0.1 first ship — not a claim of shipped code  
-**Version:** 3 (supersedes v2 S51–S100: AI/ML is now the integrated engine behind the learning, threaded through every phase, with the deterministic core as referee)  
+**Document status:** The sequential build plan maintainers follow from S51 to the v0.1 first ship — not a claim of shipped code  
+**Version:** 3 (supersedes v2 S51–S100: the adaptive tutor is now the engine behind the learning, threaded through every phase, with the deterministic core as referee)  
 **Last updated:** September 23, 2026  
-**Continues:** `03-build-plan.md` (S01–S50 complete, built by the "Continue Phase 0 …" build agent)  
+**Continues:** `03-build-plan.md` (S01–S50 complete in this repository)  
 **Assessment behind it:** product and design assessment after S50 (project store `docs/product-design-assessment.md`; summary in `05-direction.md`)  
 **Companion docs:** `00`/`01`/`02` (spec), `03-build-plan.md` (S01–S50), `04-implementation-status.md` (tracker), `05-direction.md` (judgment)
 
@@ -11,13 +11,13 @@
 
 ## 0. The vision this plan serves
 
-The learner can **learn anything they want**, keep learning **organized in one place**, get **real learning content, technique, and performance**, and have Dolphin **adapt to the task and the time they actually have**. The experience is **seamless**; the interface is **clean, professional, useful, and simple**; the machinery — **AI and ML doing the heavy lifting** — stays **behind the scenes**. Above all, **the learning itself** is what we are building: Dolphin should be the best tool a person has for actually getting better at something.
+The learner can **learn anything they want**, keep learning **organized in one place**, get **real learning content, technique, and performance**, and have Dolphin **adapt to the task and the time they actually have**. The experience is **seamless**; the interface is **clean, professional, useful, and simple**; the machinery — **the tutor and learner model doing the heavy lifting** — stays **behind the scenes**. Above all, **the learning itself** is what we are building: Dolphin should be the best tool a person has for actually getting better at something.
 
-### 0.1 AI/ML is the engine; the deterministic core is the referee
+### 0.1 The adaptive tutor is the engine; the deterministic core is the referee
 
-Dolphin is an AI-integrated learning product. Behind the scenes the model **explains differently, writes targeted hints, drafts lessons and practice for any subject, normalizes a goal into outcomes, explains the plan in plain words, proposes misconception notes, and drafts new items for review**. The learner model **calibrates effort estimates from real active minutes and selects items by difficulty and history**. Data collected from v0.1 (attempts, assistance, delays, outcomes) is the training set for calibrated estimators later.
+Dolphin is an adaptive learning product. Behind the scenes the model **explains differently, writes targeted hints, drafts lessons and practice for any subject, normalizes a goal into outcomes, explains the plan in plain words, proposes misconception notes, and drafts new items for review**. The learner model **calibrates effort estimates from real active minutes and selects items by difficulty and history**. Data collected from v0.1 (attempts, assistance, delays, outcomes) is the training set for calibrated estimators later.
 
-What never changes: **the referee is deterministic.** Grading is by key, normalization, or tolerance. Evidence rows are written only by the evidence writer. Plans are produced by the planner. A model's output passes a **schema and a validator** before a learner sees it, is **labeled** when shown, and is **`provisional`** until a human review marks it graded-ready. Seeded content and every screen work with no key (**degraded mode**); the product is designed and tested **AI-on** with a fake provider in CI and a real provider in release checks.
+What never changes: **the referee is deterministic.** Grading is by key, normalization, or tolerance. Evidence rows are written only by the evidence writer. Plans are produced by the planner. A model's output passes a **schema and a validator** before a learner sees it, is **labeled** when shown, and is **`provisional`** until a human review marks it graded-ready. Seeded content and every screen work with no key (**degraded mode**); the product is designed and tested **tutor-on** with a fake provider in CI and a real provider in release checks.
 
 ### 0.2 Rules that do not move
 
@@ -41,11 +41,11 @@ read (short, concrete)  →  see one worked example  →  attempt (recall, not j
 | `free_recall` | writes from memory, then self-rates | `self_report` | **ceiling `practicing`**; shown as "Self-reported" |
 | `reflection` | writes what they will do with it | none | `exposed` |
 
-The ceiling on `free_recall` and the `provisional` flag on AI-drafted items are what let Dolphin say yes to any subject without lying about what a screen can verify.
+The ceiling on `free_recall` and the `provisional` flag on tutor-drafted items are what let Dolphin say yes to any subject without lying about what a screen can verify.
 
 ---
 
-## 1. Technical conventions the developer agent follows
+## 1. Technical conventions maintainers follow
 
 **Repo shape:** `apps/web` (Next.js 15 App Router; server components fetch the API with the HttpOnly cookie token; mutations go through `apps/web/app/api/*` route handlers), `services/api` (FastAPI, SQLAlchemy 2, Alembic; modules `identity`, `curriculum`, `goals`, `learning`; new modules `content`, `ai_gateway`, `learner_model`), `packages/contracts` (TypeScript types from OpenAPI, `make contracts`), `content/` (curricula as files), `infra/`.
 
@@ -53,22 +53,22 @@ The ceiling on `free_recall` and the `provisional` flag on AI-drafted items are 
 
 **API contract:** `/api/v1`; error envelope `{error:{code,message,details,request_id}}`; every learner-facing item with a `*_key` carries a display name; reason codes travel with `reason_text`; proposing never writes, accepting writes; attempts and accepts are idempotent.
 
-**AI contract:** all model calls go through `ai_gateway.service.complete(prompt_id, variables, output_schema)`; prompts are versioned files; outputs are pydantic-validated then feature-validated (e.g., a hint may not contain the answer); every call is audited (`ai_calls`) without retaining raw private prompts; per-user daily cap; timeout 12 s, one retry; `is_enabled()` false → the feature falls back to seeded behavior and the UI hides or relabels the control. Tests use `FakeProvider` (scripted outputs, including adversarial ones). `ai_gateway` imports nothing from `evidence.py`, `grading.py`, `reviews.py`, `planner.py` — enforced by an import-graph test.
+**Model gateway contract:** all model calls go through `ai_gateway.service.complete(prompt_id, variables, output_schema)`; prompts are versioned files; outputs are pydantic-validated then feature-validated (e.g., a hint may not contain the answer); every call is audited (`ai_calls`) without retaining raw private prompts; per-user daily cap; timeout 12 s, one retry; `is_enabled()` false → the feature falls back to seeded behavior and the UI hides or relabels the control. Tests use `FakeProvider` (scripted outputs, including adversarial ones). `ai_gateway` imports nothing from `evidence.py`, `grading.py`, `reviews.py`, `planner.py` — enforced by an import-graph test.
 
 **Copy:** one module owns learner words — `app/modules/learning/copy.py`. Web never maps a key to a word itself.
 
-**Web components:** `apps/web/components/ui/*` is the only place defining visual primitives. One primary action per screen. Variants `primary` (ink), `secondary` (seafoam outline), `quiet` (text). Type ramp in-app: display 28–40px, body 16–17px, meta 14px. AI-generated text always carries the `AI` chip.
+**Web components:** `apps/web/components/ui/*` is the only place defining visual primitives. One primary action per screen. Variants `primary` (ink), `secondary` (seafoam outline), `quiet` (text). Type ramp in-app: display 28–40px, body 16–17px, meta 14px. Tutor-generated text always carries the Tutor chip.
 
 **Tests:** pytest `services/api/tests/test_<topic>.py`; Playwright `apps/web/e2e/<screen>.spec.ts`; release `apps/web/e2e/release/`. `make check` runs everything; CI jobs `api`, `web`, `smoke`, `content`, `perf-a11y`, `ai-fake`.
 
 **Definition of done for every step:** acceptance holds; named tests pass; `ruff`, `mypy`, `eslint`, `tsc` clean; `04-implementation-status.md` and `docs/learning-log.md` updated; teach note reported in chat; one commit with the suggested message.
 
 **Verification gate (closes every phase):**
-- Full suite green locally and in CI on `main`, with the AI flag **off** and **on (FakeProvider)**.
+- Full suite green locally and in CI on `main`, with the tutor flag **off** and **on (FakeProvider)**.
 - `@axe-core/playwright`: zero serious/critical on every `/app` route, empty and populated; keyboard-only golden journey; 390px no horizontal scroll; `prefers-reduced-motion` honored.
 - Performance budget (recorded with the machine): deterministic API endpoints p95 ≤ 250 ms in-process on the heavy fixture (5 goals, 3 plan versions, 60 attempts, 20 review items); AI endpoints reported separately with p95 ≤ 6 s and a visible pending state; web via `next build && next start`: TTFB ≤ 800 ms, DCL ≤ 1.5 s, LCP ≤ 2.5 s; first-load JS per route ≤ 130 kB.
-- Design review checklist (`docs/design/design-review-checklist.md`) signed per screen: tokens only; no raw keys/ids/reason codes/version numbers as learner copy; one primary action; button hierarchy; ≤ 1 explanatory sentence per screen (definitions live in Help); loading/empty/error/pending states; no streak/percent/celebration copy; AI text labeled.
-- AI evaluation fixtures pass (from S63 onward): adversarial FakeProvider outputs are rejected by validators; injection fixtures do not change behavior.
+- Design review checklist (`docs/design/design-review-checklist.md`) signed per screen: tokens only; no raw keys/ids/reason codes/version numbers as learner copy; one primary action; button hierarchy; ≤ 1 explanatory sentence per screen (definitions live in Help); loading/empty/error/pending states; no streak/percent/celebration copy; tutor text labeled.
+- Tutor evaluation fixtures pass (from S63 onward): adversarial FakeProvider outputs are rejected by validators; injection fixtures do not change behavior.
 - Design docs named in the gate updated; `docs/prove-loop-demo.md` re-walked by hand.
 
 ---

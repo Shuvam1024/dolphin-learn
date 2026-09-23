@@ -26,7 +26,7 @@ A screen passes only when every item below is true. Sign the screen in the gate 
 - [ ] Exactly one primary action on the screen (button variant `primary`)
 - [ ] Secondary and quiet actions use the matching button variants
 - [ ] Loading, empty, and error states are present and readable
-- [ ] AI-generated text (when present) carries the AI label/chip; pending AI waits show a cancelable pending state
+- [ ] Tutor-generated text (when present) carries the Tutor label/chip; pending tutor waits show a cancelable pending state
 - [ ] Dead controls are absent (every control either works or is not shown)
 
 ## Accessibility

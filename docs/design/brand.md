@@ -68,7 +68,7 @@ Avoid lockups that look like “Dolphin AI Learning”, “Dolphin System”, or
 
 ## Retired names (do not ship)
 
-Historical working names and candidates — **superseded by Dolphin**. Listed only so agents and humans do not revive them. Do not use in titles, README, AGENTS.md, or active specs.
+Historical working names and candidates — **superseded by Dolphin**. Listed only so maintainers do not revive them. Do not use in titles, README, AGENTS.md, or active specs.
 
 | Name | Note |
 |---|---|

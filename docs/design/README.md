@@ -17,18 +17,18 @@ This folder is the **source of truth** for product vision, UX, architecture, seq
 | [`03-build-plan.md`](03-build-plan.md) | Sequential steps S01–S50 (Phases 0, 1A–1D) — complete |
 | [`04-implementation-status.md`](04-implementation-status.md) | What is done, next step, test results |
 | [`05-direction.md`](05-direction.md) | Final vision at the center, assessment after S50, phase order to v0.1 and after |
-| [`06-first-ship-plan.md`](06-first-ship-plan.md) | Sequential steps S51–S105 (Phases 2–7) to a shippable v0.1 — AI/ML integrated as the engine, deterministic core as referee — with verification gates |
+| [`06-first-ship-plan.md`](06-first-ship-plan.md) | Sequential steps S51–S105 (Phases 2–7) to a shippable v0.1 — adaptive tutor as the engine, deterministic core as referee — with verification gates |
 | [`design-review-checklist.md`](design-review-checklist.md) | Per-screen checklist used at every verification gate (S51) |
 | [`project-context.md`](project-context.md) | Locked decisions (name, repo, stack, non-goals) |
 | [`brand.md`](brand.md) | Locked name, tagline, Clear Depth tokens; retired names appendix |
 
-## How to use (agents and humans)
+## How to use (maintainers)
 
 1. Read `project-context.md` locks first.
 2. Implement one step at a time: `03-build-plan.md` for S01–S50 (done), then `06-first-ship-plan.md` from **S51**.
 3. Update `04-implementation-status.md` after every completed step.
 4. Explain **what / how / why** from each step’s teach note while building.
-5. The current build is Phase 2 (S51–S58, foundations incl. the AI gateway). Read `05-direction.md` first: the final vision is the center of every decision. Each phase ends at a verification gate (suite, a11y, perf budget, design review, docs). No Vault, RAG, or sandbox before v0.1. AI is integrated from S56 through the gateway; it explains and drafts, never grades.
+5. The current build is Phase 2 (S51–S58, foundations incl. the model gateway). Read `05-direction.md` first: the final vision is the center of every decision. Each phase ends at a verification gate (suite, a11y, perf budget, design review, docs). No Vault, RAG, or sandbox before v0.1. The tutor is integrated from S56 through the gateway; it explains and drafts, never grades.
 
 ## Slim pointer
 

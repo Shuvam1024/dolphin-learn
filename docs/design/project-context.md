@@ -10,7 +10,7 @@ Stable goals, constraints, and decisions for Dolphin.
 | Decision | Value |
 |---|---|
 | Product name | **Dolphin** (locked) |
-| GitHub repo | public **`shuvam1024/dolphin-learn`** (also Cursor Cloud Agent project repo) |
+| GitHub repo | public **`shuvam1024/dolphin-learn`** |
 | Design SoT | `docs/design/` |
 | Build tracker | `docs/design/04-implementation-status.md` |
 | Sequential build plan | `docs/design/03-build-plan.md` (S01–S50, complete) → `docs/design/06-first-ship-plan.md` (S51–S105, to v0.1) |
@@ -25,7 +25,7 @@ Dolphin is an **all-in omega learning platform**: for **anyone**, for **anything
 
 Architecture welcomes every domain; marketing never claims full mastery coverage before it exists.
 
-**Final product vision (user emphasis, 2026-09-23):** the learner can learn **anything they want**, keep learning **organized in one place**, get **real learning content, technique, and performance**, and have Dolphin **adapt to the task and the time they actually have**. The interface stays **clean and easy to use**; most of the machinery is **behind the scenes** — AI/ML is that machinery (tutor, drafting, normalizing, plan explanation, learner model), with the deterministic core as referee for grades, evidence, and plans. Every feature and design decision is judged on appeal, usefulness, and ease for the learner; intensive testing and verification (tests, accessibility, performance, design review) precede each step's "done"; design docs are updated when the product changes.
+**Final product vision (user emphasis, 2026-09-23):** the learner can learn **anything they want**, keep learning **organized in one place**, get **real learning content, technique, and performance**, and have Dolphin **adapt to the task and the time they actually have**. The interface stays **clean and easy to use**; most of the machinery is **behind the scenes** — the adaptive tutor and learner model are that machinery (explanations, drafting, normalizing, plan explanation), with the deterministic core as referee for grades, evidence, and plans. Every feature and design decision is judged on appeal, usefulness, and ease for the learner; intensive testing and verification (tests, accessibility, performance, design review) precede each step's "done"; design docs are updated when the product changes.
 
 **Curriculum focus vs learning order:** computer science → software engineering → AI/ML is the current focus for demos and seeded content only. It is not a learning order the product imposes. The shared core (goals, minute budgets, competency graph, sessions, Evidence Ledger, reviews, study clock) stays subject-agnostic.
 
