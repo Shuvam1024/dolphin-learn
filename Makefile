@@ -1,4 +1,4 @@
-.PHONY: web-lint web-type web-test api-lint api-type api-test
+.PHONY: web-lint web-type web-test api-lint api-type api-test smoke a11y perf check
 
 WEB := npm --prefix apps/web
 API := services/api
@@ -23,3 +23,13 @@ api-test:
 
 smoke:
 	cd apps/web && npx playwright test
+
+a11y:
+	cd apps/web && npx playwright test e2e/a11y.spec.ts --reporter=line
+
+perf:
+	cd $(API) && DOLPHIN_PERF=1 .venv/bin/pytest tests/perf -s
+	cd apps/web && npx playwright test -c playwright.perf.config.ts --reporter=line
+
+check: api-lint api-type api-test web-lint web-type web-test smoke a11y
+	@echo "check complete (run make perf separately for latency budgets)"

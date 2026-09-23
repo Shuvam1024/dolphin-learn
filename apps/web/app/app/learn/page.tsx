@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import styles from "../../auth.module.css";
 
 export default function LearnPage() {
@@ -11,7 +13,7 @@ export default function LearnPage() {
           to the minutes you actually have.
         </p>
         <p className={styles.meta}>
-          <a href="/app/goals/new">Create a goal</a>
+          <Link href="/app/goals/new">Create a goal</Link>
         </p>
       </section>
     </main>

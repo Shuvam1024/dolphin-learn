@@ -1,14 +1,19 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const apiPython = process.env.API_PYTHON ?? ".venv/bin/python";
+/**
+ * S51 perf project: measures against a production Next build on :3100.
+ * API still comes from the default reuse on :8000 when available, else starts one.
+ */
+const apiPython = process.env.API_PYTHON ?? "../services/api/.venv/bin/python";
 
 export default defineConfig({
   testDir: "./e2e",
-  testIgnore: [/perf\.spec\.ts/],
+  testMatch: /perf\.spec\.ts/,
   fullyParallel: false,
   retries: 0,
+  timeout: 180_000,
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: "http://127.0.0.1:3100",
     trace: "off",
   },
   webServer: [
@@ -26,11 +31,15 @@ export default defineConfig({
       },
     },
     {
-      command: "npx next dev --turbopack -p 3000",
-      url: "http://127.0.0.1:3000",
+      command: "npx next build && npx next start -p 3100",
+      url: "http://127.0.0.1:3100",
       reuseExistingServer: !process.env.CI,
-      timeout: 120_000,
+      timeout: 300_000,
+      env: {
+        ...process.env,
+        PORT: "3100",
+      },
     },
   ],
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [{ name: "perf", use: { ...devices["Desktop Chrome"] } }],
 });

@@ -89,3 +89,59 @@ jobs:
         run: npx playwright test
         env:
           API_PYTHON: python
+
+  perf-a11y:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: dolphin
+          POSTGRES_PASSWORD: dolphin
+          POSTGRES_DB: dolphin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dolphin -d dolphin"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://dolphin:dolphin@127.0.0.1:5432/dolphin
+      CI: "true"
+      DOLPHIN_PERF: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install API and web
+        run: |
+          python -m pip install -r services/api/requirements-dev.txt
+          cd services/api && python -m alembic upgrade head && python -m app.seed
+          npm --prefix apps/web ci
+      - name: Install Chromium
+        working-directory: apps/web
+        run: npx playwright install --with-deps chromium
+      - name: API latency budgets
+        run: cd services/api && DOLPHIN_PERF=1 python -m pytest tests/perf -s
+      - name: Axe baseline
+        working-directory: apps/web
+        run: npx playwright test e2e/a11y.spec.ts --reporter=line
+        env:
+          API_PYTHON: python
+      - name: Upload a11y baseline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-baseline
+          path: apps/web/e2e/a11y-baseline.json
+          if-no-files-found: warn
+      - name: Page perf budgets
+        working-directory: apps/web
+        run: npx playwright test -c playwright.perf.config.ts --reporter=line
+        env:
+          API_PYTHON: python

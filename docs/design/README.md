@@ -18,6 +18,7 @@ This folder is the **source of truth** for product vision, UX, architecture, seq
 | [`04-implementation-status.md`](04-implementation-status.md) | What is done, next step, test results |
 | [`05-direction.md`](05-direction.md) | Final vision at the center, assessment after S50, phase order to v0.1 and after |
 | [`06-first-ship-plan.md`](06-first-ship-plan.md) | Sequential steps S51–S105 (Phases 2–7) to a shippable v0.1 — AI/ML integrated as the engine, deterministic core as referee — with verification gates |
+| [`design-review-checklist.md`](design-review-checklist.md) | Per-screen checklist used at every verification gate (S51) |
 | [`project-context.md`](project-context.md) | Locked decisions (name, repo, stack, non-goals) |
 | [`brand.md`](brand.md) | Locked name, tagline, Clear Depth tokens; retired names appendix |
 

@@ -1,0 +1,110 @@
+{
+  "recorded_at": "2026-09-23T23:21:46.984Z",
+  "note": "S51 baseline only. Later gates require zero serious/critical.",
+  "serious_or_critical": [
+    {
+      "route": "/app",
+      "fixture": "empty",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    },
+    {
+      "route": "/app/learn",
+      "fixture": "empty",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    },
+    {
+      "route": "/app/review",
+      "fixture": "empty",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    },
+    {
+      "route": "/app/library",
+      "fixture": "empty",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    },
+    {
+      "route": "/app/progress",
+      "fixture": "empty",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    },
+    {
+      "route": "/app/more",
+      "fixture": "empty",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    },
+    {
+      "route": "/app/goals/new",
+      "fixture": "empty",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    },
+    {
+      "route": "/app",
+      "fixture": "populated",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    },
+    {
+      "route": "/app/learn",
+      "fixture": "populated",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    },
+    {
+      "route": "/app/review",
+      "fixture": "populated",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    },
+    {
+      "route": "/app/progress",
+      "fixture": "populated",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    },
+    {
+      "route": "/app/goals/f7299098-0c5e-44ed-a9c2-7d2dab7bd7f9",
+      "fixture": "populated",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    },
+    {
+      "route": "/app/learn/b4c2d12a-5c93-48ca-ba81-7c63b4c7741c",
+      "fixture": "populated",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1
+    }
+  ]
+}
