@@ -43,34 +43,38 @@ Study time is measured in minutes the learner was actually in an active session.
 
 ---
 
-## First subjects
+## Demo content focus (not a learner path)
 
-The product can hold any subject. The first ones we actually build are computing:
+The end product is for **anything** a person wants to learn. The learner’s order is their goal, their minutes, and their evidence — never a fixed sequence we invent for them.
 
-1. Computer science and programming. The Python lessons already seeded are the start, not a toy on the side.
-2. Software engineering: reading code, finding a bug, writing a test, finishing a small program.
-3. AI and machine learning, only after the computing and mathematics those topics require.
+What we seed first for demos and deep checks is computing-related material, because we can teach and grade it well on a screen right now:
 
-Mathematics is included when a computing topic needs it. The fractions lesson is that kind of support. It is not a decision to build a general math, language, music, or trades product next.
+- Computer science and programming (Python lessons already seeded are a start).
+- Software engineering habits: reading code, finding a bug, writing a test, finishing a small program.
+- AI and machine learning topics, when we can attach real checks and the math those topics need.
 
-Other subjects use this same ledger and this same minute clock when they come. They do not skip ahead of the computing path.
+That list is a **build and demo priority**. It is not the curriculum every user must walk. Someone can ask for fractions, writing, or another field that already has honest content. Someone can skip straight into a later computing topic if the plan and checks support it.
+
+Mathematics shows up when a goal needs it (the fractions lesson is that kind of support). Other fields use the same goals, minute clock, competency graph, sessions, evidence ledger, and reviews. A new field is more curriculum data and activity types, not a second app.
+
+Do not special-case computing in the planner, the clock, or the ledger. Known seam: a goal that names neither the seeded Python domain nor math is still planned as Python. Remove that silent default as soon as domain selection is honest.
 
 ---
 
 ## Path to the end
 
-The end is still one platform: any subject, any adult learner, any amount of real study time, and a record of what they can do without help.
+The end is one platform: any subject, any adult learner, any amount of real study time, and a record of what they can do without help.
 
-What we build now is the core those later subjects will use. It does not belong to Python.
+What we build now is the core every later subject will use. It does not belong to Python or to any one career track.
 
 - Goals, minute budgets, the competency graph, sessions, the evidence ledger, and reviews are the same for every subject.
 - A subject is data: a domain, competencies, edges, and activities. A later field is another seed, not another application.
-- Computing is the first curriculum we fill. The session clock, the ledger, and the planner rules do not special-case it.
-- Known seam: a goal that names neither the seeded Python domain nor math is still planned as Python. That silent default goes away when the computing curriculum work starts. Do not add more defaults like it.
+- Demo content may be computing-heavy for a while. The session clock, the ledger, and the planner rules do not special-case it.
+- When a skill cannot be observed on screen, the product says so instead of inventing mastery.
 
-The programming lab and the Knowledge Vault, when they arrive, are adapters on this core. The lab runs code for the first learners. It is not the only activity type the ledger can hold. A later subject brings its own activities and the same evidence facts.
+The programming lab and the Knowledge Vault, when they arrive, are adapters on this core. The lab is useful for early demos where people write programs. It is not the only activity type the ledger can hold. A later subject brings its own activities and the same evidence facts.
 
-Scale, here, means new subjects and new checks plug in. It does not mean a service per field, and it does not mean rewriting the clock or the ledger when the second subject shows up.
+Scale means new subjects and new checks plug in. It does not mean a service per field, and it does not mean rewriting the clock or the ledger when the second subject shows up.
 
 ---
 
@@ -91,42 +95,31 @@ Two things decide whether a step is done. Neither one is a polish pass at the en
 - Keyboard use, a phone-width screen, and the path through sign-in stay intact.
 - The app should feel quick in a study session. That is responsiveness a person notices, not a made-up benchmark.
 
-Phase 1C is the time half of this. The screen has to say what the clock did, in language a learner can use.
+Phase 1C is finished. The next numbered steps deepen honest demo content without turning Dolphin into a computing-only school.
 
 ---
 
 ## Next phase (build this)
 
-**Phase 1C — Physical study time. S43, then S44, then S45, then S46.**
+**Phase 1C — Physical study time.** Done (S43–S46).
 
-| Step | Commit | Done when |
-|---|---|---|
-| S43 | `feat(sessions): measure active study minutes excluding pauses` | A pause gap is excluded; finish freezes the total |
-| S44 | `feat(progress): show studied minutes beside the usable budget` | 14×30 still shows 420 usable; studied minutes are the measured sum; no percent and no date |
-| S45 | `feat(plan): replan from minutes remaining after study` | 30 studied on a 420 budget replans at 390; the budget row stays 420; evidence is untouched |
-| S46 | `feat(review): snooze a due item for a duration without retention` | Hours move the next check only; interval and evidence stay |
+## Later phases
 
-Do not start Vault, RAG, a tutor, or a sandbox in this phase. Do not add a deadline date.
+These are build order, not a learner’s required path. Write numbered steps only when starting the phase.
 
----
-
-## Later phases (do not start until 1C is finished)
-
-These are the order, not a ticket list. Write numbered steps only when the previous phase is done.
-
-**Phase 1D — Computing curriculum.** More computer science, then software engineering, then machine learning. Each topic is a competency with a real check. Math is added only as a prerequisite. No second app, and no claim that every field is covered.
+**Phase 1D — Wider, honest demo content on the shared core.** Add more competencies and checks people can actually finish. Prefer computing-related demos for depth we can grade well (CS, software practice, then ML where checks are real). Keep the same planner, clock, and evidence rules for every domain. Remove the silent “everything is Python” default. Do not claim the product only teaches computing, and do not force CS → SE → ML as a user path.
 
 **Phase 1E — Scope, same evidence.** A priority (understand, apply, or go deeper) may drop topics from the plan. It must not change what “retained” means. “How close” is a count of unassessed topics, deferred topics, and due reviews. Never a percent.
 
 **Phase 1F — A tutor that cannot grade.** Optional model for hints and explanations. Seeded lessons still run with no key. The evidence writer stays the deterministic grader.
 
-**Phase 2A — A programming lab.** Learner code runs outside the API process, with no credentials and no path to another user’s data. Passing tests can support an attempt. The model does not award the facet by itself. This lab is the first activity adapter, built for computing, with the same evidence row a later subject will use for its own activities. It comes before a general file vault because the first learners are writing programs.
+**Phase 2A — A programming lab (first activity adapter).** Learner code runs outside the API process, with no credentials and no path to another user’s data. Passing tests can support an attempt. The model does not award the facet by itself. Other subjects will add their own adapters later; the ledger stays shared.
 
 **Phase 2B — Knowledge Vault.** Private files. Ownership is checked before any retrieval. Answers that come from a file cite a span the learner can open. Uploads are untrusted. Nothing is redistributed to other people.
 
 **Phase 2C — Transfer.** A task that is meaningfully new can set `applied`. Repeating the lesson cannot.
 
-**After that.** Subjects outside computing, on the same ledger, not new apps. Deeper accessibility. A community only with moderation and privacy. Younger learners only as a separate reviewed product. A fancier review scheduler only after these plain durations have real data.
+**After that.** More domains and activity types on the same platform — whatever people ask to learn, as soon as we can teach and check it honestly. Deeper accessibility. A community only with moderation and privacy. Younger learners only as a separate reviewed product. A fancier review scheduler only after these plain durations have real data.
 
 ---
 

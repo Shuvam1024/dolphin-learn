@@ -40,7 +40,7 @@ Architecture welcomes every domain; marketing never claims full mastery coverage
 | Dimension | V1 |
 |---|---|
 | Audience | Adults **18+** |
-| Subjects | Computing first: CS, software engineering, then AI/ML. Math only as a prerequisite |
+| Subjects | Any subject on one platform. Early demos may prefer computing content we can grade well; that is not a required learner path |
 | Client | Accessible responsive web |
 | Loop | Prove Loop |
 | AI | Optional; seeded content works without keys |

@@ -4,8 +4,8 @@
 - **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S40 Prove Loop (Phase 1A exit); S41–S42 delayed retention; S43–S46 physical study time (Phase 1C exit)
 - **Verified working user journey:** Study minutes are active session time. Home and the goal path show usable minutes beside studied minutes. Replan uses what remains. A due review can wait 24 hours with Not now, without retention or a longer interval.
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, an honest session-finish summary, a review due queue with 1/3/7/14-day intervals, a Home snapshot of the next action, a Progress ledger of facets plus unassessed plan gaps, a goal path overview, replan that writes the next plan version, and a Studio control to move to the next activity or a different question; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
-- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Next phase is 1D computing curriculum, not Vault
-- **Schema/API changes:** Alembic through `0008_attempt_idempotency`; `POST /api/v1/goals/{id}/replan` writes accepted plan version N+1 from the current budget and demonstrated competencies and leaves older versions in place; `GET /api/v1/goals/{id}/overview` returns the path, deferred topics, and the session to continue
+- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Next phase is 1D: more honest demo content on the shared core. Computing seeds may lead demos; the product is for any subject.
+- **Schema/API changes:** Alembic through `0008_attempt_idempotency`; `POST /api/v1/goals/{id}/replan` writes accepted plan version N+1 from remaining study minutes and demonstrated competencies and leaves older versions in place; `GET /api/v1/goals/{id}/overview` returns the path, deferred topics, usable and studied minutes, and the session to continue; `POST /api/v1/reviews/{id}/snooze` moves `due_at` by hours without retention
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
   - S02: README lists Next.js + FastAPI + Postgres; `.env.example` placeholders; AI keys optional
@@ -55,7 +55,7 @@
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
 - **Completed steps:** **S01–S46**
-- **Next step:** **Phase 1D — Computing curriculum (write numbered steps next; CS then software engineering then AI/ML)**
+- **Next step:** **Phase 1D — Write numbered steps for wider honest demo content on the shared core (computing seeds may lead demos; not a required learner path)**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -69,7 +69,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | 1A | Prove Loop (S20–S40) | Done (S20–S40) |
 | 1B | Delayed retention (S41–S42) | Done (S42) |
 | 1C | Physical study time (S43–S46) | Done (S46) |
-| Later | 1D computing curriculum, then scope, tutor, programming lab, Vault | Next |
+| Later | 1D wider demo content on shared core, then scope, tutor, lab, Vault | Next |
 
 ---
 
@@ -120,8 +120,9 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S41** | `feat(assess): award retained only after a due review` | Due independent review sets retained; same-session, early, and assisted reviews do not |
 | **S42** | `feat(progress): show retained facet from delayed review` | Home and Progress name retained; neither shows a mastery percent |
 | **Plan** | `docs: plan physical study time as phase 1c` | S43–S46 measure active minutes, show them beside the budget, replan the remainder, snooze by hours |
-| **Subjects** | `docs: prioritize computing subjects first` | Next curricula are CS, software engineering, then machine learning |
-| **Path** | `docs: keep the core subject-agnostic on the way to any field` | The clock, ledger, and graph stay shared; computing is the first curriculum, not a special case |
+| **Subjects** | `docs: prioritize computing subjects first` | Early demos may use computing seeds; not a required CS→SE→ML learner path |
+| **Path** | `docs: keep the core subject-agnostic on the way to any field` | The clock, ledger, and graph stay shared for any subject |
+| **Focus** | `docs: treat computing as demo focus not a learner path` | Product stays for anything; CS/SE/ML are build priority for demos only |
 | **Quality** | `docs: judge each step by learning quality and usability` | Content, technique, time fit, and plain use are part of done, not a later polish pass |
 | **S43** | `feat(sessions): measure active study minutes excluding pauses` | Pause gaps are excluded; finish freezes the total; Studio says the clock stops when you pause |
 | **S44** | `feat(progress): show studied minutes beside the usable budget` | 14×30 stays 420 usable; studied minutes match the clock; no percent and no date |
