@@ -1,5 +1,7 @@
 """S23: a diagnostic can be skipped or answered without claiming mastery."""
 
+import uuid
+
 from app.db import SessionLocal
 from app.main import app
 from app.modules.learning.models import Attempt, CompetencyEvidence
@@ -29,7 +31,7 @@ def _goal(headers: dict[str, str]) -> str:
 def test_skip_or_answer_without_mastery_and_retry() -> None:
     with SessionLocal() as db:
         seed(db)
-    headers = _headers("s23-learner@example.com")
+    headers = _headers(f"s23-{uuid.uuid4().hex[:8]}@example.com")
     goal_id = _goal(headers)
 
     started = client.post(

@@ -115,6 +115,39 @@ CURRICULA: tuple[DomainSpec, ...] = (
                     ),
                 ),
             ),
+            LessonSpec(
+                key="python.calls.intro",
+                title="Call a function by name",
+                competency_key="python.calls",
+                body=(
+                    "A call looks up a function by name and runs it. `print(n)` looks up "
+                    "`print`, passes the current value of `n`, and does not bind a new name "
+                    "unless you write an assignment."
+                ),
+                activities=(
+                    ActivitySpec(
+                        1,
+                        "reading",
+                        "Read the note on calling a function. You are not scored for reading.",
+                        None,
+                        20,
+                        40,
+                    ),
+                    ActivitySpec(
+                        2,
+                        "objective",
+                        (
+                            "Which line calls a function?\n\n"
+                            "a) `n = 3`\n"
+                            "b) `print(n)`\n"
+                            "c) `n`"
+                        ),
+                        {"correct": "b"},
+                        15,
+                        25,
+                    ),
+                ),
+            ),
         ),
     ),
     DomainSpec(

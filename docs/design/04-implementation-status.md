@@ -1,11 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S23 of the Prove Loop
+- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S24 of the Prove Loop
 - **Verified working user journey:** Sign in → adult acknowledgment → keyboard-only goal wizard saves a goal and a time budget; back keeps the typed fields
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, and review tables; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
 - **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Plan preview is not built yet
-- **Schema/API changes:** Alembic through `0007_diagnostic_runs`; `POST /api/v1/goals/{id}/diagnostic` (start, skip, or submit; `mastery_claimed` is always false); goal create/update with `time_budget`
+- **Schema/API changes:** Alembic through `0007_diagnostic_runs`; `POST /api/v1/goals/{id}/plan-proposals` (preview only, no plan version); diagnostic start/skip/submit; goal time budgets
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
   - S02: README lists Next.js + FastAPI + Postgres; `.env.example` placeholders; AI keys optional
@@ -30,10 +30,11 @@
   - S21: negative one-off minutes and a one-off body that also sets a weekly window → 422 `validation_error` and no goal row; 120-minute Quick Learn stores `one_off`; PATCH to 14 days × 30 min/day stores `weekly` and clears one-off minutes; GET returns the same budget; pytest 23 passed; ruff and mypy clean
   - S22: `tsc` and eslint clean; Playwright keyboard-only wizard: back keeps title and request, Save stores title “Names and values”, objective `Priority: Focus one topic`, and a 120-minute one-off budget (API list confirms); 390px width shows the weekly fields without horizontal overflow; phase 0 smoke still 1 passed
   - S23: `alembic upgrade head` applied `0007_diagnostic_runs`; start returns 3–8 items and no answer key; a one-answer submit then the rest both record attempts; skip returns `skipped`; a later start still works; `mastery_claimed` is false and no competency evidence row is written; another user gets 404; pytest 25 passed; ruff and mypy clean
+  - S24: 15 usable minutes includes only `python.names` and defers `python.calls` with `insufficient_minutes`; 120 minutes includes both and `scope_conflict` is false; a 5-minute budget has `estimated_required_low > usable`, empty included, and a scope-conflict payload; `POST …/plan-proposals` does not insert `plan_versions`; pytest 27 passed; ruff and mypy clean; no LLM
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S23**
-- **Next step:** **S24 — Propose plans from budget, prereqs, and effort ranges**
+- **Completed steps:** **S01–S24**
+- **Next step:** **S25 — Show plan preview with accept creating a plan version**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -44,7 +45,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | Phase | Milestone | Status |
 |---|---|---|
 | 0 | Foundation (S01–S19) | Done (S01–S19) |
-| 1A | Prove Loop (S20–S40) | In progress (S23) |
+| 1A | Prove Loop (S20–S40) | In progress (S24) |
 | Later | Vault / labs / community | Not started |
 
 ---
@@ -76,3 +77,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S21** | `feat(goals): validate and store time budgets` | Negative minutes and double-counted modes rejected; 120-minute and 14×30 budgets stored |
 | **S22** | `feat(web): add accessible goal and availability wizard` | Keyboard-only save persists goal and budget; back keeps fields; phone width usable |
 | **S23** | `feat(goals): add optional diagnostic start and attempts` | Skip or answer 3–8 items; incomplete sample can be continued; no mastery claim |
+| **S24** | `feat(plan): add deterministic feasibility plan proposal` | 15- and 120-minute Python budgets differ; over-budget returns a scope conflict; no plan row yet |

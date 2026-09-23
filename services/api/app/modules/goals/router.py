@@ -18,6 +18,7 @@ from app.modules.goals.service import (
 )
 from app.modules.identity.deps import current_user
 from app.modules.identity.models import User
+from app.modules.learning.proposals import propose_for_goal
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from sqlalchemy.orm import Session
@@ -272,6 +273,75 @@ def post_diagnostic(
         attempts=[
             DiagnosticAttemptOut(id=attempt.id, activity_version_id=attempt.activity_version_id)
             for attempt in attempts
+        ],
+    )
+
+
+class ProposalIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    domain_key: str | None = None
+
+
+class ProposalItemOut(BaseModel):
+    competency_key: str
+    name: str
+    effort_low: int
+    effort_high: int
+    position: int | None = None
+    reason_code: str | None = None
+
+
+class ProposalOut(BaseModel):
+    usable_minutes: int
+    estimated_required_low: int
+    estimated_required_high: int
+    scope_conflict: bool
+    included: list[ProposalItemOut]
+    deferred: list[ProposalItemOut]
+
+
+@router.post("/{goal_id}/plan-proposals", response_model=ProposalOut)
+def post_plan_proposal(
+    goal_id: uuid.UUID,
+    body: ProposalIn | None = None,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> ProposalOut:
+    """A proposal is a preview. It does not create a plan version."""
+    goal = get_owned_goal(db, user, goal_id)
+    budget = budget_for(db, goal)
+    if budget is None:
+        raise ApiError(
+            "validation_error",
+            "Add a time budget before asking for a plan",
+            status_code=422,
+        )
+    proposal = propose_for_goal(db, goal, budget, None if body is None else body.domain_key)
+    return ProposalOut(
+        usable_minutes=proposal.usable_minutes,
+        estimated_required_low=proposal.estimated_required_low,
+        estimated_required_high=proposal.estimated_required_high,
+        scope_conflict=proposal.scope_conflict,
+        included=[
+            ProposalItemOut(
+                competency_key=item.key,
+                name=item.name,
+                effort_low=item.effort_low,
+                effort_high=item.effort_high,
+                position=item.position,
+            )
+            for item in proposal.included
+        ],
+        deferred=[
+            ProposalItemOut(
+                competency_key=item.key,
+                name=item.name,
+                effort_low=item.effort_low,
+                effort_high=item.effort_high,
+                reason_code=item.reason_code,
+            )
+            for item in proposal.deferred
         ],
     )
 
