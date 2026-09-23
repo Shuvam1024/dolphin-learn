@@ -6,7 +6,7 @@ Dolphin is an adaptive learning platform for adults (18+): a Home hub, time-adap
 
 Design source of truth: [`docs/design/`](docs/design/)  
 Build sequence: [`docs/design/03-build-plan.md`](docs/design/03-build-plan.md)  
-Status: [`docs/design/04-implementation-status.md`](docs/design/04-implementation-status.md)
+Status: [`docs/implementation-status.md`](docs/implementation-status.md)
 
 ## Stack
 
@@ -41,7 +41,7 @@ dolphin-learn/
    cp .env.example .env
    ```
 
-2. **Start Postgres** (after S03 — Compose file at repo root):
+2. **Start Postgres** (Compose file at repo root):
 
    ```bash
    docker compose up -d
