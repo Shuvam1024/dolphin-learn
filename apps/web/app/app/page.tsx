@@ -35,7 +35,8 @@ export default async function AppHomePage() {
         <p className={styles.kicker}>Home</p>
         <h1 className={styles.title}>You are in</h1>
         <p className={styles.lede}>
-          Signed in as {me.email ?? me.auth_subject}. Goal creation is the next learning step.
+          Signed in as {me.email ?? me.auth_subject}. You don&apos;t have a goal yet. Create one
+          and Dolphin will fit a plan to the minutes you have.
         </p>
         <p className={styles.meta}>
           <a href="/app/goals/new">Create a goal</a>

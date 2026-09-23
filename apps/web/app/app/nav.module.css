@@ -1,0 +1,51 @@
+.frame {
+  min-height: 100svh;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 16px 20px;
+  color: var(--color-ink);
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.primary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.link,
+.more {
+  color: var(--color-ink);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+}
+
+.link[aria-current="page"] {
+  border-bottom-color: var(--color-seafoam);
+}
+
+.more {
+  margin-left: auto;
+  color: var(--color-mist);
+  font-weight: 600;
+}
+
+.link:focus-visible,
+.brand:focus-visible,
+.more:focus-visible {
+  outline: 3px solid var(--color-ink);
+  outline-offset: 3px;
+}
