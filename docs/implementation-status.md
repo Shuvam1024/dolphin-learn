@@ -1,24 +1,25 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** None (design + sequential build plan only — application code not started)
+- **Milestone completed:** S01 (monorepo skeleton) — S02/S03 in progress this turn
 - **Verified working user journey:** None yet
-- **Implemented modules/features:** None yet — application code not started under Dolphin
-- **Stubbed or unavailable features (visible disclosure):** Entire platform is a design specification; no interactive app surfaces shipped
+- **Implemented modules/features:** Repository layout only (`apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`, `AGENTS.md`)
+- **Stubbed or unavailable features (visible disclosure):** No runtime app yet; placeholder READMEs only
 - **Schema/API changes:** None yet
-- **Tests run and exact results:** None yet
+- **Tests run and exact results:** Layout acceptance via `tree -a -I '.git'` — Section 11.4 shape present
 - **Known bugs/security/accessibility concerns:** To be assessed on implementation
 - **Build plan:** `docs/build-plan.md` (40 sequential steps, S01–S40)
-- **Next step:** **S01 — Create Dolphin monorepo folder layout**
-- **Next after S01 (preview):** S02 README/`.env.example`, S03 Compose Postgres
+- **Completed steps:** **S01**
+- **Next step:** **S02 — Document install story and `.env.example`**
+- **Next after S02 (preview):** S03 Compose Postgres
 
 ---
 
-## Milestone checklist (not started)
+## Milestone checklist
 
 | Phase | Milestone | Status |
 |---|---|---|
-| 0 | Foundation (repo, auth shell, migrations, seeds, CI) — steps S01–S19 | Not started |
+| 0 | Foundation (repo, auth shell, migrations, seeds, CI) — steps S01–S19 | In progress (S01 done) |
 | 1A | Prove Loop (goal → plan → Session Studio → Evidence Ledger → review → Home) — steps S20–S40 | Not started |
 | 1B | Multi-goal + tutor gateway fallback | Not started |
 | 2A | Knowledge Vault + citations | Not started |
@@ -30,11 +31,9 @@
 
 ## Sequential steps (see build-plan.md)
 
-Work one step at a time; commit after each step. Mega-tickets below map to step ranges for orientation only.
-
 | Mega-ticket (orientation) | Steps | Status |
 |---|---|---|
-| `DOLPHIN-BOOT-001` | S01–S09 | Not started — **next: S01** |
+| `DOLPHIN-BOOT-001` | S01–S09 | In progress — **S01 done; next S02** |
 | `DOLPHIN-BOOT-002` | S10–S13 | Not started |
 | `DOLPHIN-DATA-001` | S14–S16 | Not started |
 | `DOLPHIN-SEED-001` | S17 | Not started |
@@ -49,18 +48,26 @@ Work one step at a time; commit after each step. Mega-tickets below map to step 
 
 ---
 
-## Documentation readiness (complete)
+## Step log
+
+| Step | Commit (message) | Acceptance |
+|---|---|---|
+| Docs seed | `docs: add Dolphin design package` | Design package under `docs/` |
+| **S01** | `chore: scaffold dolphin monorepo layout` | `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`, `AGENTS.md` present with placeholder READMEs |
+
+---
+
+## Documentation readiness
 
 | Item | Status |
 |---|---|
-| Product name lock → **Dolphin** | Done (docs) |
+| Product name lock → **Dolphin** | Done |
 | Master design | Done — `docs/dolphin-master-design.md` |
 | Brand shortlist + conflict screen | Done — `docs/brand-shortlist.md` |
 | Project context | Done — `docs/project-context.md` |
 | Sequential build plan | Done — `docs/build-plan.md` |
-| Retired names (Atlas, etc.) cited as history only | Done |
-| Application implementation | **Not started** |
-| GitHub repository | **Not created** (auth pending) |
+| Application implementation | **S01 skeleton only** |
+| GitHub repository | **Blocked** — token cannot `createRepository` (403); local git ready to push |
 
 ---
 
