@@ -1,4 +1,4 @@
-.PHONY: web-lint web-type web-test api-lint api-type api-test smoke a11y perf check
+.PHONY: web-lint web-type web-test api-lint api-type api-test smoke a11y perf check content
 
 WEB := npm --prefix apps/web
 API := services/api
@@ -33,3 +33,6 @@ perf:
 
 check: api-lint api-type api-test web-lint web-type web-test smoke a11y
 	@echo "check complete (run make perf separately for latency budgets)"
+
+content:
+	cd $(API) && .venv/bin/python -m app.content.validate

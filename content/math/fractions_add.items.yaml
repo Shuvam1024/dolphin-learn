@@ -1,0 +1,75 @@
+- id: reading-1
+  type: reading
+  prompt: Read the note on adding same-denominator fractions.
+  effort_minutes:
+    low: 4
+    high: 6
+- id: objective-2
+  type: objective
+  prompt: 'What is 1/5 + 2/5?
+
+
+    a) 3/5
+
+    b) 3/10
+
+    c) 1/2'
+  choices:
+  - 3/5
+  - 3/10
+  - 1/2
+  answer: a
+  explanation: Add numerators; keep the shared denominator.
+  misconceptions:
+    b: Do not add denominators.
+    c: That is a different fraction.
+  difficulty: 1
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-3
+  type: objective
+  prompt: 'When adding 2/7 + 3/7, which stays the same?
+
+
+    a) The numerator 2
+
+    b) The denominator 7
+
+    c) Neither'
+  choices:
+  - The numerator 2
+  - The denominator 7
+  - Neither
+  answer: b
+  explanation: Same-sized sevenths keep denominator 7.
+  misconceptions:
+    a: Numerators combine.
+    c: The denominator is kept.
+  difficulty: 1
+  effort_minutes:
+    low: 2
+    high: 3
+- id: objective-4
+  type: objective
+  prompt: 'Why is 1/4 + 1/5 not solved by adding to 2/9 in this lesson?
+
+
+    a) The parts are different sizes until denominators match
+
+    b) Fractions can never be added
+
+    c) The numerators must stay 1 forever'
+  choices:
+  - The parts are different sizes until denominators match
+  - Fractions can never be added
+  - The numerators must stay 1 forever
+  answer: a
+  explanation: Different denominators mean different part sizes.
+  misconceptions:
+    b: Same-denominator addition is allowed.
+    c: Numerators can change when you add.
+  difficulty: 2
+  effort_minutes:
+    low: 2
+    high: 3

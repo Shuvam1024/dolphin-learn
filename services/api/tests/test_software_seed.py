@@ -99,7 +99,7 @@ def test_software_domain_plans_only_software() -> None:
     attempt = client.post(
         f"/api/v1/sessions/{session_id}/attempts",
         headers=headers,
-        json={"idempotency_key": "soft-1", "choice": "b"},
+        json={"idempotency_key": "soft-1", "choice": "a"},
     )
     assert attempt.status_code == 200
     assert attempt.json()["outcome"] == "correct"

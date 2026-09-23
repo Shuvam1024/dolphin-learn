@@ -1,0 +1,76 @@
+- id: reading-1
+  type: reading
+  prompt: Read the short note on names and values. You are not scored for reading.
+  effort_minutes:
+    low: 5
+    high: 8
+- id: objective-2
+  type: objective
+  prompt: 'After the line `n = 3`, which statement is accurate?
+
+
+    a) `n` is a permanent box that can only hold 3
+
+    b) The name `n` is bound to the value 3
+
+    c) `n` is a function call'
+  choices:
+  - '`n` is a permanent box that can only hold 3'
+  - The name `n` is bound to the value 3
+  - '`n` is a function call'
+  answer: b
+  explanation: Assignment binds a name to a value; it does not create a permanent
+    single-value box.
+  misconceptions:
+    a: A name can be rebound later.
+    c: Binding is not the same as calling.
+  difficulty: 2
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-3
+  type: objective
+  prompt: 'What does `n = n + 1` do when `n` was bound to 3?
+
+
+    a) It rebinds `n` to 4
+
+    b) It deletes the name `n`
+
+    c) It calls a function named n'
+  choices:
+  - It rebinds `n` to 4
+  - It deletes the name `n`
+  - It calls a function named n
+  answer: a
+  explanation: Python evaluates the right-hand side, then rebinds the name.
+  misconceptions:
+    b: Reassignment replaces the binding; it does not delete the name.
+    c: There is no call in this statement.
+  difficulty: 2
+  effort_minutes:
+    low: 1
+    high: 2
+- id: objective-4
+  type: objective
+  prompt: 'Which line only looks up a name and does not bind one?
+
+
+    a) `n = 3`
+
+    b) `print(n)`
+
+    c) `n = 4`'
+  choices:
+  - '`n = 3`'
+  - '`print(n)`'
+  - '`n = 4`'
+  answer: b
+  explanation: '`print(n)` looks up `n` without assigning.'
+  misconceptions:
+    a: That line binds.
+    c: That line also binds.
+  difficulty: 1
+  effort_minutes:
+    low: 1
+    high: 2

@@ -1,484 +1,196 @@
-"""Load the reviewed Python and math mini-curricula. Idempotent. No model calls."""
+"""Load reviewed curricula from `content/` into the database. Idempotent. No model calls."""
 
 from __future__ import annotations
 
-import re
-from dataclasses import dataclass
 from datetime import datetime, timezone
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.content.loader import load_all, validate_all
+from app.content.schema import CompetencyContent, ContentItem
 from app.db import SessionLocal
 from app.modules.curriculum.models import EDGE_REQUIRES, Competency, CompetencyEdge, Domain
 from app.modules.learning.models import ActivityVersion, Lesson
 
-_CHOICE_LINE = re.compile(r"^([a-c])\)\s*(.*)$", re.IGNORECASE)
 
-
-def _choices_from_prompt(prompt: str) -> list[dict[str, str]]:
-    found: list[dict[str, str]] = []
-    for raw in prompt.splitlines():
-        line = raw.strip()
-        match = _CHOICE_LINE.match(line)
-        if match:
-            found.append({"id": match.group(1).lower(), "label": match.group(2).strip() or line})
-    return found
-
-
-@dataclass(frozen=True)
-class ActivitySpec:
-    version: int
-    activity_type: str
-    prompt: str
-    answer_key: dict[str, str] | None
-    effort_low: int
-    effort_high: int
-
-
-@dataclass(frozen=True)
-class LessonSpec:
-    key: str
-    title: str
-    body: str
-    competency_key: str
-    activities: tuple[ActivitySpec, ...]
-
-
-@dataclass(frozen=True)
-class CompetencySpec:
-    key: str
-    name: str
-
-
-@dataclass(frozen=True)
-class DomainSpec:
-    key: str
-    name: str
-    competencies: tuple[CompetencySpec, ...]
-    requires: tuple[tuple[str, str], ...]
-    lessons: tuple[LessonSpec, ...]
-
-
-CURRICULA: tuple[DomainSpec, ...] = (
-    DomainSpec(
-        key="python",
-        name="Python",
-        competencies=(
-            CompetencySpec("python.names", "Names and values"),
-            CompetencySpec("python.calls", "Calling a function"),
-            CompetencySpec("python.conditionals", "Choosing with if"),
-        ),
-        requires=(
-            ("python.calls", "python.names"),
-            ("python.conditionals", "python.names"),
-        ),
-        lessons=(
-            LessonSpec(
-                key="python.names.intro",
-                title="Names point at values",
-                competency_key="python.names",
-                body=(
-                    "In Python, `n = 3` does not create a box that permanently holds 3. "
-                    "It binds the name `n` to the value `3`. Later, `n = n + 1` looks up "
-                    "the current value, adds one, and rebinds the name."
-                ),
-                activities=(
-                    ActivitySpec(
-                        1,
-                        "reading",
-                        "Read the short note on names and values. You are not scored for reading.",
-                        None,
-                        5,
-                        8,
-                    ),
-                    ActivitySpec(
-                        2,
-                        "objective",
-                        (
-                            "After the line `n = 3`, which statement is accurate?\n\n"
-                            "a) `n` is a permanent box that can only hold 3\n"
-                            "b) The name `n` is bound to the value 3\n"
-                            "c) `n` is a function call"
-                        ),
-                        {"correct": "b"},
-                        3,
-                        5,
-                    ),
-                    ActivitySpec(
-                        3,
-                        "objective",
-                        (
-                            "What does `n = n + 1` do when `n` was bound to 3?\n\n"
-                            "a) It rebinds `n` to 4\n"
-                            "b) It deletes the name `n`\n"
-                            "c) It calls a function named n"
-                        ),
-                        {"correct": "a"},
-                        1,
-                        2,
-                    ),
-                    ActivitySpec(
-                        4,
-                        "objective",
-                        (
-                            "Which line only looks up a name and does not bind one?\n\n"
-                            "a) `n = 3`\n"
-                            "b) `print(n)`\n"
-                            "c) `n = 4`"
-                        ),
-                        {"correct": "b"},
-                        1,
-                        2,
-                    ),
-                ),
-            ),
-            LessonSpec(
-                key="python.calls.intro",
-                title="Call a function by name",
-                competency_key="python.calls",
-                body=(
-                    "A call looks up a function by name and runs it. `print(n)` looks up "
-                    "`print`, passes the current value of `n`, and does not bind a new name "
-                    "unless you write an assignment."
-                ),
-                activities=(
-                    ActivitySpec(
-                        1,
-                        "reading",
-                        "Read the note on calling a function. You are not scored for reading.",
-                        None,
-                        20,
-                        40,
-                    ),
-                    ActivitySpec(
-                        2,
-                        "objective",
-                        (
-                            "Which line calls a function?\n\n"
-                            "a) `n = 3`\n"
-                            "b) `print(n)`\n"
-                            "c) `n`"
-                        ),
-                        {"correct": "b"},
-                        15,
-                        25,
-                    ),
-                ),
-            ),
-            LessonSpec(
-                key="python.conditionals.intro",
-                title="Choose a branch with if",
-                competency_key="python.conditionals",
-                body=(
-                    "An `if` statement checks a condition. When the condition is true, "
-                    "Python runs the indented block under `if`. When it is false, that "
-                    "block is skipped. An optional `else` runs only when the condition "
-                    "was false. The condition is an expression that evaluates to true "
-                    "or false; it does not permanently change a name unless you also "
-                    "write an assignment."
-                ),
-                activities=(
-                    ActivitySpec(
-                        1,
-                        "reading",
-                        "Read the note on if and else. You are not scored for reading.",
-                        None,
-                        8,
-                        12,
-                    ),
-                    ActivitySpec(
-                        2,
-                        "objective",
-                        (
-                            "Given `n = 3` and `if n > 2: print(\"big\")`, what happens?\n\n"
-                            "a) Nothing prints because if never runs print\n"
-                            "b) `print(\"big\")` runs because the condition is true\n"
-                            "c) Python rebinds `n` to True"
-                        ),
-                        {"correct": "b"},
-                        4,
-                        6,
-                    ),
-                    ActivitySpec(
-                        3,
-                        "objective",
-                        (
-                            "Given `n = 1` and this program:\n\n"
-                            "```\n"
-                            "if n > 2:\n"
-                            '    print("big")\n'
-                            "else:\n"
-                            '    print("small")\n'
-                            "```\n\n"
-                            "What prints?\n\n"
-                            "a) big\n"
-                            "b) small\n"
-                            "c) both big and small"
-                        ),
-                        {"correct": "b"},
-                        4,
-                        6,
-                    ),
-                    ActivitySpec(
-                        4,
-                        "objective",
-                        (
-                            "Which line is a condition, not an assignment?\n\n"
-                            "a) `n = 3`\n"
-                            "b) `n > 2`\n"
-                            "c) `print(n)`"
-                        ),
-                        {"correct": "b"},
-                        3,
-                        5,
-                    ),
-                ),
-            ),
-        ),
-    ),
-    DomainSpec(
-        key="math",
-        name="Foundational math",
-        competencies=(
-            CompetencySpec("math.fractions.parts", "A fraction as parts of a whole"),
-            CompetencySpec("math.fractions.add", "Add fractions with the same denominator"),
-        ),
-        requires=(("math.fractions.add", "math.fractions.parts"),),
-        lessons=(
-            LessonSpec(
-                key="math.fractions.parts.intro",
-                title="Parts of one whole",
-                competency_key="math.fractions.parts",
-                body=(
-                    "The fraction 3/4 means three parts out of four equal parts of one whole. "
-                    "The denominator names the size of each part. The numerator counts how "
-                    "many of those parts you have. Adding fractions with the same denominator "
-                    "means adding the numerators and keeping the denominator."
-                ),
-                activities=(
-                    ActivitySpec(
-                        1,
-                        "reading",
-                        "Read the note on numerators and denominators.",
-                        None,
-                        5,
-                        8,
-                    ),
-                    ActivitySpec(
-                        2,
-                        "objective",
-                        (
-                            "What is 1/4 + 2/4?\n\n"
-                            "a) 3/8\n"
-                            "b) 3/4\n"
-                            "c) 2/4"
-                        ),
-                        {"correct": "b"},
-                        3,
-                        5,
-                    ),
-                ),
-            ),
-        ),
-    ),
-    DomainSpec(
-        key="software",
-        name="Software practice",
-        competencies=(
-            CompetencySpec("software.failing_test", "Read a failing test"),
-            CompetencySpec("software.bug_name", "Name what the test caught"),
-        ),
-        requires=(("software.bug_name", "software.failing_test"),),
-        lessons=(
-            LessonSpec(
-                key="software.failing_test.intro",
-                title="A failing test is a claim",
-                competency_key="software.failing_test",
-                body=(
-                    "A failing automated test is a claim about the program that did not hold. "
-                    "Read the test name and the assertion first. They say what should be true. "
-                    "The stack or failure message says what was true instead. You are not "
-                    "running code here; you are reading what the check expected."
-                ),
-                activities=(
-                    ActivitySpec(
-                        1,
-                        "reading",
-                        "Read the note on failing tests. You are not scored for reading.",
-                        None,
-                        6,
-                        10,
-                    ),
-                    ActivitySpec(
-                        2,
-                        "objective",
-                        (
-                            "A test named `adds_two_numbers` fails with "
-                            "`expected 5, got 4`. What should you read first?\n\n"
-                            "a) Only the production code, and ignore the test name\n"
-                            "b) The test name and the assertion that expected 5\n"
-                            "c) A random line from a different file"
-                        ),
-                        {"correct": "b"},
-                        4,
-                        6,
-                    ),
-                    ActivitySpec(
-                        3,
-                        "objective",
-                        (
-                            "What does a failing test claim?\n\n"
-                            "a) That the learner has mastered the topic\n"
-                            "b) That some expected condition about the program did not hold\n"
-                            "c) That the calendar date is a study deadline"
-                        ),
-                        {"correct": "b"},
-                        3,
-                        5,
-                    ),
-                ),
-            ),
-            LessonSpec(
-                key="software.bug_name.intro",
-                title="Name the mismatch",
-                competency_key="software.bug_name",
-                body=(
-                    "After you read the failing claim, name the mismatch in plain words: "
-                    "what was expected, and what happened. A clear name helps you fix the "
-                    "right thing. Do not award yourself mastery for guessing; wait for a "
-                    "check that asks you to identify the mismatch."
-                ),
-                activities=(
-                    ActivitySpec(
-                        1,
-                        "reading",
-                        "Read the note on naming the mismatch. You are not scored for reading.",
-                        None,
-                        8,
-                        12,
-                    ),
-                    ActivitySpec(
-                        2,
-                        "objective",
-                        (
-                            "The test expected the list `[1, 2]` but got `[2, 1]`. "
-                            "Which plain description fits?\n\n"
-                            "a) The items are present but in the wrong order\n"
-                            "b) The program crashed before returning\n"
-                            "c) The test never ran"
-                        ),
-                        {"correct": "a"},
-                        5,
-                        8,
-                    ),
-                    ActivitySpec(
-                        3,
-                        "objective",
-                        (
-                            "Why name the mismatch before changing code?\n\n"
-                            "a) So you fix the behavior the test actually checked\n"
-                            "b) So the product can invent a mastery percent\n"
-                            "c) So a calendar deadline becomes study time"
-                        ),
-                        {"correct": "a"},
-                        4,
-                        6,
-                    ),
-                ),
-            ),
-        ),
-    ),
-)
-
-
-def _domain(db: Session, spec: DomainSpec) -> Domain:
-    found = db.scalar(select(Domain).where(Domain.key == spec.key))
+def _domain(db: Session, key: str, name: str) -> Domain:
+    found = db.scalar(select(Domain).where(Domain.key == key))
     if found is not None:
+        if found.name != name:
+            found.name = name
         return found
-    found = Domain(key=spec.key, name=spec.name)
+    found = Domain(key=key, name=name)
     db.add(found)
     db.flush()
     return found
 
 
-def _competency(db: Session, domain: Domain, spec: CompetencySpec) -> Competency:
-    found = db.scalar(select(Competency).where(Competency.key == spec.key))
+def _competency(db: Session, domain: Domain, key: str, name: str) -> Competency:
+    found = db.scalar(select(Competency).where(Competency.key == key))
     if found is not None:
+        if found.name != name:
+            found.name = name
         return found
-    found = Competency(domain_id=domain.id, key=spec.key, name=spec.name)
+    found = Competency(domain_id=domain.id, key=key, name=name)
     db.add(found)
     db.flush()
     return found
+
+
+def _payload_for(item: ContentItem) -> dict[str, object]:
+    if item.type == "objective" and item.choices:
+        return {
+            "choices": [
+                {"id": "abc"[index], "label": label}
+                for index, label in enumerate(item.choices)
+                if index < 3
+            ]
+        }
+    if item.type == "short_answer":
+        return {
+            "alternates": list(item.alternates or []),
+            "normalize": ["strip", "lower"],
+        }
+    if item.type == "numeric":
+        return {
+            "tolerance": item.tolerance if item.tolerance is not None else 0,
+            "accept_fractions": True,
+        }
+    if item.type == "free_recall":
+        return {"reveal_lesson": True}
+    if item.type == "worked_example":
+        return {"body_markdown": item.prompt}
+    return {}
+
+
+def _version_number(item_id: str, index: int) -> int:
+    parts = item_id.rsplit("-", 1)
+    if len(parts) == 2 and parts[1].isdigit():
+        return int(parts[1])
+    return index
+
+
+def _upsert_lesson(
+    db: Session,
+    competency: Competency,
+    content: CompetencyContent,
+) -> Lesson:
+    lesson_key = f"{content.frontmatter.key}.intro"
+    lesson = db.scalar(select(Lesson).where(Lesson.key == lesson_key))
+    reviewed_at = datetime.fromisoformat(content.frontmatter.reviewed_on).replace(
+        tzinfo=timezone.utc
+    )
+    if lesson is None:
+        lesson = Lesson(
+            competency_id=competency.id,
+            key=lesson_key,
+            title=content.frontmatter.lesson_title,
+            body_markdown=content.reading_markdown,
+            provisional=False,
+            source="seed",
+        )
+        db.add(lesson)
+        db.flush()
+    else:
+        lesson.title = content.frontmatter.lesson_title
+        lesson.body_markdown = content.reading_markdown
+        lesson.provisional = False
+        lesson.source = "seed"
+
+    if content.worked_example_markdown:
+        # Worked example activity is added from items when present; body lives on payload.
+        pass
+
+    for index, item in enumerate(content.items, start=1):
+        version_number = _version_number(item.id, index)
+        found = db.scalar(
+            select(ActivityVersion).where(
+                ActivityVersion.lesson_id == lesson.id,
+                ActivityVersion.item_id == item.id,
+            )
+        )
+        answer_key = {"correct": item.answer} if item.answer else None
+        payload = _payload_for(item)
+        if item.type == "worked_example" and content.worked_example_markdown:
+            payload = {"body_markdown": content.worked_example_markdown}
+        if found is None:
+            db.add(
+                ActivityVersion(
+                    lesson_id=lesson.id,
+                    version=version_number,
+                    item_id=item.id,
+                    activity_type=item.type,
+                    prompt=item.prompt,
+                    answer_key=answer_key,
+                    explanation=item.explanation,
+                    misconceptions=item.misconceptions,  # type: ignore[arg-type]
+                    payload=payload,
+                    provisional=False,
+                    source="seed",
+                    reviewed_at=reviewed_at,
+                    effort_minutes_low=item.effort_minutes.low,
+                    effort_minutes_high=item.effort_minutes.high,
+                )
+            )
+        else:
+            found.version = version_number
+            found.activity_type = item.type
+            found.prompt = item.prompt
+            found.answer_key = answer_key
+            found.explanation = item.explanation
+            found.misconceptions = item.misconceptions  # type: ignore[assignment]
+            found.payload = payload
+            found.provisional = False
+            found.source = "seed"
+            found.reviewed_at = reviewed_at
+            found.effort_minutes_low = item.effort_minutes.low
+            found.effort_minutes_high = item.effort_minutes.high
+    return lesson
 
 
 def seed(db: Session) -> None:
-    for domain_spec in CURRICULA:
-        domain = _domain(db, domain_spec)
+    failures = validate_all()
+    if failures:
+        details = "; ".join(f"{item.path}:{item.line} {item.rule}" for item in failures[:5])
+        raise RuntimeError(f"content validation failed: {details}")
+
+    for domain_content in load_all():
+        domain = _domain(db, domain_content.domain.key, domain_content.domain.name)
         by_key = {
-            spec.key: _competency(db, domain, spec) for spec in domain_spec.competencies
-        }
-        for source_key, target_key in domain_spec.requires:
-            source = by_key[source_key]
-            target = by_key[target_key]
-            exists = db.scalar(
-                select(CompetencyEdge).where(
-                    CompetencyEdge.from_competency_id == source.id,
-                    CompetencyEdge.to_competency_id == target.id,
-                    CompetencyEdge.edge_type == EDGE_REQUIRES,
-                )
+            item.frontmatter.key: _competency(
+                db, domain, item.frontmatter.key, item.frontmatter.name
             )
-            if exists is None:
-                db.add(
-                    CompetencyEdge(
-                        from_competency_id=source.id,
-                        to_competency_id=target.id,
-                        edge_type=EDGE_REQUIRES,
+            for item in domain_content.competencies
+        }
+        for content in domain_content.competencies:
+            competency = by_key[content.frontmatter.key]
+            for req in content.frontmatter.requires:
+                source = by_key[content.frontmatter.key]
+                target = by_key[req]
+                exists = db.scalar(
+                    select(CompetencyEdge).where(
+                        CompetencyEdge.from_competency_id == source.id,
+                        CompetencyEdge.to_competency_id == target.id,
+                        CompetencyEdge.edge_type == EDGE_REQUIRES,
                     )
                 )
-        for lesson_spec in domain_spec.lessons:
-            lesson = db.scalar(select(Lesson).where(Lesson.key == lesson_spec.key))
-            if lesson is None:
-                lesson = Lesson(
-                    competency_id=by_key[lesson_spec.competency_key].id,
-                    key=lesson_spec.key,
-                    title=lesson_spec.title,
-                    body_markdown=lesson_spec.body,
-                )
-                db.add(lesson)
-                db.flush()
-            for activity in lesson_spec.activities:
-                found = db.scalar(
-                    select(ActivityVersion).where(
-                        ActivityVersion.lesson_id == lesson.id,
-                        ActivityVersion.version == activity.version,
-                    )
-                )
-                if found is None:
-                    choices = _choices_from_prompt(activity.prompt)
+                if exists is None:
                     db.add(
-                        ActivityVersion(
-                            lesson_id=lesson.id,
-                            version=activity.version,
-                            item_id=f"{activity.activity_type}-{activity.version}",
-                            activity_type=activity.activity_type,
-                            prompt=activity.prompt,
-                            answer_key=activity.answer_key,
-                            payload={"choices": choices} if choices else {},
-                            provisional=False,
-                            source="seed",
-                            reviewed_at=datetime.now(timezone.utc),
-                            effort_minutes_low=activity.effort_low,
-                            effort_minutes_high=activity.effort_high,
+                        CompetencyEdge(
+                            from_competency_id=source.id,
+                            to_competency_id=target.id,
+                            edge_type=EDGE_REQUIRES,
                         )
                     )
+            _upsert_lesson(db, competency, content)
     db.commit()
 
 
 def main() -> None:
     with SessionLocal() as db:
         seed(db)
-    print("seeded python, math, and software mini-curricula")
+    print("seeded curricula from content/")
 
 
 if __name__ == "__main__":

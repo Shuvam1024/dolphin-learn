@@ -1,0 +1,75 @@
+- id: reading-1
+  type: reading
+  prompt: Read the note on failing tests.
+  effort_minutes:
+    low: 5
+    high: 8
+- id: objective-2
+  type: objective
+  prompt: 'A test expected `[1, 2]` but got `[2, 1]`. What happened?
+
+
+    a) The items are present but in the wrong order
+
+    b) The program crashed before returning
+
+    c) The test never ran'
+  choices:
+  - The items are present but in the wrong order
+  - The program crashed before returning
+  - The test never ran
+  answer: a
+  explanation: The values match as a set but not in order.
+  misconceptions:
+    b: A value was returned.
+    c: The assertion ran and failed.
+  difficulty: 2
+  effort_minutes:
+    low: 4
+    high: 6
+- id: objective-3
+  type: objective
+  prompt: 'What should you write before changing code?
+
+
+    a) A plain sentence naming the mismatch
+
+    b) A mastery percent for the module
+
+    c) A calendar deadline'
+  choices:
+  - A plain sentence naming the mismatch
+  - A mastery percent for the module
+  - A calendar deadline
+  answer: a
+  explanation: Name the mismatch the test actually reported.
+  misconceptions:
+    b: Dolphin does not invent mastery percents.
+    c: Deadlines are not study evidence.
+  difficulty: 1
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-4
+  type: objective
+  prompt: 'Which reading step comes first?
+
+
+    a) Silence the assertion
+
+    b) Read expected versus observed
+
+    c) Rewrite unrelated modules'
+  choices:
+  - Silence the assertion
+  - Read expected versus observed
+  - Rewrite unrelated modules
+  answer: b
+  explanation: Start from what the test compared.
+  misconceptions:
+    a: Silencing hides the signal.
+    c: Scope should follow the assertion.
+  difficulty: 1
+  effort_minutes:
+    low: 2
+    high: 4

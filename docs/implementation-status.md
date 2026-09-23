@@ -1,11 +1,15 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S54; Phase 2 through activity-type schema
+- **Milestone completed:** S01–S55; Phase 2 through content-as-files
 - **Verified working user journey:** Learner-facing payloads and screens show competency names and plain reason/facet labels; keys stay in the API for machines.
 - **Implemented modules/features:** Prior surface plus `learning/copy.py` and activity content fields (`item_id`, `payload`, `provisional`, seven types) (`FACET_LABEL`, `REASON_TEXT`, `AI_LABEL`); home/progress/overview/reviews/proposals/summary carry `competency_name` / `facet_label` / `reason_text` / `lesson_title`; web Home, Progress, Review, path, wizard, and session summary render names; contracts types for named fields; `e2e/no-raw-keys.spec.ts`.
 - **Stubbed or unavailable features:** Vault, RAG, tutor gateway, sandbox. AI FakeProvider arrives in S56.
 - **Schema/API changes:** Alembic through `0010_activity_content_fields`
+- **Tests run and exact results (S55):**
+  - `python -m app.content.validate` → content ok
+  - `pytest -q` → 67 passed, 6 skipped (incl. content loader rule fixtures)
+  - `ruff` / `mypy` clean; CI job `content` added
 - **Tests run and exact results (S54):**
   - `alembic upgrade head` → `0010_activity_content_fields`
   - `pytest -q` → 56 passed, 6 skipped (incl. `test_activity_types_schema.py`)
@@ -24,8 +28,8 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S54**
-- **Next step:** **S55 — Content as validated files**
+- **Completed steps:** **S01–S55**
+- **Next step:** **S56 — AI gateway with FakeProvider**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -40,7 +44,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | 1B | Delayed retention (S41–S42) | Done |
 | 1C | Physical study time (S43–S46) | Done |
 | 1D | Honest demo content (S47–S50) | Done |
-| 2 | Foundations (S51–S58) | In progress (S54) |
+| 2 | Foundations (S51–S58) | In progress (S55) |
 | Later | Phases 3–7 per first-ship plan | Later |
 
 ---
@@ -109,3 +113,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S52** | `feat(web): add clear depth ui kit with verified contrast` | Kit primitives; contrast tests; sign-in and gate migrated; axe zero on both |
 | **S53** | `feat(api): copy module with competency names and plain reasons in payloads` | Names and plain reasons on payloads; web shows labels; no-raw-keys baseline green |
 | **S54** | `feat(db): activity item ids, explanations, misconceptions, typed payloads, provisional flag` | Seven activity types; item_id; payload; provisional/source/reviewed_at; downgrade ok |
+| **S55** | `feat(content): curricula as validated markdown and yaml with a loader` | content/ files; loader+rules; seed from files; CI content job |

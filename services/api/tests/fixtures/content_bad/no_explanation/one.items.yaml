@@ -1,0 +1,63 @@
+- id: reading-1
+  type: reading
+  prompt: Read.
+  effort_minutes:
+    low: 1
+    high: 2
+- id: objective-1
+  type: objective
+  prompt: 'Q1?
+
+
+    a) x
+
+    b) y
+
+    c) z'
+  choices:
+  - x
+  - y
+  - z
+  answer: b
+  difficulty: 1
+  effort_minutes:
+    low: 1
+    high: 2
+- id: objective-2
+  type: objective
+  prompt: 'Q2?
+
+
+    a) x
+
+    b) y
+
+    c) z'
+  choices:
+  - x
+  - y
+  - z
+  answer: a
+  difficulty: 1
+  effort_minutes:
+    low: 1
+    high: 2
+- id: objective-3
+  type: objective
+  prompt: 'Q3?
+
+
+    a) x
+
+    b) y
+
+    c) z'
+  choices:
+  - x
+  - y
+  - z
+  answer: c
+  difficulty: 1
+  effort_minutes:
+    low: 1
+    high: 2

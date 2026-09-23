@@ -1,0 +1,70 @@
+- id: reading-1
+  type: reading
+  prompt: Read the note on naming the bug.
+  effort_minutes:
+    low: 5
+    high: 8
+- id: objective-2
+  type: objective
+  prompt: 'The test expected the list `[1, 2]` but got `[2, 1]`. Which plain description
+    fits?
+
+
+    a) The items are present but in the wrong order
+
+    b) The program crashed before returning
+
+    c) The test never ran'
+  choices:
+  - The items are present but in the wrong order
+  - The program crashed before returning
+  - The test never ran
+  answer: a
+  explanation: Order is the mismatch the assertion showed.
+  misconceptions:
+    b: A list was returned.
+    c: The test ran and failed.
+  difficulty: 2
+  effort_minutes:
+    low: 5
+    high: 8
+- id: objective-3
+  type: objective
+  prompt: 'Why name the mismatch before changing code?
+
+
+    a) So you fix the behavior the test actually checked
+
+    b) So the product can invent a mastery percent
+
+    c) So a calendar deadline becomes study time'
+  choices:
+  - So you fix the behavior the test actually checked
+  - So the product can invent a mastery percent
+  - So a calendar deadline becomes study time
+  answer: a
+  explanation: The bug name should match the assertion.
+  misconceptions:
+    b: No mastery percent is created.
+    c: Time budgets are not retention.
+  difficulty: 2
+  effort_minutes:
+    low: 4
+    high: 6
+- id: objective-4
+  type: objective
+  prompt: "A good bug name should\u2026\n\na) Match what the test checked\nb) Guess\
+    \ an unrelated subsystem\nc) Replace the test with a skip"
+  choices:
+  - Match what the test checked
+  - Guess an unrelated subsystem
+  - Replace the test with a skip
+  answer: a
+  explanation: Stay faithful to the assertion.
+  misconceptions:
+    b: Guessing widens the change.
+    c: Skipping hides the failure.
+  difficulty: 1
+  effort_minutes:
+    low: 2
+    high: 4

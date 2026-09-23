@@ -1,0 +1,75 @@
+- id: reading-1
+  type: reading
+  prompt: Read the note on calling a function. You are not scored for reading.
+  effort_minutes:
+    low: 20
+    high: 40
+- id: objective-2
+  type: objective
+  prompt: 'What does `print(n)` do?
+
+
+    a) It binds a new name called print
+
+    b) It looks up `print` and runs it with the current value of `n`
+
+    c) It deletes `n`'
+  choices:
+  - It binds a new name called print
+  - It looks up `print` and runs it with the current value of `n`
+  - It deletes `n`
+  answer: b
+  explanation: A call looks up the function and passes evaluated arguments.
+  misconceptions:
+    a: There is no assignment, so no new binding.
+    c: The name `n` remains.
+  difficulty: 2
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-3
+  type: objective
+  prompt: 'Which statement binds a name as part of using a call?
+
+
+    a) `print(n)`
+
+    b) `length = len(items)`
+
+    c) `n > 2`'
+  choices:
+  - '`print(n)`'
+  - '`length = len(items)`'
+  - '`n > 2`'
+  answer: b
+  explanation: Only the assignment form binds `length` to the call result.
+  misconceptions:
+    a: A bare call does not bind.
+    c: A comparison is not a call assignment.
+  difficulty: 2
+  effort_minutes:
+    low: 1
+    high: 2
+- id: objective-4
+  type: objective
+  prompt: 'When does Python evaluate the argument expression in a call?
+
+
+    a) After the function returns
+
+    b) Before the function body runs
+
+    c) Only if you write an assignment'
+  choices:
+  - After the function returns
+  - Before the function body runs
+  - Only if you write an assignment
+  answer: b
+  explanation: Arguments are evaluated before the call begins.
+  misconceptions:
+    a: Evaluation happens first.
+    c: Evaluation does not require assignment.
+  difficulty: 1
+  effort_minutes:
+    low: 1
+    high: 2

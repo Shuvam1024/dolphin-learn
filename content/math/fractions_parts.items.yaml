@@ -1,0 +1,75 @@
+- id: reading-1
+  type: reading
+  prompt: Read the note on numerators and denominators.
+  effort_minutes:
+    low: 4
+    high: 6
+- id: objective-2
+  type: objective
+  prompt: 'In 3/4, what does the 4 name?
+
+
+    a) How many parts you have
+
+    b) How many equal parts make the whole
+
+    c) The sum of the parts'
+  choices:
+  - How many parts you have
+  - How many equal parts make the whole
+  - The sum of the parts
+  answer: b
+  explanation: The denominator names the size of each equal part of the whole.
+  misconceptions:
+    a: That is the numerator.
+    c: The denominator is not a sum.
+  difficulty: 1
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-3
+  type: objective
+  prompt: 'Which phrase matches 2/5?
+
+
+    a) Two fifths of one whole
+
+    b) Five halves of one whole
+
+    c) Two plus five'
+  choices:
+  - Two fifths of one whole
+  - Five halves of one whole
+  - Two plus five
+  answer: a
+  explanation: Numerator counts parts; denominator sizes them.
+  misconceptions:
+    b: That swaps the roles.
+    c: A fraction is not an addition problem.
+  difficulty: 1
+  effort_minutes:
+    low: 2
+    high: 3
+- id: objective-4
+  type: objective
+  prompt: 'Why must parts be equal when you read a fraction?
+
+
+    a) So the denominator can name one shared size
+
+    b) So the numerator can be ignored
+
+    c) So the slash becomes multiplication'
+  choices:
+  - So the denominator can name one shared size
+  - So the numerator can be ignored
+  - So the slash becomes multiplication
+  answer: a
+  explanation: Equal parts let the denominator mean one size.
+  misconceptions:
+    b: The numerator still counts.
+    c: The slash is not multiplication here.
+  difficulty: 2
+  effort_minutes:
+    low: 2
+    high: 3
