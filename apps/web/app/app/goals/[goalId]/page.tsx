@@ -72,6 +72,11 @@ export default async function GoalPathPage({
         <p className={styles.meta}>Plan version {overview.version_number}</p>
         <p className={styles.lede}>{overview.feasibility_note}</p>
         <p className={styles.meta}>{overview.why_next}</p>
+        <form action={`/api/goals/${overview.goal_id}/replan`} method="post">
+          <button className={styles.button} type="submit">
+            Update plan
+          </button>
+        </form>
         {next.kind === "resume" ? (
           <p className={styles.meta}>
             <Link href={next.href}>Continue</Link>

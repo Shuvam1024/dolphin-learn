@@ -50,13 +50,14 @@ def _path(db: Session, user: User, goal: Goal) -> LearningPath:
     return found
 
 
-def accept_proposal(
+def save_accepted_version(
     db: Session,
     user: User,
     goal: Goal,
-    budget: TimeBudget,
-) -> tuple[PlanVersion, PlanProposal]:
-    proposal = propose_for_goal(db, goal, budget, None)
+    proposal: PlanProposal,
+    note: str = "",
+) -> PlanVersion:
+    """Write version N+1. Older versions and their activities stay in place."""
     path = _path(db, user, goal)
     latest = db.scalar(
         select(func.max(PlanVersion.version_number)).where(
@@ -67,7 +68,7 @@ def accept_proposal(
         learning_path_id=path.id,
         version_number=(latest or 0) + 1,
         status="accepted",
-        rationale=rationale_for(proposal),
+        rationale=rationale_for(proposal) if not note else f"{rationale_for(proposal)}\n{note}",
         usable_minutes=proposal.usable_minutes,
     )
     db.add(version)
@@ -96,6 +97,17 @@ def accept_proposal(
             position += 1
     db.commit()
     db.refresh(version)
+    return version
+
+
+def accept_proposal(
+    db: Session,
+    user: User,
+    goal: Goal,
+    budget: TimeBudget,
+) -> tuple[PlanVersion, PlanProposal]:
+    proposal = propose_for_goal(db, goal, budget, None)
+    version = save_accepted_version(db, user, goal, proposal)
     return version, proposal
 
 

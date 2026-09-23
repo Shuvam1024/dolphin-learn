@@ -22,6 +22,7 @@ from app.modules.learning.accept import accept_proposal, activities_for, latest_
 from app.modules.learning.models import PlanVersion
 from app.modules.learning.overview import build_overview
 from app.modules.learning.proposals import propose_for_goal
+from app.modules.learning.replan import replan_goal
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from sqlalchemy.orm import Session
@@ -445,6 +446,24 @@ class OverviewOut(BaseModel):
     continue_action: ContinueOut
     activities: list[OverviewActivityOut]
     deferred: list[DeferredOut]
+
+
+@router.post("/{goal_id}/replan", response_model=AcceptedPlanOut)
+def post_replan(
+    goal_id: uuid.UUID,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> AcceptedPlanOut:
+    goal = get_owned_goal(db, user, goal_id)
+    budget = budget_for(db, goal)
+    if budget is None:
+        raise ApiError(
+            "validation_error",
+            "Add a time budget before replanning",
+            status_code=422,
+        )
+    version, _proposal = replan_goal(db, user, goal, budget)
+    return _plan_out(db, version)
 
 
 @router.get("/{goal_id}/overview", response_model=OverviewOut)
