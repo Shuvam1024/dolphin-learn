@@ -120,4 +120,5 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **Plan** | `docs: plan physical study time as phase 1c` | S43–S46 measure active minutes, show them beside the budget, replan the remainder, snooze by hours |
 | **Subjects** | `docs: prioritize computing subjects first` | Next curricula are CS, software engineering, then machine learning |
 | **Path** | `docs: keep the core subject-agnostic on the way to any field` | The clock, ledger, and graph stay shared; computing is the first curriculum, not a special case |
-| **S43** | `feat(sessions): measure active study minutes excluding pauses` | Pause gaps are excluded; finish freezes the total; Studio says time away is not counted |
+| **Quality** | `docs: judge each step by learning quality and usability` | Content, technique, time fit, and plain use are part of done, not a later polish pass |
+| **S43** | `feat(sessions): measure active study minutes excluding pauses` | Pause gaps are excluded; finish freezes the total; Studio says the clock stops when you pause |
