@@ -3,7 +3,7 @@
 **Document status:** Learning-oriented implementation sequence — not a claim of shipped code  
 **Last updated:** September 23, 2026  
 **Audience:** Learner building Dolphin step by step with Cursor  
-**Scope:** Phase 0 through Phase 1B (S01–S44). Stop before Vault, RAG, a tutor gateway, or a sandbox. Later phases are named in `05-direction.md` and are not steps in this file yet.
+**Scope:** Phase 0 through Phase 1C (S01–S46). Phase 1B ended at S42. Phase 1C measures study in active minutes. Stop before Vault, RAG, a tutor gateway, or a sandbox. Later phases are outlined in `05-direction.md` and are not steps in this file yet.
 
 ---
 
@@ -681,7 +681,7 @@ Goal → plan → Session Studio → independent check → Evidence Ledger → r
 
 ## Phase 1B — Delayed retention
 
-Phase 1A is demonstrated. These steps earn the `retained` facet only from a review that was already due, then show it honestly. Still no Vault, RAG, tutor, or sandbox.
+Phase 1A is demonstrated. These steps earn the `retained` facet only from a review that was already due, then show it honestly. Phase 1B stops at S42. Still no Vault, RAG, tutor, or sandbox.
 
 ### S41 — Retained only after a due independent review
 
@@ -711,39 +711,78 @@ Phase 1A is demonstrated. These steps earn the `retained` facet only from a revi
 **How:** Project the facet. Explain it as a delayed check, not a score.  
 **Why:** Hiding the facet, or turning it into a percent, breaks the honesty rule.
 
-### S43 — Optional deadline that does not add minutes
+---
+
+## Phase 1C — Physical study time
+
+Time in Dolphin is a duration of attention, not a date on a calendar.
+
+- **Study minutes** are the stretches a session was active. Pause, and the clock stops. The hours between sittings are not study.
+- **A budget** is a count of those minutes. Fourteen sittings of 30 minutes are 420 minutes. They are not a due date, and they are not 14 times 24 hours.
+- **A review wait** is a duration until the next retrieval. Waiting is not studying, and it does not increase the budget.
+- There is no goal deadline column. Someone with an exam says how many minutes they can study. The plan fits that quantity or names what does not fit.
+
+### S43 — Measure active study minutes
 
 | Field | Value |
 |---|---|
-| **Title** | Store an optional goal deadline without inflating the budget |
-| **Commit** | `feat(goals): store optional deadline without adding minutes` |
-| **Files/areas** | Nullable deadline on the goal; planner usable minutes unchanged; replan rationale can name the date |
-| **Acceptance** | A deadline saves and reloads; 14×30 stays 420 minutes; clearing the deadline leaves the budget |
+| **Title** | Count only the minutes a session was active |
+| **Commit** | `feat(sessions): measure active study minutes excluding pauses` |
+| **Files/areas** | Session clock from start, pause, resume, and finish. `GET /sessions/{id}` returns `active_minutes`. Studio says time away is not counted. |
+| **Acceptance** | Ten active minutes plus a long pause count as ten, not as the wall gap; finishing freezes the total; a duplicate event does not add time |
 
 **Teach note:**  
-**What:** A date is not extra study time.  
-**How:** Store the deadline beside the budget. Do not add those calendar hours to usable minutes.  
-**Why:** Time Intelligence treats a horizon and available effort as different facts.
+**What:** Study time is time spent studying.  
+**How:** Sum the stretches between start and pause, and between resume and the next pause or finish. Floor to whole minutes. An open session counts up to now.  
+**Why:** A date, or a clock that runs while the learner is away, invents effort they did not give.
 
-### S44 — Snooze a review without awarding retention
+### S44 — Show studied minutes beside the budget
 
 | Field | Value |
 |---|---|
-| **Title** | Snooze a due review without extending the success interval |
-| **Commit** | `feat(review): snooze a due item without awarding retention` |
-| **Files/areas** | `POST /reviews/{id}/snooze` moves `due_at` by a small day count; interval stays; no `retained` row |
-| **Acceptance** | Snooze changes the due time only; an assisted or snoozed path still cannot set `retained` |
+| **Title** | Show measured study minutes next to usable minutes |
+| **Commit** | `feat(progress): show studied minutes beside the usable budget` |
+| **Files/areas** | Goal path and Home name usable minutes and studied minutes for that goal. Studied is the sum of that goal’s session clocks. The budget row does not change. No percent. No date. |
+| **Acceptance** | A 14×30 plan still says 420 usable minutes; studied minutes match the session clocks; neither surface shows “% mastered” or a deadline date |
 
 **Teach note:**  
-**What:** Skipping today is not proof you remember the skill.  
-**How:** Append a review event and move `due_at`. Leave `interval_days` and evidence alone.  
-**Why:** Misses may change the calendar. They must not rewrite what was demonstrated.
+**What:** The learner can see the minutes they offered and the minutes they have used.  
+**How:** Sum `active_minutes` for sessions on that goal. Print both numbers. Leave `usable_minutes` on the plan equal to the budget.  
+**Why:** Progress in time is a measurement. It is not a score, and it is not a calendar.
+
+### S45 — Replan against minutes that remain
+
+| Field | Value |
+|---|---|
+| **Title** | Replan using remaining study minutes |
+| **Commit** | `feat(plan): replan from minutes remaining after study` |
+| **Files/areas** | Remaining = max(0, usable budget − studied minutes). The new plan version uses that quantity. Rationale names studied and remaining. Retained and independently demonstrated competencies stay out of the new version. Attempts are not edited. |
+| **Acceptance** | After 30 measured minutes on a 420-minute budget, the new version’s usable minutes are 390; the budget row is still 420; a zero remainder is a scope conflict; evidence rows are unchanged |
+
+**Teach note:**  
+**What:** The next plan should fit the minutes still available.  
+**How:** Subtract measured study from the budget, then run the same planner. Write a new version. Keep the old one.  
+**Why:** Planning against the original budget forever pretends the time was not spent. Shrinking the budget row would hide what the learner originally offered.
+
+### S46 — Snooze a review for a duration
+
+| Field | Value |
+|---|---|
+| **Title** | Snooze a due review for a number of hours |
+| **Commit** | `feat(review): snooze a due item for a duration without retention` |
+| **Files/areas** | `POST /reviews/{id}/snooze` body `{hours}` from 1 to 168. `due_at` moves by that duration. `interval_days` stays. No `retained` row. The review page offers “Not now” as hours, not a date. |
+| **Acceptance** | Snooze changes only when the item returns; interval and evidence stay; an assisted review still cannot set `retained` |
+
+**Teach note:**  
+**What:** Skipping a review delays the next check. It is not study, and it is not memory.  
+**How:** Store a duration. Append a snooze event. Do not call `award_retained`.  
+**Why:** Forgetting runs on elapsed time. That wait must not be recorded as proof, and it must not be entered as a calendar deadline.
 
 ---
 
 ## Stop line
 
-Do **not** start Vault, RAG, a tutor gateway, or a code sandbox in Phase 1B. Those stay later. `05-direction.md` names the order: finish S43 and S44, then 1C time honesty, then a tutor that cannot grade itself, then Vault, then one isolated lab.
+Do **not** start Vault, RAG, a tutor gateway, or a code sandbox in Phase 1C. Do **not** add a goal deadline date. `05-direction.md` outlines what comes after S46.
 
 Tiny seams allowed only as listed (e.g. S36 replan, honest Library empty state). No upload pipelines, embeddings, or in-process code execution in this plan.
 
@@ -795,5 +834,7 @@ Tiny seams allowed only as listed (e.g. S36 replan, honest Library empty state).
 | S40 | 1A | Document Prove Loop demo script and mark Phase 1A exit |
 | S41 | 1B | Award retained only after a due independent review |
 | S42 | 1B | Show the retained facet on Progress and Home |
-| S43 | 1B | Store an optional goal deadline without adding minutes |
-| S44 | 1B | Snooze a due review without awarding retention |
+| S43 | 1C | Measure active study minutes, excluding pauses |
+| S44 | 1C | Show studied minutes beside the usable budget |
+| S45 | 1C | Replan from minutes remaining after study |
+| S46 | 1C | Snooze a due review for a duration without awarding retention |

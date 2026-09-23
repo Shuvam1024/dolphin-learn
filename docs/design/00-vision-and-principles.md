@@ -121,13 +121,13 @@ Vs generic AI tutors, flashcard apps, and planner-only tools:
 - Assistance changes evidence quality (`independent`, `hinted`, `worked_example`, …).
 - Never classify a user as “low ability.” Skill estimates are local and uncertain.
 - Delayed checks → retention; new-context tasks → transfer. Neither from lesson completion alone.
-- A short deadline prioritizes what fits; it does not redefine mastery.
+- A smaller study-minute budget prioritizes what fits. It does not redefine mastery, and a calendar date is not study time.
 
 ---
 
-## Direction lock
+## Direction
 
-An external brief (working name ATLAS) restated this same product and added a time-adaptive pass. Dolphin keeps the name, the stack, and the evidence rules. Priorities may later narrow scope. They do not create a mastery percent, a learning-style label, or extra minutes. Phase order after the current build is in `05-direction.md`.
+`05-direction.md` is the current product judgment, including how time is measured. It is not a second build plan. Sequential steps stay in `03-build-plan.md`.
 
 ## Near-term non-goals
 

@@ -13,7 +13,7 @@ Detailed first-launch steps:
 
 1. Landing explains Dolphin as a complete personal learning system, not a proficiency guarantee.
 2. Sign in (managed auth).
-3. Natural-language goal → Quick Learn or Journey → budget/deadline + **actual** availability.
+3. Natural-language goal → Quick Learn or Journey → a budget of **actual study minutes**.
 4. Backend normalizes → proposed objective, prerequisite estimate, feasibility range.
 5. User confirms; optional short diagnostic or “start from basics.”
 6. Persist goal, time budget, path, plan version, session; show included vs deferred outcomes.
@@ -48,7 +48,7 @@ Within Session Studio, use a contextual workspace — do not bounce the learner 
 /sign-in                managed authentication
 /onboarding             optional preferences + first goal
 /app                    Home (learning dashboard hub)
-/app/goals/new          goal + timeframe/availability wizard
+/app/goals/new          goal + study-minute budget wizard
 /app/goals/:goalId      objectives, plan, feasibility
 /app/goals/:goalId/edit timeframe, scope, preferences
 /app/learn/:sessionId   Session Studio
@@ -68,11 +68,11 @@ One primary next action (“Continue: solving equations — 20 min”); due revi
 
 ### Goal wizard
 
-1. Goal text → 2. Deadline + *actual* availability → 3. Priority/preferences → 4. Optional diagnostic → 5. Plan preview + disposition rationale. Always allow back/edit. Keyboard-friendly; mobile usable.
+1. Goal text → 2. Study minutes (one sitting, or minutes per sitting × number of sittings) → 3. Priority/preferences → 4. Optional diagnostic → 5. Plan preview + disposition rationale. Always allow back/edit. Keyboard-friendly; mobile usable. There is no deadline date.
 
 ### Learning path
 
-Accessible ordered list; labels: prereq / needs-practice / demonstrated / deferred; session cards with minutes + evidence objectives; “Why this next?”; edit deadline.
+Accessible ordered list; labels: prereq / needs-practice / demonstrated / deferred; session cards with minutes + evidence objectives; “Why this next?”; usable minutes and measured study minutes.
 
 ### Session Studio
 
@@ -94,12 +94,12 @@ Language, density, reduced motion, default session length, optional non-punitive
 
 ## Time Intelligence (UX-facing rules)
 
-Never confuse **calendar horizon** with **available study effort**.
+Study time is physical. It is the minutes a session was active, not a date.
 
-- Ask for real minutes (one-off **or** weekly windows — never double-count).
-- If estimated required low > usable budget → **scope conflict**: show what fits / what doesn’t; offer reduce goal / add time / extend deadline / accept introductory-not-mastery.
-- Plans are versioned; accept is explicit; replan creates a new version without mutating evidence.
-- Misses change future planning only — never dump everything onto one catch-up day.
+- Ask for real minutes (one sitting, **or** minutes per sitting times a number of sittings — never both, and never 24 hours per day).
+- If estimated required low > usable budget → **scope conflict**: show what fits and what does not. Offer a smaller goal or more minutes. Do not invent a deadline date.
+- Plans are versioned; accept is explicit; replan creates a new version without mutating evidence. After Phase 1C, replan uses minutes still remaining.
+- Misses change future planning only — never dump everything onto one catch-up day. Time away is not study.
 
 ### Same subject, different budgets (Python examples)
 

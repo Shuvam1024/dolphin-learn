@@ -26,7 +26,7 @@ This folder is the **source of truth** for product vision, UX, architecture, seq
 2. Implement one step at a time from `03-build-plan.md`.
 3. Update `04-implementation-status.md` after every completed step.
 4. Explain **what / how / why** from each step’s teach note while building.
-5. Finish the current phase before Vault, RAG, a tutor gateway, or a sandbox. After Phase 1B, read `05-direction.md` before adding steps.
+5. The current build is Phase 1C (S43–S46): study time is active minutes, not a date. Read `05-direction.md` before adding a later phase. No Vault, RAG, tutor gateway, or sandbox in 1C.
 
 ## Slim pointer
 

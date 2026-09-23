@@ -4,7 +4,7 @@
 - **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S40 Prove Loop (Phase 1A exit); S41–S42 delayed retention
 - **Verified working user journey:** A due independent review is retained on Progress and Home. The page calls that a later check, not a permanent promise and not a mastery percent. The same rules apply to any subject, not only the seeded Python lesson.
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, an honest session-finish summary, a review due queue with 1/3/7/14-day intervals, a Home snapshot of the next action, a Progress ledger of facets plus unassessed plan gaps, a goal path overview, replan that writes the next plan version, and a Studio control to move to the next activity or a different question; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
-- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Next phase is 1B, not Vault, unless chosen later
+- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Next phase is 1C, physical study minutes, not a deadline date and not Vault
 - **Schema/API changes:** Alembic through `0008_attempt_idempotency`; `POST /api/v1/goals/{id}/replan` writes accepted plan version N+1 from the current budget and demonstrated competencies and leaves older versions in place; `GET /api/v1/goals/{id}/overview` returns the path, deferred topics, and the session to continue
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
@@ -52,7 +52,7 @@
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
 - **Completed steps:** **S01–S42**
-- **Next step:** **S43 — Store an optional goal deadline without adding minutes**
+- **Next step:** **S43 — Measure active study minutes, excluding pauses**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -64,8 +64,9 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 |---|---|---|
 | 0 | Foundation (S01–S19) | Done (S01–S19) |
 | 1A | Prove Loop (S20–S40) | Done (S20–S40) |
-| 1B | Delayed retention (S41–S44) | In progress (S42) |
-| Later | Vault / labs / community | Not started |
+| 1B | Delayed retention (S41–S42) | Done (S42) |
+| 1C | Physical study time (S43–S46) | Next (S43) |
+| Later | 1D scope, 1E tutor, 2A Vault, 2B lab, 2C transfer | Not started |
 
 ---
 
@@ -115,3 +116,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S40** | `docs: record phase 1a prove loop demo and status` | Demo script plus exact Phase 1A test results; next phase is 1B, not Vault |
 | **S41** | `feat(assess): award retained only after a due review` | Due independent review sets retained; same-session, early, and assisted reviews do not |
 | **S42** | `feat(progress): show retained facet from delayed review` | Home and Progress name retained; neither shows a mastery percent |
+| **Plan** | `docs: plan physical study time as phase 1c` | S43–S46 measure active minutes, show them beside the budget, replan the remainder, snooze by hours |

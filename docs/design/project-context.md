@@ -13,8 +13,8 @@ Stable goals, constraints, and decisions for Dolphin.
 | GitHub repo | public **`shuvam1024/dolphin-learn`** (also Cursor Cloud Agent project repo) |
 | Design SoT | `docs/design/` |
 | Build tracker | `docs/design/04-implementation-status.md` |
-| Sequential build plan | `docs/design/03-build-plan.md` (S01–S44 through Phase 1B) |
-| Direction after 1B | `docs/design/05-direction.md` |
+| Sequential build plan | `docs/design/03-build-plan.md` (through Phase 1C, S46) |
+| Product judgment | `docs/design/05-direction.md` (time is active minutes, not dates) |
 | Brand | `docs/design/brand.md` |
 
 ---
