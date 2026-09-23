@@ -55,7 +55,7 @@
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
 - **Completed steps:** **S01–S46**
-- **Next step:** **Phase 1D — Write numbered steps for wider honest demo content on the shared core (computing seeds may lead demos; not a required learner path)**
+- **Next step:** **S47 — Require an explicit domain for plans**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -69,7 +69,8 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | 1A | Prove Loop (S20–S40) | Done (S20–S40) |
 | 1B | Delayed retention (S41–S42) | Done (S42) |
 | 1C | Physical study time (S43–S46) | Done (S46) |
-| Later | 1D wider demo content on shared core, then scope, tutor, lab, Vault | Next |
+| 1D | Honest demo content (S47–S50) | Next (S47) |
+| Later | 1E scope, tutor, lab, Vault | Later |
 
 ---
 

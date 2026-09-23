@@ -3,7 +3,7 @@
 **Document status:** Learning-oriented implementation sequence — not a claim of shipped code  
 **Last updated:** September 23, 2026  
 **Audience:** Learner building Dolphin step by step with Cursor  
-**Scope:** Phase 0 through Phase 1C (S01–S46). Phase 1B ended at S42. Phase 1C measures study in active minutes. Stop before Vault, RAG, a tutor gateway, or a sandbox. Later phases are outlined in `05-direction.md` and are not steps in this file yet.
+**Scope:** Phase 0 through Phase 1D (S01–S50). Phase 1C ended at S46. Phase 1D deepens honest demo content on the shared core and removes the silent Python default. Computing-related seeds may lead demos; that is not a required learner path. Stop before Vault, RAG, a tutor gateway, or a sandbox.
 
 ---
 
@@ -780,9 +780,73 @@ Time in Dolphin is a duration of attention, not a date on a calendar.
 
 ---
 
+## Phase 1D — Honest demo content on the shared core
+
+Phase 1C finished the active-minute clock. Phase 1D makes domain choice honest, adds more teachable checks, and keeps the planner / clock / ledger shared for every subject. CS / software practice content may lead demos. It is not a required path for learners. Do not start Vault, RAG, a tutor, or a sandbox here.
+
+---
+
+### S47 — Require an explicit domain
+
+| Field | Value |
+|---|---|
+| **Title** | Store a domain on the goal and stop guessing Python from the title |
+| **Commit** | `feat(goals): require an explicit domain for plans` |
+| **Files/areas** | Alembic `goals.domain_key` (required, FK or check against known domains). `GET /api/v1/domains` lists seeded domains. Create/patch goal requires `domain_key`. `domain_key_for` uses only that field (and an optional proposal override that must match a real domain). Title/heuristic matching is gone. Diagnostic uses the goal’s domain. Missing or unknown domain → 422 with a plain message. |
+| **Acceptance** | A goal without a domain cannot propose or accept a plan; “Learn cooking” does not become Python; listing domains returns only seeded keys; existing tests pass with an explicit domain |
+
+**Teach note:**  
+**What:** The learner chooses what they are studying. The product does not invent a subject from keywords.  
+**How:** Persist the domain on the goal. Plan and diagnostic read that field.  
+**Why:** Silent defaults hide the limit of what we can teach today, and they special-case computing.
+
+### S48 — Deeper Python check
+
+| Field | Value |
+|---|---|
+| **Title** | Seed a conditionals competency with reading and objective checks |
+| **Commit** | `feat(seed): add python conditionals with real checks` |
+| **Files/areas** | `python.conditionals` requires `python.names`. Reading plus at least two objective items with answer keys. Effort minutes are real. No model calls. Idempotent seed. |
+| **Acceptance** | Seed twice is stable; a 200-minute Python plan can include conditionals after names; a short plan may defer it with `insufficient_minutes`; Studio can grade the new items |
+
+**Teach note:**  
+**What:** Demo depth comes from another real skill with a different check, not a longer essay about the same one.  
+**How:** Add one competency, one lesson, reading + closed-form items, and a requires edge.  
+**Why:** The prove loop stays honest when every new topic has something the grader can observe.
+
+### S49 — Software practice mini curriculum
+
+| Field | Value |
+|---|---|
+| **Title** | Seed a software domain with a failing-test lesson and checks |
+| **Commit** | `feat(seed): add software practice mini curriculum` |
+| **Files/areas** | Domain `software` with competencies such as reading a failing test and naming what the test caught. Reading + objective items. Same activity types and evidence path as Python and math. No sandbox and no code execution. |
+| **Acceptance** | Domains list includes `software`; a goal with `domain_key=software` plans only software competencies; evidence facets work the same way; seed stays idempotent |
+
+**Teach note:**  
+**What:** Software practice is another subject on the same ledger, not a second app.  
+**How:** Seed a domain the way math was seeded. Keep checks closed-form until a lab exists.  
+**Why:** Early demos can use computing content we can grade well without claiming every field is ready, and without forcing CS → SE → ML as a user path.
+
+### S50 — Domain picker in the wizard
+
+| Field | Value |
+|---|---|
+| **Title** | Let the learner pick a seeded domain before saving a goal |
+| **Commit** | `feat(web): pick a domain in the goal wizard` |
+| **Files/areas** | Wizard loads `GET /domains`, requires a choice, sends `domain_key` on create. Copy says these are subjects we can check today; more come later. Playwright covers saving a software goal and accepting a plan that is not Python. |
+| **Acceptance** | Cannot save without a domain; software goal shows software competencies; math and Python still work; no silent default |
+
+**Teach note:**  
+**What:** The first screen of a goal should name the subject in words the learner chose.  
+**How:** A plain select from the domains API.  
+**Why:** Usability and honesty meet here: clear next action, and no pretending every title is Python.
+
+---
+
 ## Stop line
 
-Do **not** start Vault, RAG, a tutor gateway, or a code sandbox in Phase 1C. Do **not** add a goal deadline date. After S46, Phase 1D deepens honest demo content on the shared core. Computing-related seeds may come first for demos we can grade well; that is not a required CS → SE → ML path for learners. The product stays for anything they want to learn. `05-direction.md` has the judgment.
+Do **not** start Vault, RAG, a tutor gateway, or a code sandbox in Phase 1D. Do **not** add a goal deadline date. After S50, Phase 1E is scope with the same evidence rules (`05-direction.md`). Computing seeds may lead demos; the product stays for anything they want to learn.
 
 Tiny seams allowed only as listed (e.g. S36 replan, honest Library empty state). No upload pipelines, embeddings, or in-process code execution in this plan.
 
@@ -838,3 +902,7 @@ Tiny seams allowed only as listed (e.g. S36 replan, honest Library empty state).
 | S44 | 1C | Show studied minutes beside the usable budget |
 | S45 | 1C | Replan from minutes remaining after study |
 | S46 | 1C | Snooze a due review for a duration without awarding retention |
+| S47 | 1D | Require an explicit domain for plans |
+| S48 | 1D | Seed python conditionals with real checks |
+| S49 | 1D | Seed software practice mini curriculum |
+| S50 | 1D | Pick a domain in the goal wizard |

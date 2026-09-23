@@ -101,13 +101,20 @@ Phase 1C is finished. The next numbered steps deepen honest demo content without
 
 ## Next phase (build this)
 
-**Phase 1C — Physical study time.** Done (S43–S46).
+**Phase 1D — Honest demo content on the shared core. S47, then S48, then S49, then S50.**
+
+| Step | Commit | Done when |
+|---|---|---|
+| S47 | `feat(goals): require an explicit domain for plans` | No silent Python; goal stores `domain_key`; unknown domain is 422 |
+| S48 | `feat(seed): add python conditionals with real checks` | New competency with reading + graded items; planner can include or defer it |
+| S49 | `feat(seed): add software practice mini curriculum` | `software` domain plans its own competencies on the shared ledger |
+| S50 | `feat(web): pick a domain in the goal wizard` | Learner chooses a seeded domain; software e2e is not Python |
+
+Phase 1C (S43–S46) is done.
 
 ## Later phases
 
 These are build order, not a learner’s required path. Write numbered steps only when starting the phase.
-
-**Phase 1D — Wider, honest demo content on the shared core.** Add more competencies and checks people can actually finish. Prefer computing-related demos for depth we can grade well (CS, software practice, then ML where checks are real). Keep the same planner, clock, and evidence rules for every domain. Remove the silent “everything is Python” default. Do not claim the product only teaches computing, and do not force CS → SE → ML as a user path.
 
 **Phase 1E — Scope, same evidence.** A priority (understand, apply, or go deeper) may drop topics from the plan. It must not change what “retained” means. “How close” is a count of unassessed topics, deferred topics, and due reviews. Never a percent.
 
