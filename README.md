@@ -4,9 +4,9 @@
 
 Dolphin is an adaptive learning platform for adults (18+): a Home hub, time-adaptive plans from real available minutes, Session Studio lessons, and an honest Evidence Ledger. V1 wedge: Python + foundational math on an accessible web client.
 
-Design source of truth: [`docs/dolphin-master-design.md`](docs/dolphin-master-design.md)  
-Build sequence: [`docs/build-plan.md`](docs/build-plan.md)  
-Status: [`docs/implementation-status.md`](docs/implementation-status.md)
+Design source of truth: [`docs/design/`](docs/design/)  
+Build sequence: [`docs/design/03-build-plan.md`](docs/design/03-build-plan.md)  
+Status: [`docs/design/04-implementation-status.md`](docs/design/04-implementation-status.md)
 
 ## Stack
 
