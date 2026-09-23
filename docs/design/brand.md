@@ -33,7 +33,26 @@
 
 **Typography:** Syne (display) + Manrope (UI) + IBM Plex Mono (code).
 
+**App type ramp (S52):** display 28–40px, body 16–17px, meta 14px.
+
 **Avoid:** indigo–purple AI cliché; cream + terracotta serif cliché; streak/leaderboard chrome.
+
+---
+
+## Contrast pairs (S52)
+
+Measured with WCAG relative luminance. Body text must be ≥ 4.5:1; large text ≥ 3:1.
+
+| Pair | Foreground | Background | Ratio | Role |
+|---|---|---|---|---|
+| Ink on foam | `#0B1F2A` | `#F4F8F9` | 15.94:1 | Body, titles |
+| Ink on elevated foam | `#0B1F2A` | `#E8F1F3` | 14.48:1 | Card body |
+| Mist on foam | `#5A6B73` | `#F4F8F9` | 5.11:1 | Secondary body |
+| Foam on ink | `#F4F8F9` | `#0B1F2A` | 15.94:1 | Primary button label |
+| Ink on foam (kicker) | `#0B1F2A` | `#E8F1F3` | 14.48:1 | App kickers (replaces seafoam-on-foam) |
+| Seafoam on foam | `#1FA7A0` | `#F4F8F9` | 2.74:1 | **Fails** body text — borders/accents only |
+
+Kicker pills use **ink on elevated foam**, not seafoam on foam. Seafoam remains the outline accent for secondary buttons.
 
 ---
 

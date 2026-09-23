@@ -19,6 +19,12 @@
   --font-ui: var(--font-manrope), "Manrope", sans-serif;
   --font-display: var(--font-syne), "Syne", sans-serif;
   --font-code: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
+
+  /* App type ramp (S52). Marketing landing may still use a larger display. */
+  --text-display: clamp(28px, 4vw, 40px);
+  --text-body: 16px;
+  --text-body-lg: 17px;
+  --text-meta: 14px;
 }
 
 html,

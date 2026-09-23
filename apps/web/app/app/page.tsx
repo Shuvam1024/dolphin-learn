@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { Button, Page, PageHeader, Stack, Surface } from "@/components/ui";
 import { loadMe } from "@/lib/me";
 import { ACCESS_COOKIE, apiBaseUrl } from "@/lib/session";
 
@@ -49,24 +50,25 @@ export default async function AppHomePage() {
 
   if (!acknowledged) {
     return (
-      <main className={styles.shell}>
-        <section className={styles.card}>
-          <p className={styles.kicker}>Adults 18+</p>
-          <h1 className={styles.title}>Before you start</h1>
-          <p className={styles.lede}>
-            Dolphin is for adults 18 and older. A child-specific product is not part of this
-            version. Learning notes stay private to your account.
-          </p>
-          <p className={styles.meta}>
-            <a href="/privacy">Read the privacy summary</a>
-          </p>
-          <form action="/api/session/acknowledge" method="post">
-            <button className={styles.button} type="submit">
-              I am 18 or older and I understand
-            </button>
-          </form>
-        </section>
-      </main>
+      <Page>
+        <Surface>
+          <Stack gap="md">
+            <PageHeader
+              kicker="Adults 18+"
+              title="Before you start"
+              subtitle="Dolphin is for adults 18 and older. A child-specific product is not part of this version. Learning notes stay private to your account."
+            />
+            <p>
+              <Link href="/privacy">Read the privacy summary</Link>
+            </p>
+            <form action="/api/session/acknowledge" method="post">
+              <Button type="submit" variant="primary">
+                I am 18 or older and I understand
+              </Button>
+            </form>
+          </Stack>
+        </Surface>
+      </Page>
     );
   }
 

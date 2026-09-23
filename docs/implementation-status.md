@@ -6,6 +6,8 @@
 - **Implemented modules/features:** Prior S01–S50 surface plus harness: `@axe-core/playwright` baseline, Playwright perf project on `next start :3100`, API p95 budget tests (`DOLPHIN_PERF=1`), `docs/design/design-review-checklist.md`, Makefile `a11y`/`perf`/`check`, CI job `perf-a11y`.
 - **Stubbed or unavailable features:** Vault, RAG, tutor gateway, sandbox. AI FakeProvider arrives in S56. Axe still records contrast findings (baseline only until later gates require zero).
 - **Schema/API changes:** Alembic through `0009_goal_domain_key` (unchanged in S51)
+- **Tests run and exact results (S52):**
+  - vitest 7 passed (ui-kit + contrast); `e2e/sign-in-a11y.spec.ts` 1 passed (zero serious/critical); tsc/eslint clean; pytest 53 passed + 6 skipped
 - **Tests run and exact results (S51):**
   - `DOLPHIN_PERF=1 pytest tests/perf -s` → 6 passed; p95 home 55.8ms, progress 5.6ms, reviews/due 42.0ms, overview 24.8ms, session 8.8ms, plan-proposals 8.2ms (budget 250ms)
   - `pytest -q` (AI off) → 53 passed, 6 skipped (perf without flag)
@@ -14,8 +16,8 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists color-contrast on kickers (seafoam) — cleared in S52 contrast pass.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S51**
-- **Next step:** **S52 — UI kit on Clear Depth**
+- **Completed steps:** **S01–S52**
+- **Next step:** **S53 — Copy module and names, not keys**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -30,7 +32,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | 1B | Delayed retention (S41–S42) | Done |
 | 1C | Physical study time (S43–S46) | Done |
 | 1D | Honest demo content (S47–S50) | Done |
-| 2 | Foundations (S51–S58) | In progress (S51) |
+| 2 | Foundations (S51–S58) | In progress (S52) |
 | Later | Phases 3–7 per first-ship plan | Later |
 
 ---
@@ -96,3 +98,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S49** | `feat(seed): add software practice mini curriculum` | software domain on shared ledger; plans only software competencies |
 | **S50** | `feat(web): pick a domain in the goal wizard` | Subject required; software e2e is not Python; copy says more subjects come later |
 | **S51** | `test: add axe, perf budget, and design review checklist harness` | Axe baseline, API/page budgets, checklist, Makefile a11y/perf/check, CI perf-a11y |
+| **S52** | `feat(web): add clear depth ui kit with verified contrast` | Kit primitives; contrast tests; sign-in and gate migrated; axe zero on both |
