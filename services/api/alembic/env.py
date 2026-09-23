@@ -5,6 +5,7 @@ from logging.config import fileConfig
 import app.modules.curriculum.models  # noqa: F401
 import app.modules.goals.models  # noqa: F401
 import app.modules.identity.models  # noqa: F401
+import app.modules.learning.models  # noqa: F401
 from alembic import context
 from app.config import settings
 from app.db import Base
