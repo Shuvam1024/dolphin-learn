@@ -18,6 +18,8 @@ from app.modules.goals.service import (
 )
 from app.modules.identity.deps import current_user
 from app.modules.identity.models import User
+from app.modules.learning.accept import accept_proposal, activities_for, latest_accepted
+from app.modules.learning.models import PlanVersion
 from app.modules.learning.proposals import propose_for_goal
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
@@ -344,6 +346,74 @@ def post_plan_proposal(
             for item in proposal.deferred
         ],
     )
+
+
+class PlanActivityOut(BaseModel):
+    id: uuid.UUID
+    position: int
+    title: str
+    estimated_minutes_low: int
+    estimated_minutes_high: int
+
+
+class AcceptedPlanOut(BaseModel):
+    id: uuid.UUID
+    version_number: int
+    status: str
+    rationale: str
+    usable_minutes: int | None
+    activities: list[PlanActivityOut]
+
+
+def _plan_out(db: Session, version: PlanVersion) -> AcceptedPlanOut:
+    return AcceptedPlanOut(
+        id=version.id,
+        version_number=version.version_number,
+        status=version.status,
+        rationale=version.rationale,
+        usable_minutes=version.usable_minutes,
+        activities=[
+            PlanActivityOut(
+                id=row.id,
+                position=row.position,
+                title=row.title,
+                estimated_minutes_low=row.estimated_minutes_low,
+                estimated_minutes_high=row.estimated_minutes_high,
+            )
+            for row in activities_for(db, version)
+        ],
+    )
+
+
+@router.post("/{goal_id}/plans/accept", response_model=AcceptedPlanOut, status_code=201)
+def post_accept_plan(
+    goal_id: uuid.UUID,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> AcceptedPlanOut:
+    goal = get_owned_goal(db, user, goal_id)
+    budget = budget_for(db, goal)
+    if budget is None:
+        raise ApiError(
+            "validation_error",
+            "Add a time budget before accepting a plan",
+            status_code=422,
+        )
+    version, _proposal = accept_proposal(db, user, goal, budget)
+    return _plan_out(db, version)
+
+
+@router.get("/{goal_id}/plan", response_model=AcceptedPlanOut)
+def get_accepted_plan(
+    goal_id: uuid.UUID,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> AcceptedPlanOut:
+    goal = get_owned_goal(db, user, goal_id)
+    version = latest_accepted(db, user, goal)
+    if version is None:
+        raise ApiError("not_found", "No accepted plan", status_code=404)
+    return _plan_out(db, version)
 
 
 @router.get("/{goal_id}", response_model=GoalOut)

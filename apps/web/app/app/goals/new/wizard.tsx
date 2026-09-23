@@ -12,6 +12,11 @@ type SavedGoal = {
   summary: string;
 };
 
+type Proposal = {
+  included: { competency_key: string; name: string }[];
+  deferred: { competency_key: string; name: string; reason_code: string }[];
+};
+
 const PRIORITIES = ["Focus one topic", "Cover more ground", "Leave room for review"] as const;
 
 function wholeNumber(value: string): number | null {
@@ -34,11 +39,52 @@ export function GoalWizard() {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [saved, setSaved] = useState<SavedGoal | null>(null);
+  const [proposal, setProposal] = useState<Proposal | null>(null);
+  const [accepted, setAccepted] = useState(false);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     setReady(true);
   }, []);
+
+  useEffect(() => {
+    if (!saved) {
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      const response = await fetch(`/api/goals/${saved.id}/plan-proposals`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      });
+      if (!response.ok || cancelled) {
+        return;
+      }
+      const body = (await response.json()) as Proposal;
+      if (!cancelled) {
+        setProposal(body);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [saved]);
+
+  async function acceptPlan() {
+    if (!saved) {
+      return;
+    }
+    setPending(true);
+    const response = await fetch(`/api/goals/${saved.id}/plans/accept`, { method: "POST" });
+    setPending(false);
+    if (!response.ok) {
+      setError("Could not accept this plan.");
+      return;
+    }
+    setAccepted(true);
+    setError(null);
+  }
 
   function budgetPayload() {
     const preferredSession = wholeNumber(preferred);
@@ -134,10 +180,53 @@ export function GoalWizard() {
       <main className={styles.shell}>
         <section className={styles.card}>
           <p className={styles.kicker}>Goal</p>
-          <h1 className={styles.title}>Goal saved</h1>
+          <h1 className={styles.title}>{accepted ? "Plan accepted" : "Goal saved"}</h1>
           <p className={styles.step}>
             {saved.title}. {saved.summary}. Priority: {priority}.
           </p>
+          {proposal ? (
+            <>
+              <p className={styles.label}>Included</p>
+              <ul>
+                {proposal.included.map((item) => (
+                  <li key={item.competency_key}>{item.competency_key}</li>
+                ))}
+              </ul>
+              <p className={styles.label}>Deferred</p>
+              {proposal.deferred.length === 0 ? (
+                <p className={styles.step}>Nothing is deferred.</p>
+              ) : (
+                <ul>
+                  {proposal.deferred.map((item) => (
+                    <li key={item.competency_key}>
+                      {item.competency_key} ({item.reason_code})
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
+          ) : (
+            <p className={styles.step}>This preview is not an active plan yet.</p>
+          )}
+          {error ? (
+            <p className={styles.error} role="alert">
+              {error}
+            </p>
+          ) : null}
+          {accepted ? (
+            <p className={styles.step}>Refresh keeps this accepted plan.</p>
+          ) : (
+            <div className={styles.actions}>
+              <button
+                className={styles.button}
+                type="button"
+                onClick={() => void acceptPlan()}
+                disabled={pending || !proposal}
+              >
+                Accept plan
+              </button>
+            </div>
+          )}
           <p className={styles.meta}>
             <a href="/app">Back to home</a>
           </p>

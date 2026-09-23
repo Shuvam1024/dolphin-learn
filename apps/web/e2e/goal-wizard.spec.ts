@@ -58,6 +58,7 @@ test("keyboard-only wizard saves a goal and keeps fields on back", async ({ page
   });
   expect(listed.status()).toBe(200);
   const goals = (await listed.json()) as Array<{
+    id: string;
     title: string;
     normalized_objective: string | null;
     time_budget: { mode: string; one_off_minutes: number | null } | null;
@@ -66,6 +67,21 @@ test("keyboard-only wizard saves a goal and keeps fields on back", async ({ page
   expect(saved?.normalized_objective).toBe("Priority: Focus one topic");
   expect(saved?.time_budget?.mode).toBe("one_off");
   expect(saved?.time_budget?.one_off_minutes).toBe(120);
+
+  await expect(page.getByRole("button", { name: "Accept plan" })).toBeEnabled();
+  await expect(page.getByText("python.names")).toBeVisible();
+  await expect(page.getByText("Nothing is deferred.")).toBeVisible();
+  await page.getByRole("button", { name: "Accept plan" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("heading", { name: "Plan accepted" })).toBeVisible();
+
+  const plan = await page.request.get(`http://127.0.0.1:8000/api/v1/goals/${saved?.id}/plan`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  expect(plan.status()).toBe(200);
+  const accepted = (await plan.json()) as { version_number: number; rationale: string };
+  expect(accepted.version_number).toBe(1);
+  expect(accepted.rationale).toContain("Deferred: none.");
 });
 
 test("wizard fits a narrow phone width", async ({ page }) => {
