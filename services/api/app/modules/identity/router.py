@@ -2,13 +2,14 @@
 
 import re
 import uuid
+from datetime import datetime
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from app.db import get_db
 from app.errors import ApiError
 from app.modules.identity.deps import current_user
 from app.modules.identity.models import LearnerProfile, User
-from app.modules.identity.service import ensure_profile, update_preferences
+from app.modules.identity.service import acknowledge_adult, ensure_profile, update_preferences
 from app.modules.identity.tokens import dev_tokens_enabled, issue_dev_token
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator
@@ -48,6 +49,7 @@ class ProfileOut(BaseModel):
     timezone: str
     locale: str
     a11y_prefs: A11yPrefs
+    adult_acknowledged_at: datetime | None
 
 
 class MeOut(BaseModel):
@@ -110,6 +112,7 @@ def _profile_out(profile: LearnerProfile) -> ProfileOut:
             reduced_motion=bool(raw.get("reduced_motion", False)),
             larger_text=bool(raw.get("larger_text", False)),
         ),
+        adult_acknowledged_at=profile.adult_acknowledged_at,
     )
 
 
@@ -155,3 +158,12 @@ def patch_preferences(
         set_display_name="display_name" in sent,
     )
     return _me(user, profile)
+
+
+@router.post("/me/adult-acknowledgment", response_model=MeOut)
+def adult_acknowledgment(
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> MeOut:
+    """Record that this adult learner accepted the 18+ enrollment notice."""
+    return _me(user, acknowledge_adult(db, user))

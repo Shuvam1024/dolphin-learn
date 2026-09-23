@@ -1,31 +1,33 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-
-import { ACCESS_COOKIE, apiBaseUrl } from "@/lib/session";
+import { loadMe } from "@/lib/me";
 
 import styles from "../auth.module.css";
 
-type Me = {
-  id: string;
-  auth_subject: string;
-  email: string | null;
-};
-
 export default async function AppHomePage() {
-  const jar = await cookies();
-  const token = jar.get(ACCESS_COOKIE)?.value;
-  if (!token) {
-    redirect("/sign-in");
-  }
+  const me = await loadMe();
+  const acknowledged = Boolean(me.profile.adult_acknowledged_at);
 
-  const response = await fetch(`${apiBaseUrl()}/api/v1/me`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
-  if (!response.ok) {
-    redirect("/sign-in");
+  if (!acknowledged) {
+    return (
+      <main className={styles.shell}>
+        <section className={styles.card}>
+          <p className={styles.kicker}>Adults 18+</p>
+          <h1 className={styles.title}>Before you start</h1>
+          <p className={styles.lede}>
+            Dolphin is for adults 18 and older. A child-specific product is not part of this
+            version. Learning notes stay private to your account.
+          </p>
+          <p className={styles.meta}>
+            <a href="/privacy">Read the privacy summary</a>
+          </p>
+          <form action="/api/session/acknowledge" method="post">
+            <button className={styles.button} type="submit">
+              I am 18 or older and I understand
+            </button>
+          </form>
+        </section>
+      </main>
+    );
   }
-  const me = (await response.json()) as Me;
 
   return (
     <main className={styles.shell}>
@@ -33,7 +35,10 @@ export default async function AppHomePage() {
         <p className={styles.kicker}>Home</p>
         <h1 className={styles.title}>You are in</h1>
         <p className={styles.lede}>
-          Signed in as {me.email ?? me.auth_subject}. Goals and Session Studio are not here yet.
+          Signed in as {me.email ?? me.auth_subject}. Goal creation is the next learning step.
+        </p>
+        <p className={styles.meta}>
+          <a href="/app/goals/new">Create a goal</a>
         </p>
         <form action="/api/session/logout" method="post">
           <button className={styles.button} type="submit">

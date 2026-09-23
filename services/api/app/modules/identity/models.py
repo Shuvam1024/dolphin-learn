@@ -32,3 +32,6 @@ class LearnerProfile(Base):
     timezone: Mapped[str] = mapped_column(String(64), nullable=False, default="UTC")
     locale: Mapped[str] = mapped_column(String(35), nullable=False, default="en")
     a11y_prefs: Mapped[dict[str, bool]] = mapped_column(JSONB, nullable=False, default=dict)
+    adult_acknowledged_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )

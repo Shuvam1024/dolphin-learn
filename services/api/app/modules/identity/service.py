@@ -1,5 +1,7 @@
 """Map an OIDC subject onto a local user row (create on first login)."""
 
+from datetime import datetime, timezone
+
 from app.modules.identity.models import LearnerProfile, User
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -65,4 +67,14 @@ def update_preferences(
         profile.a11y_prefs = a11y_prefs
     db.commit()
     db.refresh(profile)
+    return profile
+
+
+def acknowledge_adult(db: Session, user: User) -> LearnerProfile:
+    """Record the 18+ acknowledgment once. Later calls keep the original time."""
+    profile = ensure_profile(db, user)
+    if profile.adult_acknowledged_at is None:
+        profile.adult_acknowledged_at = datetime.now(timezone.utc)
+        db.commit()
+        db.refresh(profile)
     return profile

@@ -1,11 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S12 (layout through learner preferences)
-- **Verified working user journey:** Local sign-in → `/app` → log out (no goals yet)
-- **Implemented modules/features:** Layout; README + `.env.example`; local Postgres; FastAPI health; Next.js shell; Clear Depth; error envelope; SQLAlchemy/Alembic; lint/type/test; auth subject mapping; protected `/app`; `learner_profiles` with timezone, locale, display name, and accessibility prefs
-- **Stubbed or unavailable features:** No age-gate or Prove Loop. Dev sign-in is email-only (no password store)
-- **Schema/API changes:** Alembic through `0003_learner_profiles`; `GET /api/v1/me` includes `profile`; `PATCH /api/v1/me/preferences` is owner-scoped (extra `user_id` is rejected)
+- **Milestone completed:** S01–S13 (layout through adult age-gate)
+- **Verified working user journey:** Sign in → adult acknowledgment → home; goal page stays blocked until acknowledgment
+- **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment and privacy summary
+- **Stubbed or unavailable features:** Goal wizard is a placeholder after the gate. No Prove Loop. Dev sign-in is email-only (no password store)
+- **Schema/API changes:** Alembic through `0004_adult_acknowledgment`; `POST /api/v1/me/adult-acknowledgment`; `GET /me` includes `adult_acknowledged_at`
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
   - S02: README lists Next.js + FastAPI + Postgres; `.env.example` placeholders; AI keys optional
@@ -19,10 +19,11 @@
   - S10: `alembic upgrade head` applied `0002_users`; `GET /api/v1/me` without a token → 401 `code=unauthorized`; `POST /api/v1/dev/token` then `GET /api/v1/me` → 200 with `auth_subject=dev|s10-learner@example.com` and one `users` row; repeat call keeps the same id; `ruff`, `mypy` clean; `pytest` 5 passed
   - S11: `tsc --noEmit` exit 0; vitest 2 passed; eslint clean; anonymous `GET /app` → 307 `/sign-in`; `POST /api/session` with email → 303 `/app` and HttpOnly cookie; `GET /app` with cookie → 200 containing the email and “Log out”; `POST /api/session/logout` clears the cookie; following `GET /app` → 307 `/sign-in`
   - S12: `alembic upgrade head` applied `0003_learner_profiles`; `GET /api/v1/me` profile defaults `timezone=UTC`, `locale=en`; `PATCH /api/v1/me/preferences` stores display name, `America/New_York`, `en-US`, and `reduced_motion`; a second user's body `user_id` → 422 and does not change the first timezone; invalid timezone → 422 `validation_error`; `pytest` 8 passed; ruff and mypy clean
+  - S13: `alembic upgrade head` applied `0004_adult_acknowledgment`; new user `adult_acknowledged_at` is null; `POST /api/v1/me/adult-acknowledgment` sets a timestamp that stays the same on repeat and on `GET /me`; anonymous-to-signed-in `GET /app/goals/new` → 307 `/app` until acknowledgment; gate page shows the 18+ copy and privacy link; `GET /privacy` 200; after acknowledge, `GET /app/goals/new` 200 “Create a goal” and refresh of `/app` shows “You are in”; `tsc` exit 0; pytest 9 passed
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S12**
-- **Next step:** **S13 — Add adult age-gate and privacy notice**
+- **Completed steps:** **S01–S13**
+- **Next step:** **S14 — Migrate domains, competencies, and edges**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -32,7 +33,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 
 | Phase | Milestone | Status |
 |---|---|---|
-| 0 | Foundation (S01–S19) | In progress (S01–S12 done) |
+| 0 | Foundation (S01–S19) | In progress (S01–S13 done) |
 | 1A | Prove Loop (S20–S40) | Not started |
 | Later | Vault / labs / community | Not started |
 
@@ -54,3 +55,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S10** | `feat(api): integrate managed auth and user subject mapping` | Valid test token resolves one user; missing token → 401 |
 | **S11** | `feat(web): add sign-in and protect app shell routes` | Anonymous `/app` redirects; sign-in loads `/app`; logout clears the session |
 | **S12** | `feat(identity): add learner profile and preferences endpoints` | Owner can read/update prefs; another user's id cannot be patched |
+| **S13** | `feat(web): add adult age-gate and privacy notice` | Goal page blocked until acknowledgment; acknowledgment survives refresh |
