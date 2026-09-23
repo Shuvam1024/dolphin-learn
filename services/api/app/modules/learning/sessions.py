@@ -9,6 +9,7 @@ from app.modules.identity.models import User
 from app.modules.learning.accept import latest_accepted
 from app.modules.learning.models import (
     ActivityVersion,
+    Attempt,
     LearningSession,
     Lesson,
     PlanActivity,
@@ -77,13 +78,77 @@ def activity_snapshot(db: Session, row: LearningSession) -> dict[str, str] | Non
     if activity is None:
         return None
     lesson = db.get(Lesson, activity.lesson_id)
+    latest = db.scalar(
+        select(Attempt)
+        .where(Attempt.session_id == row.id, Attempt.activity_version_id == activity.id)
+        .order_by(Attempt.submitted_at.desc())
+    )
+    recorded = ""
+    if latest is not None:
+        recorded = str(latest.response.get("choice", ""))
     return {
         "activity_type": activity.activity_type,
         "title": lesson.title if lesson is not None else plan.title,
         "prompt": activity.prompt,
         "body": lesson.body_markdown if lesson is not None else "",
         "mode": "guided",
+        "recorded_choice": recorded,
     }
+
+
+def submit_attempt(
+    db: Session,
+    user: User,
+    session_id: uuid.UUID,
+    *,
+    idempotency_key: str,
+    choice: str,
+) -> tuple[Attempt, bool]:
+    """Store an immutable answer snapshot. The same key returns the first row."""
+    session = get_owned_session(db, user, session_id)
+    existing = db.scalar(
+        select(Attempt).where(
+            Attempt.session_id == session.id,
+            Attempt.idempotency_key == idempotency_key,
+        )
+    )
+    if existing is not None:
+        return existing, False
+    if session.plan_activity_id is None:
+        raise ApiError("validation_error", "Session has no activity", status_code=422)
+    plan = db.get(PlanActivity, session.plan_activity_id)
+    if plan is None or plan.activity_version_id is None:
+        raise ApiError("validation_error", "Session has no activity", status_code=422)
+    activity = db.get(ActivityVersion, plan.activity_version_id)
+    if activity is None or activity.activity_type != "objective":
+        raise ApiError("validation_error", "This activity is not a question", status_code=422)
+    attempt = Attempt(
+        user_id=user.id,
+        activity_version_id=activity.id,
+        session_id=session.id,
+        idempotency_key=idempotency_key,
+        response={
+            "choice": choice,
+            "prompt": activity.prompt,
+            "assistance": "independent",
+        },
+    )
+    db.add(attempt)
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        existing = db.scalar(
+            select(Attempt).where(
+                Attempt.session_id == session.id,
+                Attempt.idempotency_key == idempotency_key,
+            )
+        )
+        if existing is None:
+            raise
+        return existing, False
+    db.refresh(attempt)
+    return attempt, True
 
 
 def event_count(db: Session, session_id: uuid.UUID) -> int:

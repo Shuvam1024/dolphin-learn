@@ -172,6 +172,9 @@ class Attempt(Base):
     """Append-only. Do not update or delete attempt rows; add another attempt instead."""
 
     __tablename__ = "attempts"
+    __table_args__ = (
+        UniqueConstraint("session_id", "idempotency_key", name="uq_attempts_idempotency"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(
@@ -184,6 +187,7 @@ class Attempt(Base):
         ForeignKey("sessions.id", ondelete="SET NULL"), nullable=True
     )
     response: Mapped[dict[str, str]] = mapped_column(JSONB, nullable=False, default=dict)
+    idempotency_key: Mapped[str | None] = mapped_column(String(64), nullable=True)
     submitted_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

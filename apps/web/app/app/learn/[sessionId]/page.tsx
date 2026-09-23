@@ -12,7 +12,16 @@ type StudioActivity = {
   prompt: string;
   body: string;
   mode: "guided";
+  recorded_choice: string;
 };
+
+function questionChoices(prompt: string): { value: string; label: string }[] {
+  return prompt
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => /^[a-c]\)/i.test(line))
+    .map((line) => ({ value: line[0].toLowerCase(), label: line }));
+}
 
 type StudioSession = {
   id: string;
@@ -61,6 +70,9 @@ export default async function StudioPage({
 
   const paused = session.status === "paused";
   const reading = session.activity.activity_type === "reading";
+  const question = session.activity.activity_type === "objective";
+  const choices = question ? questionChoices(session.activity.prompt) : [];
+  const recorded = session.activity.recorded_choice;
 
   return (
     <main className={styles.shell}>
@@ -74,6 +86,25 @@ export default async function StudioPage({
           <article className={styles.body}>{session.activity.body}</article>
         ) : null}
         <p className={styles.prompt}>{session.activity.prompt}</p>
+        {question && recorded ? (
+          <p className={styles.meta}>Answer recorded: {recorded}. This does not claim mastery.</p>
+        ) : null}
+        {question && !recorded ? (
+          <form action={`/api/sessions/${session.id}/attempts`} method="post">
+            <input type="hidden" name="idempotency_key" value={crypto.randomUUID()} />
+            <fieldset className={styles.prompt}>
+              <legend>Choose one answer</legend>
+              {choices.map((choice) => (
+                <label key={choice.value} className={styles.choice}>
+                  <input type="radio" name="choice" value={choice.value} required /> {choice.label}
+                </label>
+              ))}
+            </fieldset>
+            <button className={styles.button} type="submit">
+              Submit answer
+            </button>
+          </form>
+        ) : null}
         <form action={`/api/sessions/${session.id}/event`} method="post">
           <input type="hidden" name="event_type" value={paused ? "resume" : "pause"} />
           <button className={styles.button} type="submit">

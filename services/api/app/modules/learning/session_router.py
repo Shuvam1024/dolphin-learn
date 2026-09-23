@@ -14,6 +14,7 @@ from app.modules.learning.sessions import (
     event_count,
     get_owned_session,
     start_session,
+    submit_attempt,
 )
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator
@@ -56,6 +57,7 @@ class ActivityOut(BaseModel):
     prompt: str
     body: str
     mode: Literal["guided"]
+    recorded_choice: str = ""
 
 
 class SessionOut(BaseModel):
@@ -123,3 +125,59 @@ def patch_session(
         payload=body.event.payload,
     )
     return _out(row, db, applied=applied)
+
+
+class AttemptIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    idempotency_key: str
+    choice: str
+
+    @field_validator("idempotency_key")
+    @classmethod
+    def _key(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned or len(cleaned) > 64:
+            raise ValueError("idempotency_key must be 1 to 64 characters")
+        return cleaned
+
+    @field_validator("choice")
+    @classmethod
+    def _choice(cls, value: str) -> str:
+        cleaned = value.strip().lower()
+        if cleaned not in {"a", "b", "c"}:
+            raise ValueError("choice must be a, b, or c")
+        return cleaned
+
+
+class AttemptOut(BaseModel):
+    id: uuid.UUID
+    activity_version_id: uuid.UUID
+    choice: str
+    assistance: str
+    prompt: str
+    created: bool
+
+
+@router.post("/{session_id}/attempts", response_model=AttemptOut)
+def post_attempt(
+    session_id: uuid.UUID,
+    body: AttemptIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> AttemptOut:
+    attempt, created = submit_attempt(
+        db,
+        user,
+        session_id,
+        idempotency_key=body.idempotency_key,
+        choice=body.choice,
+    )
+    return AttemptOut(
+        id=attempt.id,
+        activity_version_id=attempt.activity_version_id,
+        choice=str(attempt.response.get("choice", "")),
+        assistance=str(attempt.response.get("assistance", "independent")),
+        prompt=str(attempt.response.get("prompt", "")),
+        created=created,
+    )
