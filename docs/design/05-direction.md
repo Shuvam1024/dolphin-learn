@@ -57,6 +57,23 @@ Other subjects use this same ledger and this same minute clock when they come. T
 
 ---
 
+## Path to the end
+
+The end is still one platform: any subject, any adult learner, any amount of real study time, and a record of what they can do without help.
+
+What we build now is the core those later subjects will use. It does not belong to Python.
+
+- Goals, minute budgets, the competency graph, sessions, the evidence ledger, and reviews are the same for every subject.
+- A subject is data: a domain, competencies, edges, and activities. A later field is another seed, not another application.
+- Computing is the first curriculum we fill. The session clock, the ledger, and the planner rules do not special-case it.
+- Known seam: a goal that names neither the seeded Python domain nor math is still planned as Python. That silent default goes away when the computing curriculum work starts. Do not add more defaults like it.
+
+The programming lab and the Knowledge Vault, when they arrive, are adapters on this core. The lab runs code for the first learners. It is not the only activity type the ledger can hold. A later subject brings its own activities and the same evidence facts.
+
+Scale, here, means new subjects and new checks plug in. It does not mean a service per field, and it does not mean rewriting the clock or the ledger when the second subject shows up.
+
+---
+
 ## Next phase (build this)
 
 **Phase 1C — Physical study time. S43, then S44, then S45, then S46.**
@@ -82,7 +99,7 @@ These are the order, not a ticket list. Write numbered steps only when the previ
 
 **Phase 1F — A tutor that cannot grade.** Optional model for hints and explanations. Seeded lessons still run with no key. The evidence writer stays the deterministic grader.
 
-**Phase 2A — A programming lab.** Learner code runs outside the API process, with no credentials and no path to another user’s data. Passing tests can support an attempt. The model does not award the facet by itself. This comes before a general file vault because the first learners are writing programs.
+**Phase 2A — A programming lab.** Learner code runs outside the API process, with no credentials and no path to another user’s data. Passing tests can support an attempt. The model does not award the facet by itself. This lab is the first activity adapter, built for computing, with the same evidence row a later subject will use for its own activities. It comes before a general file vault because the first learners are writing programs.
 
 **Phase 2B — Knowledge Vault.** Private files. Ownership is checked before any retrieval. Answers that come from a file cite a span the learner can open. Uploads are untrusted. Nothing is redistributed to other people.
 
