@@ -40,7 +40,7 @@ Architecture welcomes every domain; marketing never claims full mastery coverage
 | Dimension | V1 |
 |---|---|
 | Audience | Adults **18+** |
-| Subjects | Python + foundational math + generic reading path |
+| Subjects | Computing first: CS, software engineering, then AI/ML. Math only as a prerequisite |
 | Client | Accessible responsive web |
 | Loop | Prove Loop |
 | AI | Optional; seeded content works without keys |

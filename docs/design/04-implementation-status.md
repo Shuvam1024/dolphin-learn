@@ -66,7 +66,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | 1A | Prove Loop (S20–S40) | Done (S20–S40) |
 | 1B | Delayed retention (S41–S42) | Done (S42) |
 | 1C | Physical study time (S43–S46) | Next (S43) |
-| Later | 1D scope, 1E tutor, 2A Vault, 2B lab, 2C transfer | Not started |
+| Later | 1D computing curriculum, then scope, tutor, programming lab, Vault | Not started |
 
 ---
 

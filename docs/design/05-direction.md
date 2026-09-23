@@ -43,6 +43,20 @@ Study time is measured in minutes the learner was actually in an active session.
 
 ---
 
+## First subjects
+
+The product can hold any subject. The first ones we actually build are computing:
+
+1. Computer science and programming. The Python lessons already seeded are the start, not a toy on the side.
+2. Software engineering: reading code, finding a bug, writing a test, finishing a small program.
+3. AI and machine learning, only after the computing and mathematics those topics require.
+
+Mathematics is included when a computing topic needs it. The fractions lesson is that kind of support. It is not a decision to build a general math, language, music, or trades product next.
+
+Other subjects use this same ledger and this same minute clock when they come. They do not skip ahead of the computing path.
+
+---
+
 ## Next phase (build this)
 
 **Phase 1C — Physical study time. S43, then S44, then S45, then S46.**
@@ -62,17 +76,19 @@ Do not start Vault, RAG, a tutor, or a sandbox in this phase. Do not add a deadl
 
 These are the order, not a ticket list. Write numbered steps only when the previous phase is done.
 
-**Phase 1D — Scope, same evidence.** A priority (understand, apply, or go deeper) may drop topics from the plan. It must not change what “retained” means. “How close” is a count of unassessed topics, deferred topics, and due reviews. Never a percent.
+**Phase 1D — Computing curriculum.** More computer science, then software engineering, then machine learning. Each topic is a competency with a real check. Math is added only as a prerequisite. No second app, and no claim that every field is covered.
 
-**Phase 1E — A tutor that cannot grade.** Optional model for hints and explanations. Seeded lessons still run with no key. The evidence writer stays the deterministic grader.
+**Phase 1E — Scope, same evidence.** A priority (understand, apply, or go deeper) may drop topics from the plan. It must not change what “retained” means. “How close” is a count of unassessed topics, deferred topics, and due reviews. Never a percent.
 
-**Phase 2A — Knowledge Vault.** Private files. Ownership is checked before any retrieval. Answers that come from a file cite a span the learner can open. Uploads are untrusted. Nothing is redistributed to other people.
+**Phase 1F — A tutor that cannot grade.** Optional model for hints and explanations. Seeded lessons still run with no key. The evidence writer stays the deterministic grader.
 
-**Phase 2B — One isolated lab.** Learner code runs outside the API process, with no credentials and no path to another user’s data. Other skills stay marked unobserved until a real check exists.
+**Phase 2A — A programming lab.** Learner code runs outside the API process, with no credentials and no path to another user’s data. Passing tests can support an attempt. The model does not award the facet by itself. This comes before a general file vault because the first learners are writing programs.
+
+**Phase 2B — Knowledge Vault.** Private files. Ownership is checked before any retrieval. Answers that come from a file cite a span the learner can open. Uploads are untrusted. Nothing is redistributed to other people.
 
 **Phase 2C — Transfer.** A task that is meaningfully new can set `applied`. Repeating the lesson cannot.
 
-**After that.** More subjects as curriculum adapters on the same ledger, not new apps. Deeper accessibility. A community only with moderation and privacy. Younger learners only as a separate reviewed product. A fancier review scheduler only after these plain durations have real data.
+**After that.** Subjects outside computing, on the same ledger, not new apps. Deeper accessibility. A community only with moderation and privacy. Younger learners only as a separate reviewed product. A fancier review scheduler only after these plain durations have real data.
 
 ---
 

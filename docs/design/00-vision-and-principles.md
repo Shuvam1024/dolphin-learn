@@ -97,7 +97,7 @@ Vs generic AI tutors, flashcard apps, and planner-only tools:
 | Boundary | Decision |
 |---|---|
 | Audience | Adults **18+**; age-gate until a child-specific product is designed and reviewed |
-| Subjects | Python + foundational math + generic reading/writing path |
+| Subjects | Computing first: CS, software engineering, then AI/ML. Math only as a prerequisite |
 | Client | Accessible responsive web |
 | Loop | Prove Loop: goal → feasible plan → Session Studio → independent check → Evidence Ledger → review → Home |
 | AI | Optional; seeded content must work without API keys |

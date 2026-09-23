@@ -782,7 +782,7 @@ Time in Dolphin is a duration of attention, not a date on a calendar.
 
 ## Stop line
 
-Do **not** start Vault, RAG, a tutor gateway, or a code sandbox in Phase 1C. Do **not** add a goal deadline date. `05-direction.md` outlines what comes after S46.
+Do **not** start Vault, RAG, a tutor gateway, or a code sandbox in Phase 1C. Do **not** add a goal deadline date. The next curricula, when 1C is finished, are computer science, software engineering, and then machine learning. `05-direction.md` has that order.
 
 Tiny seams allowed only as listed (e.g. S36 replan, honest Library empty state). No upload pipelines, embeddings, or in-process code execution in this plan.
 
