@@ -56,7 +56,9 @@ dolphin-learn/
    uvicorn app.main:app --reload --port 8000
    ```
 
-   `GET http://localhost:8000/health` returns `{"status":"ok"}`.
+   `GET http://localhost:8000/health` returns `{"status":"ok"}` and stays outside the version prefix.
+
+   Versioned routes are `/api/v1/...`. Errors share one shape: `{ "error": { "code", "message", "details", "request_id" } }`.
 
 4. **Web** (Next.js shell):
 

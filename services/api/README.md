@@ -14,4 +14,10 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-`GET http://localhost:8000/health` → `200` `{"status":"ok"}`.
+`GET http://localhost:8000/health` → `200` `{"status":"ok"}` (outside the version prefix).
+
+Versioned routes live at `/api/v1`. Failures use one envelope:
+
+```json
+{"error": {"code": "not_found", "message": "Not Found", "details": null, "request_id": "…"}}
+```
