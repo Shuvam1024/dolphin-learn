@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from app.errors import ApiError
 from app.modules.curriculum.models import Competency
 from app.modules.identity.models import User
+from app.modules.learning.evidence import award_retained
 from app.modules.learning.grading import grade_choice
 from app.modules.learning.models import (
     ActivityVersion,
@@ -192,7 +193,11 @@ def submit_review_attempt(
     )
     label = f"{assistance}_{outcome}"
     db.add(ReviewEvent(review_item_id=item.id, outcome=label))
+    was_due = item.due_at <= datetime.now(timezone.utc)
     extended = assistance == "independent" and outcome == "correct"
+    retained = extended and was_due
+    if retained:
+        award_retained(db, user, item.competency_id, attempt.id)
     if extended:
         item.interval_days = _next_interval(item.interval_days)
     item.due_at = datetime.now(timezone.utc) + timedelta(days=item.interval_days)
@@ -205,4 +210,5 @@ def submit_review_attempt(
         "interval_days": item.interval_days,
         "due_at": item.due_at.isoformat(),
         "extended": extended,
+        "retained": retained,
     }

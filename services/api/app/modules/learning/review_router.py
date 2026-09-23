@@ -56,6 +56,7 @@ class AttemptOut(BaseModel):
     interval_days: int
     due_at: str
     extended: bool
+    retained: bool
 
 
 @router.get("/due", response_model=QueueOut)

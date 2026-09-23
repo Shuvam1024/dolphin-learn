@@ -17,7 +17,13 @@ from app.modules.learning.models import (
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-_RANK = {"exposed": 1, "practicing": 2, "independently_demonstrated": 3}
+_RANK = {
+    "exposed": 1,
+    "practicing": 2,
+    "independently_demonstrated": 3,
+    "retained": 4,
+    "applied": 5,
+}
 
 
 def facet_for_attempt(assistance: str, outcome: str) -> str:
@@ -80,6 +86,40 @@ def record_evidence(
         state.status_facet = facet
         state.updated_at = datetime.now(timezone.utc)
     return facet
+
+
+def award_retained(
+    db: Session,
+    user: User,
+    competency_id: uuid.UUID,
+    attempt_id: uuid.UUID,
+) -> None:
+    """A due independent review can say retained. A same-session attempt cannot call this."""
+    db.add(
+        CompetencyEvidence(
+            user_id=user.id,
+            competency_id=competency_id,
+            attempt_id=attempt_id,
+            status_facet="retained",
+        )
+    )
+    state = db.get(CompetencyState, (user.id, competency_id))
+    now = datetime.now(timezone.utc)
+    if state is None:
+        db.add(
+            CompetencyState(
+                user_id=user.id,
+                competency_id=competency_id,
+                status_facet="retained",
+                updated_at=now,
+            )
+        )
+        return
+    if state.status_facet == "applied":
+        return
+    if state.status_facet != "retained":
+        state.status_facet = "retained"
+        state.updated_at = now
 
 
 def move_to_unseen_question(db: Session, user: User, session_id: uuid.UUID) -> LearningSession:
