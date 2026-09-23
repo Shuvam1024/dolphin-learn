@@ -5,6 +5,7 @@ from datetime import datetime
 
 from app.db import Base
 from sqlalchemy import (
+    Boolean,
     CheckConstraint,
     DateTime,
     ForeignKey,
@@ -64,6 +65,30 @@ class TimeBudget(Base):
     weekly_minutes_per_day: Mapped[int | None] = mapped_column(Integer, nullable=True)
     horizon_days: Mapped[int | None] = mapped_column(Integer, nullable=True)
     preferred_session_minutes: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+class DiagnosticRun(Base):
+    """A skip or a sample of answers. Never a mastery claim."""
+
+    __tablename__ = "diagnostic_runs"
+    __table_args__ = (
+        CheckConstraint("status IN ('skipped', 'recorded')", name="ck_diagnostic_runs_status"),
+        CheckConstraint("mastery_claimed = false", name="ck_diagnostic_runs_no_mastery"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    goal_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("goals.id", ondelete="CASCADE"), nullable=False
+    )
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    answered_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    mastery_claimed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
 
 
 class GoalCompetency(Base):

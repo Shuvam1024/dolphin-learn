@@ -87,6 +87,32 @@ CURRICULA: tuple[DomainSpec, ...] = (
                         3,
                         5,
                     ),
+                    ActivitySpec(
+                        3,
+                        "objective",
+                        (
+                            "What does `n = n + 1` do when `n` was bound to 3?\n\n"
+                            "a) It rebinds `n` to 4\n"
+                            "b) It deletes the name `n`\n"
+                            "c) It calls a function named n"
+                        ),
+                        {"correct": "a"},
+                        1,
+                        2,
+                    ),
+                    ActivitySpec(
+                        4,
+                        "objective",
+                        (
+                            "Which line only looks up a name and does not bind one?\n\n"
+                            "a) `n = 3`\n"
+                            "b) `print(n)`\n"
+                            "c) `n = 4`"
+                        ),
+                        {"correct": "b"},
+                        1,
+                        2,
+                    ),
                 ),
             ),
         ),

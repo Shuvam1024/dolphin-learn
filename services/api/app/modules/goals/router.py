@@ -7,6 +7,7 @@ from typing import Literal
 from app.db import get_db
 from app.errors import ApiError
 from app.modules.goals.budget import TimeBudgetSpec
+from app.modules.goals.diagnostic import NOTE, skip_diagnostic, start_diagnostic, submit_diagnostic
 from app.modules.goals.models import Goal, TimeBudget
 from app.modules.goals.service import (
     budget_for,
@@ -18,7 +19,7 @@ from app.modules.goals.service import (
 from app.modules.identity.deps import current_user
 from app.modules.identity.models import User
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/goals", tags=["goals"])
@@ -180,6 +181,99 @@ def patch_goal(
         time_budget=body.time_budget,
     )
     return _out(goal, budget_for(db, goal))
+
+
+class DiagnosticAnswerIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    activity_version_id: uuid.UUID
+    choice: str
+
+    @field_validator("choice")
+    @classmethod
+    def _choice(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("choice must not be empty")
+        return cleaned
+
+
+class DiagnosticIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    action: Literal["start", "skip", "submit"]
+    answers: list[DiagnosticAnswerIn] | None = None
+
+    @model_validator(mode="after")
+    def answers_match_action(self) -> "DiagnosticIn":
+        if self.action == "submit" and not self.answers:
+            raise ValueError("submit needs at least one answer")
+        return self
+
+
+class DiagnosticItemOut(BaseModel):
+    activity_version_id: uuid.UUID
+    prompt: str
+
+
+class DiagnosticAttemptOut(BaseModel):
+    id: uuid.UUID
+    activity_version_id: uuid.UUID
+
+
+class DiagnosticOut(BaseModel):
+    status: Literal["items", "skipped", "recorded"]
+    mastery_claimed: bool
+    note: str
+    items: list[DiagnosticItemOut]
+    attempts: list[DiagnosticAttemptOut]
+
+
+@router.post("/{goal_id}/diagnostic", response_model=DiagnosticOut)
+def post_diagnostic(
+    goal_id: uuid.UUID,
+    body: DiagnosticIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> DiagnosticOut:
+    goal = get_owned_goal(db, user, goal_id)
+    if body.action == "start":
+        items = start_diagnostic(db, goal)
+        return DiagnosticOut(
+            status="items",
+            mastery_claimed=False,
+            note=NOTE,
+            items=[
+                DiagnosticItemOut(activity_version_id=item.id, prompt=item.prompt) for item in items
+            ],
+            attempts=[],
+        )
+    if body.action == "skip":
+        skip_diagnostic(db, user, goal)
+        return DiagnosticOut(
+            status="skipped",
+            mastery_claimed=False,
+            note=NOTE,
+            items=[],
+            attempts=[],
+        )
+    assert body.answers is not None
+    _run, attempts = submit_diagnostic(
+        db,
+        user,
+        goal,
+        [(answer.activity_version_id, answer.choice) for answer in body.answers],
+    )
+    return DiagnosticOut(
+        status="recorded",
+        mastery_claimed=False,
+        note=NOTE,
+        items=[],
+        attempts=[
+            DiagnosticAttemptOut(id=attempt.id, activity_version_id=attempt.activity_version_id)
+            for attempt in attempts
+        ],
+    )
 
 
 @router.get("/{goal_id}", response_model=GoalOut)
