@@ -1,10 +1,10 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S05 (layout, env, Postgres, API health, web shell)
-- **Verified working user journey:** None yet (placeholder home only)
-- **Implemented modules/features:** Layout; README + `.env.example`; local Postgres; FastAPI `GET /health`; Next.js placeholder at `/`
-- **Stubbed or unavailable features:** Clear Depth tokens (S06); no auth, schema, or Prove Loop
+- **Milestone completed:** S01–S06 (layout, env, Postgres, API health, web shell, Clear Depth)
+- **Verified working user journey:** None yet (branded placeholder home only)
+- **Implemented modules/features:** Layout; README + `.env.example`; local Postgres; FastAPI `GET /health`; Next.js placeholder at `/`; Clear Depth tokens and Syne / Manrope / IBM Plex Mono
+- **Stubbed or unavailable features:** No auth, schema, or Prove Loop
 - **Schema/API changes:** None yet
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
@@ -12,12 +12,13 @@
   - S03: `docker compose up -d` → `dolphin-postgres` healthy; `psql` `SELECT 1` returned `ok` (exit 0) against `postgresql://dolphin:dolphin@127.0.0.1:5432/dolphin`
   - S04: `uvicorn app.main:app` then `curl http://127.0.0.1:8000/health` → `HTTP/1.1 200 OK` body `{"status":"ok"}` (fastapi 0.115.6, uvicorn 0.34.0)
   - S05: `npx tsc --noEmit` exit 0; `next dev` `GET /` → HTTP 200 and the page contains “Dolphin” (Next.js 15.5.26)
-- **Known bugs/security/accessibility concerns:** None in scaffold. **Push still blocked in this process:** `git push -u origin main` → `remote: Permission to Shuvam1024/dolphin-learn.git denied to Shuvam1024.` (HTTP 403). This agent’s `GH_TOKEN` was injected at start and does not include Contents write.
+  - S06: `npx tsc --noEmit` exit 0; `GET /` HTTP 200; HTML classes load Syne, Manrope, and IBM Plex Mono; served CSS contains `#0B1F2A`, `#1FA7A0`, `#F4F8F9`, `#E8F1F3`, `#E6A817`, `#5A6B73`; no dark-mode color scheme
+- **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S05**
-- **Next step:** **S06 — Add Clear Depth CSS variables and fonts**
+- **Completed steps:** **S01–S06**
+- **Next step:** **S07 — Define shared error envelope and `/api/v1` prefix**
 
-Design package SoT: `docs/design/`. This file is the live tracker; `docs/design/04-implementation-status.md` mirrors it.
+Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
 ---
 
@@ -25,7 +26,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/design/
 
 | Phase | Milestone | Status |
 |---|---|---|
-| 0 | Foundation (S01–S19) | In progress (S01–S05 done) |
+| 0 | Foundation (S01–S19) | In progress (S01–S06 done) |
 | 1A | Prove Loop (S20–S40) | Not started |
 | Later | Vault / labs / community | Not started |
 
@@ -40,3 +41,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/design/
 | **S03** | `chore: add docker-compose postgres for local infra` | Compose healthy + psql ping |
 | **S04** | `feat(api): add fastapi app with health check` | `GET /health` → 200 JSON |
 | **S05** | `feat(web): scaffold next.js typescript app shell` | `tsc` clean; placeholder HTTP 200 |
+| **S06** | `feat(web): add clear depth tokens and brand fonts` | Tokens + Syne/Manrope/Plex; light theme |
