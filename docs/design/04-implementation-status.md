@@ -1,10 +1,10 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S39 of the Prove Loop
-- **Verified working user journey:** Another learner gets 404 on this learner’s goal, plan, session, and attempt. Refresh keeps the lesson. The same idempotency key does not create a second attempt.
+- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S40 Prove Loop (Phase 1A exit)
+- **Verified working user journey:** Sign in → 120-minute Python goal → accepted plan within 120 minutes → Session Studio → independent check → Evidence Ledger on Home and Progress → review scheduled, not claimed as retention. A 14×30 math plan uses 420 minutes. Another learner is denied. Refresh keeps the lesson. No AI key, Vault, RAG, or sandbox. Demo script: `docs/prove-loop-demo.md`.
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, an honest session-finish summary, a review due queue with 1/3/7/14-day intervals, a Home snapshot of the next action, a Progress ledger of facets plus unassessed plan gaps, a goal path overview, replan that writes the next plan version, and a Studio control to move to the next activity or a different question; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
-- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, and the sandbox are not built
+- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Next phase is 1B, not Vault, unless chosen later
 - **Schema/API changes:** Alembic through `0008_attempt_idempotency`; `POST /api/v1/goals/{id}/replan` writes accepted plan version N+1 from the current budget and demonstrated competencies and leaves older versions in place; `GET /api/v1/goals/{id}/overview` returns the path, deferred topics, and the session to continue
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
@@ -46,10 +46,11 @@
   - S37: Playwright signs in, saves a 120-minute Python goal, accepts a plan with `usable_minutes` 120 and allocated activity minutes ≤ 120, reads the names note, answers one question independently, checks a different question, and sees `python.names: independently_demonstrated` on Home and Progress with no “% mastered”; `OPENAI_API_KEY` was empty; ruff, mypy, tsc, and eslint clean
   - S38: Playwright saves Fractions as 30 minutes a day for 14 days; accepted plan `usable_minutes` is 420 and the rationale is not 20160; Studio shows “three parts out of four” and the seeded question “What is 1/4 + 2/4?”; `OPENAI_API_KEY` was empty
   - S39: User B receives 404 `not_found` on A’s goal, plan, overview, replan, accept, session, pause, attempt, advance, independent check, and finish; B’s Home, Progress, and review queue are empty; A still has one attempt and `independently_demonstrated`; a repeated idempotency key returns the original choice `b`; Playwright reload keeps the reading, then keeps “Answer recorded: b” with no second submit button; pytest 41 passed; ruff clean
+  - S40 exit, September 23, 2026: `cd services/api && .venv/bin/ruff check app tests` → `All checks passed!`; `.venv/bin/mypy app` → `Success: no issues found in 40 source files`; `.venv/bin/pytest --tb=no` → `41 passed, 1 warning in 2.41s`. `cd apps/web && npx playwright test e2e/phase0.spec.ts e2e/quick-learn.spec.ts e2e/math-windows.spec.ts e2e/refresh-resume.spec.ts --reporter=line` → `4 passed (10.4s)`. Demo script `docs/prove-loop-demo.md`. Next phase is 1B, not Vault
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S39**
-- **Next step:** **S40 — Document Prove Loop demo script and mark Phase 1A exit**
+- **Completed steps:** **S01–S40** (Phase 1A exit)
+- **Next step:** **Phase 1B — not started.** Not Vault, RAG, or the sandbox unless that is chosen later
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -60,7 +61,8 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | Phase | Milestone | Status |
 |---|---|---|
 | 0 | Foundation (S01–S19) | Done (S01–S19) |
-| 1A | Prove Loop (S20–S40) | In progress (S39) |
+| 1A | Prove Loop (S20–S40) | Done (S20–S40) |
+| 1B | Next phase after the Prove Loop | Not started (not Vault) |
 | Later | Vault / labs / community | Not started |
 
 ---
@@ -108,3 +110,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S37** | `test(e2e): cover 120-minute python quick learn prove loop` | Browser journey accepts a plan whose activities fit in 120 minutes, then shows independent evidence on Home and Progress |
 | **S38** | `test(e2e): cover two-week math thirty-minute days` | Usable minutes are 14×30, not 14×24h; the seeded fraction question appears in Studio |
 | **S39** | `test: add ownership isolation and session refresh coverage` | Another user gets 404; refresh keeps the lesson; the same idempotency key does not add an attempt |
+| **S40** | `docs: record phase 1a prove loop demo and status` | Demo script plus exact Phase 1A test results; next phase is 1B, not Vault |

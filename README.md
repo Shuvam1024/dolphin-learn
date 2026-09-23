@@ -6,7 +6,8 @@ Dolphin is an adaptive learning platform for adults (18+): a Home hub, time-adap
 
 Design source of truth: [`docs/design/`](docs/design/)  
 Build sequence: [`docs/design/03-build-plan.md`](docs/design/03-build-plan.md)  
-Status: [`docs/implementation-status.md`](docs/implementation-status.md)
+Status: [`docs/implementation-status.md`](docs/implementation-status.md)  
+Prove Loop demo: [`docs/prove-loop-demo.md`](docs/prove-loop-demo.md)
 
 ## Stack
 
