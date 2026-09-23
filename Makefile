@@ -20,3 +20,6 @@ api-type:
 
 api-test:
 	cd $(API) && .venv/bin/pytest
+
+smoke:
+	cd apps/web && npx playwright test

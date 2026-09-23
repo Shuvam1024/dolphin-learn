@@ -1,9 +1,7 @@
-import { NextResponse } from "next/server";
+import { ACCESS_COOKIE, redirectToPath } from "@/lib/session";
 
-import { ACCESS_COOKIE } from "@/lib/session";
-
-export async function POST(request: Request) {
-  const response = NextResponse.redirect(new URL("/sign-in", request.url), 303);
+export async function POST() {
+  const response = redirectToPath("/sign-in");
   response.cookies.set(ACCESS_COOKIE, "", {
     httpOnly: true,
     sameSite: "lax",

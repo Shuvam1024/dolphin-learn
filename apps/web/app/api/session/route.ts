@@ -1,11 +1,8 @@
-import { NextResponse } from "next/server";
-
-import { ACCESS_COOKIE, apiBaseUrl } from "@/lib/session";
+import { ACCESS_COOKIE, apiBaseUrl, redirectToPath } from "@/lib/session";
 
 export async function POST(request: Request) {
   const form = await request.formData();
   const email = String(form.get("email") ?? "").trim();
-  const signIn = new URL("/sign-in", request.url);
 
   const issued = await fetch(`${apiBaseUrl()}/api/v1/dev/token`, {
     method: "POST",
@@ -15,17 +12,15 @@ export async function POST(request: Request) {
   });
 
   if (!issued.ok) {
-    signIn.searchParams.set("error", "1");
-    return NextResponse.redirect(signIn, 303);
+    return redirectToPath("/sign-in?error=1");
   }
 
   const body = (await issued.json()) as { access_token?: string };
   if (!body.access_token) {
-    signIn.searchParams.set("error", "1");
-    return NextResponse.redirect(signIn, 303);
+    return redirectToPath("/sign-in?error=1");
   }
 
-  const response = NextResponse.redirect(new URL("/app", request.url), 303);
+  const response = redirectToPath("/app");
   response.cookies.set(ACCESS_COOKIE, body.access_token, {
     httpOnly: true,
     sameSite: "lax",

@@ -70,6 +70,8 @@ dolphin-learn/
 
    Or from the repo root: `npm run dev:web`. The public placeholder is at `http://localhost:3000`. `/app` redirects to `/sign-in` until you submit an email. Log out from the shell. The API must be running so sign-in can mint a dev token.
 
+   Phase 0 smoke (API health plus a Chromium sign-in): `make smoke` from the repo root after `npx playwright install chromium` inside `apps/web`. Postgres and the API virtualenv must already be available.
+
 5. **Migrations** (from `services/api`, with the virtualenv active):
 
    ```bash

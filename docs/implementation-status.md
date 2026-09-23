@@ -1,7 +1,7 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S18 (layout through honest navigation)
+- **Milestone completed:** S01–S19 (Phase 0 foundation)
 - **Verified working user journey:** Sign in → adult acknowledgment → Home prompts “Create a goal”; Learn, Review, Library, and Progress are honest empty states
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, and review tables; seeded Python and math lessons (reading + objective)
 - **Stubbed or unavailable features:** Goal wizard is a placeholder after the gate. Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store)
@@ -25,10 +25,11 @@
   - S16: `alembic upgrade head` applied `98b0fc485c6b`; models import; ownership foreign keys present on paths, sessions, attempts, evidence, state, and review items; attempts and review events have no `updated_at`; pytest 15 passed; ruff and mypy clean
   - S17: `python -m app.seed` twice; pytest confirms domains `python` and `math`, activity types `reading` and `objective`, and at least two answer keys; pytest 16 passed; ruff and mypy clean; no LLM key used
   - S18: `tsc` and eslint exit 0; signed-in acknowledged `GET /app` 200 contains Learn, Review, Library, Progress, More, and “Create a goal”; `/app/library` 200 “Coming later” and “Knowledge Vault” with no file input; `/app/learn`, `/app/review`, `/app/progress`, `/app/more` each 200
+  - S19: pytest `test_phase0_smoke` health 200 and unauthenticated `GET /api/v1/me` 401; full pytest 18 passed; `npx playwright test` 1 passed — anonymous `/app` lands on `/sign-in`, email sign-in shows “Before you start”, adult acknowledgment shows “You are in”, primary nav, and “Create a goal”
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S18**
-- **Next step:** **S19 — Add API + browser smoke tests for auth shell**
+- **Completed steps:** **S01–S19**
+- **Next step:** **S20 — Implement create/list/get goals API** (Phase 1A; not started)
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -38,7 +39,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 
 | Phase | Milestone | Status |
 |---|---|---|
-| 0 | Foundation (S01–S19) | In progress (S01–S18 done) |
+| 0 | Foundation (S01–S19) | Done (S01–S19) |
 | 1A | Prove Loop (S20–S40) | Not started |
 | Later | Vault / labs / community | Not started |
 
@@ -66,3 +67,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S16** | `feat(db): migrate plans sessions attempts evidence review` | Upgrade head; models import; ownership FKs present |
 | **S17** | `feat(seed): add python and math mini curricula` | Python and math paths; reading and objective items |
 | **S18** | `feat(web): add p0 nav shell with honest empty states` | Four primary nav items; Library has no upload; Home asks for a goal |
+| **S19** | `test: add phase 0 auth and health smoke tests` | Health 200; anonymous `/app` blocked; signed-in shell loads |
