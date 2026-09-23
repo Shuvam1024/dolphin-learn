@@ -679,9 +679,71 @@ Goal → plan → Session Studio → independent check → Evidence Ledger → r
 
 ---
 
+## Phase 1B — Delayed retention
+
+Phase 1A is demonstrated. These steps earn the `retained` facet only from a review that was already due, then show it honestly. Still no Vault, RAG, tutor, or sandbox.
+
+### S41 — Retained only after a due independent review
+
+| Field | Value |
+|---|---|
+| **Title** | Award retained from a delayed independent review |
+| **Commit** | `feat(assess): award retained only after a due review` |
+| **Files/areas** | Review attempt writes `retained` when the item was already due and the answer is independent and correct. Session grading still cannot. |
+| **Acceptance** | Same-session success stays `independently_demonstrated`; a due independent review sets `retained`; an early or assisted review does not |
+
+**Teach note:**  
+**What:** Retention is a later check, not a second look at the question you just finished.  
+**How:** Compare `due_at` before updating it. Write the facet only for an independent correct answer on an item that was already due.  
+**Why:** The product may say “retained for this check.” It must not say the learner will remember it forever.
+
+### S42 — Show retained without a mastery percent
+
+| Field | Value |
+|---|---|
+| **Title** | Show the retained facet on Progress and Home |
+| **Commit** | `feat(progress): show retained facet from delayed review` |
+| **Files/areas** | Progress copy and Home evidence include `retained`. Unassessed gaps stay. No global percent. |
+| **Acceptance** | After S41, both pages name `retained`; neither shows “% mastered” |
+
+**Teach note:**  
+**What:** The ledger should say retained when the database says retained.  
+**How:** Project the facet. Explain it as a delayed check, not a score.  
+**Why:** Hiding the facet, or turning it into a percent, breaks the honesty rule.
+
+### S43 — Optional deadline that does not add minutes
+
+| Field | Value |
+|---|---|
+| **Title** | Store an optional goal deadline without inflating the budget |
+| **Commit** | `feat(goals): store optional deadline without adding minutes` |
+| **Files/areas** | Nullable deadline on the goal; planner usable minutes unchanged; replan rationale can name the date |
+| **Acceptance** | A deadline saves and reloads; 14×30 stays 420 minutes; clearing the deadline leaves the budget |
+
+**Teach note:**  
+**What:** A date is not extra study time.  
+**How:** Store the deadline beside the budget. Do not add those calendar hours to usable minutes.  
+**Why:** Time Intelligence treats a horizon and available effort as different facts.
+
+### S44 — Snooze a review without awarding retention
+
+| Field | Value |
+|---|---|
+| **Title** | Snooze a due review without extending the success interval |
+| **Commit** | `feat(review): snooze a due item without awarding retention` |
+| **Files/areas** | `POST /reviews/{id}/snooze` moves `due_at` by a small day count; interval stays; no `retained` row |
+| **Acceptance** | Snooze changes the due time only; an assisted or snoozed path still cannot set `retained` |
+
+**Teach note:**  
+**What:** Skipping today is not proof you remember the skill.  
+**How:** Append a review event and move `due_at`. Leave `interval_days` and evidence alone.  
+**Why:** Misses may change the calendar. They must not rewrite what was demonstrated.
+
+---
+
 ## Stop line
 
-Do **not** continue into Phase 1B / 2A (Vault, RAG, tutor gateway spectacle, code sandbox, projects) until Phase 1A is demonstrated and `implementation-status.md` says so.
+Do **not** start Vault, RAG, a tutor gateway, or a code sandbox in Phase 1B. Those stay later.
 
 Tiny seams allowed only as listed (e.g. S36 replan, honest Library empty state). No upload pipelines, embeddings, or in-process code execution in this plan.
 
@@ -731,3 +793,7 @@ Tiny seams allowed only as listed (e.g. S36 replan, honest Library empty state).
 | S38 | 1A | Automate E2E-02 math availability windows |
 | S39 | 1A | Test IDOR denial and mid-session refresh resume |
 | S40 | 1A | Document Prove Loop demo script and mark Phase 1A exit |
+| S41 | 1B | Award retained only after a due independent review |
+| S42 | 1B | Show the retained facet on Progress and Home |
+| S43 | 1B | Store an optional goal deadline without adding minutes |
+| S44 | 1B | Snooze a due review without awarding retention |

@@ -50,7 +50,7 @@
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
 - **Completed steps:** **S01–S40** (Phase 1A exit)
-- **Next step:** **Phase 1B — not started.** Not Vault, RAG, or the sandbox unless that is chosen later
+- **Next step:** **S41 — Award retained from a delayed independent review**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -62,7 +62,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 |---|---|---|
 | 0 | Foundation (S01–S19) | Done (S01–S19) |
 | 1A | Prove Loop (S20–S40) | Done (S20–S40) |
-| 1B | Next phase after the Prove Loop | Not started (not Vault) |
+| 1B | Delayed retention (S41–S44) | Planned; next is S41 |
 | Later | Vault / labs / community | Not started |
 
 ---
