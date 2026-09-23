@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { loadMe } from "@/lib/me";
@@ -78,7 +79,7 @@ export default async function AppHomePage() {
               one and Dolphin will fit a plan to the minutes you have.
             </p>
             <p className={styles.meta}>
-              <a href="/app/goals/new">Create a goal</a>
+              <Link href="/app/goals/new">Create a goal</Link>
             </p>
           </>
         ) : (
@@ -87,7 +88,7 @@ export default async function AppHomePage() {
             <p className={styles.lede}>{home.next_action.title}</p>
             {home.next_action.href ? (
               <p className={styles.meta}>
-                <a href={home.next_action.href}>{home.next_action.title}</a>
+                <Link href={home.next_action.href}>{home.next_action.title}</Link>
               </p>
             ) : (
               <form action="/api/sessions" method="post">
@@ -101,7 +102,7 @@ export default async function AppHomePage() {
             <ul>
               {home.goals.map((goal) => (
                 <li key={goal.id}>
-                  {goal.title}. {goal.feasibility_note}
+                  <Link href={`/app/goals/${goal.id}`}>{goal.title}</Link>. {goal.feasibility_note}
                 </li>
               ))}
             </ul>
@@ -132,7 +133,7 @@ export default async function AppHomePage() {
           </>
         )}
         <p className={styles.meta}>
-          <a href={home.quick_learn.href}>{home.quick_learn.label}</a>
+          <Link href={home.quick_learn.href}>{home.quick_learn.label}</Link>
         </p>
         <form action="/api/session/logout" method="post">
           <button className={styles.button} type="submit">

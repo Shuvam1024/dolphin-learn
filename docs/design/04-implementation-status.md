@@ -1,11 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S34 of the Prove Loop
-- **Verified working user journey:** Progress lists competency facets from stored evidence and leaves other planned competencies unassessed. Assisted success stays practicing. The page has no mastery percent.
-- **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, an honest session-finish summary, a review due queue with 1/3/7/14-day intervals, a Home snapshot of the next action, and a Progress ledger of facets plus unassessed plan gaps; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
-- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Goal path detail and replan are not built yet
-- **Schema/API changes:** Alembic through `0008_attempt_idempotency`; `GET /api/v1/progress` returns competency facets plus unassessed keys from the accepted plan; `GET /api/v1/home` returns the next action, goal feasibility notes, due reviews, and independent evidence
+- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S35 of the Prove Loop
+- **Verified working user journey:** A 15-minute Python goal shows the accepted activities, marks names as a prerequisite, and lists `python.calls` as deferred for insufficient minutes. Continue opens that goal's session.
+- **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, an honest session-finish summary, a review due queue with 1/3/7/14-day intervals, a Home snapshot of the next action, a Progress ledger of facets plus unassessed plan gaps, and a goal path overview; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
+- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Replan is not built yet
+- **Schema/API changes:** Alembic through `0008_attempt_idempotency`; `GET /api/v1/goals/{id}/overview` returns ordered activities, prereq or demonstrated labels, deferred competencies, and the session to continue; `GET /api/v1/progress` returns facets plus unassessed plan gaps
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
   - S02: README lists Next.js + FastAPI + Postgres; `.env.example` placeholders; AI keys optional
@@ -41,10 +41,11 @@
   - S32: independent correct schedules `interval_days` 1 with `due_at` in the future; after that item is due, `GET /reviews/due` includes `python.names` and “Not retention” and no answer key; completing it sets interval 3; a second same-session success does not move the due time; assisted session success creates no review; challenge mode is 403; an assisted review stays at interval 1; another user gets 404; Playwright shows “Nothing is due” and “Not retention”; pytest 36 passed; ruff, mypy, tsc, and eslint clean
   - S33: empty Home is `create_goal`; after a 120-minute accept, the next action is `start_session` and the note includes “Usable minutes: 120”; with an open session and a due review, the next action is `review` and recent evidence is `independently_demonstrated` for `python.names`; another user sees no goals; the payload has no streak or mastered field; Playwright shows “You are in” then “Resume your session” and “Usable minutes: 120”, with no “% mastered”; phase 0 smoke passed; pytest 37 passed; ruff, mypy, tsc, and eslint clean
   - S34: empty progress has no facets and no unassessed keys; a 120-minute plan with no attempts lists `python.names` and `python.calls` as unassessed; assisted success sets `python.names` to `practicing` and leaves `python.calls` unassessed; the payload has no mastery percent; Playwright shows the facet, the unassessed gap, and not “% mastered”; pytest 38 passed; ruff, mypy, tsc, and eslint clean
+  - S35: a 15-minute plan overview is version 1, orders activities from position 1, labels the first names activity `prereq`, defers `python.calls` with `insufficient_minutes`, and says why that activity is next; before a session, continue is `start`; after start, continue href is that session; another user gets 404; Playwright shows the deferred line and Continue opens the names reading; pytest 39 passed; ruff, mypy, tsc, and eslint clean
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S34**
-- **Next step:** **S35 — Show goal path with session cards and deferred topics**
+- **Completed steps:** **S01–S35**
+- **Next step:** **S36 — Add explicit replan endpoint stub wired to new plan version**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -55,7 +56,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | Phase | Milestone | Status |
 |---|---|---|
 | 0 | Foundation (S01–S19) | Done (S01–S19) |
-| 1A | Prove Loop (S20–S40) | In progress (S34) |
+| 1A | Prove Loop (S20–S40) | In progress (S35) |
 | Later | Vault / labs / community | Not started |
 
 ---
@@ -98,3 +99,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S32** | `feat(review): due queue and review attempt flow` | Independent success schedules a future due; due list shows a reason; assisted review does not extend the interval |
 | **S33** | `feat(home): next action goals reviews and evidence snapshot` | Home shows the real next session or review; empty state still asks for a goal; no streak counter |
 | **S34** | `feat(progress): evidence ledger progress view` | Facets match stored evidence; unassessed gaps stay visible; no global mastery percent |
+| **S35** | `feat(goals): path overview with feasibility and sessions` | Accepted plan renders; deferred competencies stay visible; continue opens the right session |

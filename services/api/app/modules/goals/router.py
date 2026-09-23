@@ -20,6 +20,7 @@ from app.modules.identity.deps import current_user
 from app.modules.identity.models import User
 from app.modules.learning.accept import accept_proposal, activities_for, latest_accepted
 from app.modules.learning.models import PlanVersion
+from app.modules.learning.overview import build_overview
 from app.modules.learning.proposals import propose_for_goal
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
@@ -414,6 +415,46 @@ def get_accepted_plan(
     if version is None:
         raise ApiError("not_found", "No accepted plan", status_code=404)
     return _plan_out(db, version)
+
+
+class OverviewActivityOut(BaseModel):
+    id: str
+    position: int
+    title: str
+    label: str
+    competency_key: str
+
+
+class DeferredOut(BaseModel):
+    competency_key: str
+    reason_code: str
+
+
+class ContinueOut(BaseModel):
+    kind: str
+    href: str
+    goal_id: str
+
+
+class OverviewOut(BaseModel):
+    goal_id: str
+    title: str
+    version_number: int
+    feasibility_note: str
+    why_next: str
+    continue_action: ContinueOut
+    activities: list[OverviewActivityOut]
+    deferred: list[DeferredOut]
+
+
+@router.get("/{goal_id}/overview", response_model=OverviewOut)
+def get_overview(
+    goal_id: uuid.UUID,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> OverviewOut:
+    goal = get_owned_goal(db, user, goal_id)
+    return OverviewOut.model_validate(build_overview(db, user, goal))
 
 
 @router.get("/{goal_id}", response_model=GoalOut)
