@@ -13,7 +13,7 @@ Stable goals, constraints, and decisions for Dolphin.
 | GitHub repo | public **`shuvam1024/dolphin-learn`** (also Cursor Cloud Agent project repo) |
 | Design SoT | `docs/design/` |
 | Build tracker | `docs/design/04-implementation-status.md` |
-| Sequential build plan | `docs/design/03-build-plan.md` (S01–S50, complete) → `docs/design/06-first-ship-plan.md` (S51–S96, to v0.1) |
+| Sequential build plan | `docs/design/03-build-plan.md` (S01–S50, complete) → `docs/design/06-first-ship-plan.md` (S51–S105, to v0.1) |
 | Product judgment | `docs/design/05-direction.md` (final vision at the center; time is active minutes, not dates) |
 | Brand | `docs/design/brand.md` |
 
@@ -25,7 +25,7 @@ Dolphin is an **all-in omega learning platform**: for **anyone**, for **anything
 
 Architecture welcomes every domain; marketing never claims full mastery coverage before it exists.
 
-**Final product vision (user emphasis, 2026-09-23):** the learner can learn **anything they want**, keep learning **organized in one place**, get **real learning content, technique, and performance**, and have Dolphin **adapt to the task and the time they actually have**. The interface stays **clean and easy to use**; most of the machinery is **behind the scenes**. Every feature and design decision is judged on appeal, usefulness, and ease for the learner; intensive testing and verification (tests, accessibility, performance, design review) precede each step's "done"; design docs are updated when the product changes.
+**Final product vision (user emphasis, 2026-09-23):** the learner can learn **anything they want**, keep learning **organized in one place**, get **real learning content, technique, and performance**, and have Dolphin **adapt to the task and the time they actually have**. The interface stays **clean and easy to use**; most of the machinery is **behind the scenes** — AI/ML is that machinery (tutor, drafting, normalizing, plan explanation, learner model), with the deterministic core as referee for grades, evidence, and plans. Every feature and design decision is judged on appeal, usefulness, and ease for the learner; intensive testing and verification (tests, accessibility, performance, design review) precede each step's "done"; design docs are updated when the product changes.
 
 **Curriculum focus vs learning order:** computer science → software engineering → AI/ML is the current focus for demos and seeded content only. It is not a learning order the product imposes. The shared core (goals, minute budgets, competency graph, sessions, Evidence Ledger, reviews, study clock) stays subject-agnostic.
 
@@ -81,4 +81,4 @@ Accredited credentials; replacing human teachers; training a foundation model; s
 
 ## Implementation stance
 
-Follow `docs/design/`. S01–S50 are complete; execute S51–S96 from `06-first-ship-plan.md`, passing each phase gate before the next. Mega-tickets (`DOLPHIN-BOOT-001` …) are orientation only — execute via sequential step IDs.
+Follow `docs/design/`. S01–S50 are complete; execute S51–S105 from `06-first-ship-plan.md`, passing each phase gate before the next. Mega-tickets (`DOLPHIN-BOOT-001` …) are orientation only — execute via sequential step IDs.

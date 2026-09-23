@@ -4,7 +4,7 @@
 - **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S40 Prove Loop (Phase 1A exit); S41–S42 delayed retention; S43–S46 physical study time (Phase 1C exit)
 - **Verified working user journey:** Study minutes are active session time. Home and the goal path show usable minutes beside studied minutes. Replan uses what remains. A due review can wait 24 hours with Not now, without retention or a longer interval.
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, an honest session-finish summary, a review due queue with 1/3/7/14-day intervals, a Home snapshot of the next action, a Progress ledger of facets plus unassessed plan gaps, a goal path overview, replan that writes the next plan version, and a Studio control to move to the next activity or a different question; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
-- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Next phase is 1D: more honest demo content on the shared core. Computing seeds may lead demos; the product is for any subject.
+- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Phase 1D is done. Next is Phase 2 of `06-first-ship-plan.md` (foundations incl. the AI gateway, S51–S58). Computing seeds may lead demos; the product is for any subject.
 - **Schema/API changes:** Alembic through `0009_goal_domain_key`; goals require `domain_key`; `GET /api/v1/domains`; `POST /api/v1/goals/{id}/replan` writes accepted plan version N+1 from remaining study minutes and demonstrated competencies and leaves older versions in place; `GET /api/v1/goals/{id}/overview` returns the path, deferred topics, usable and studied minutes, and the session to continue; `POST /api/v1/reviews/{id}/snooze` moves `due_at` by hours without retention
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
@@ -53,7 +53,7 @@
   - S44: a 14×30 accept keeps usable minutes 420; after a 30-minute finished session, overview and Home both show studied 30; payloads have no mastery percent and no deadline; Playwright shows “Usable minutes: 420. Studied: 0 minutes”; pytest 50 passed after S46
   - S40 exit, September 23, 2026: `cd services/api && .venv/bin/ruff check app tests` → `All checks passed!`; `.venv/bin/mypy app` → `Success: no issues found in 40 source files`; `.venv/bin/pytest --tb=no` → `41 passed, 1 warning in 2.41s`. `cd apps/web && npx playwright test e2e/phase0.spec.ts e2e/quick-learn.spec.ts e2e/math-windows.spec.ts e2e/refresh-resume.spec.ts --reporter=line` → `4 passed (10.4s)`. Demo script `docs/prove-loop-demo.md`. Next phase is 1B, not Vault
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
-- **Build plan:** `docs/design/03-build-plan.md` (S01–S50, complete); `docs/design/06-first-ship-plan.md` (S51–S96)
+- **Build plan:** `docs/design/03-build-plan.md` (S01–S50, complete); `docs/design/06-first-ship-plan.md` (S51–S105)
 - **Completed steps:** **S01–S50**
 - **Next step:** **S51 — verification harness (axe, perf budget, design review checklist)**, Phase 2 of the first-ship plan
 
@@ -70,12 +70,13 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | 1B | Delayed retention (S41–S42) | Done (S42) |
 | 1C | Physical study time (S43–S46) | Done (S46) |
 | 1D | Honest demo content (S47–S50) | Done (S50) |
-| 2 | Clean surface (S51–S61) | Next |
-| 3 | Time you can feel (S62–S68) | Planned |
-| 4 | Real content and technique (S69–S80) | Planned |
-| 5 | Optional AI behind the scenes (S81–S86) | Planned (flagged) |
-| 6 | Account, trust, release → v0.1 (S87–S96) | Planned |
-| 7+ | Programming lab, Vault, transfer | After first ship |
+| 2 | Foundations incl. AI gateway (S51–S58) | Next |
+| 3 | The learning session incl. tutor (S59–S70) | Planned |
+| 4 | Organized in one place, adaptive to time (S71–S80) | Planned |
+| 5 | Learn anything incl. AI drafting under review (S81–S90) | Planned |
+| 6 | Learner model and adaptivity (S91–S95) | Planned |
+| 7 | Account, trust, release → v0.1 (S96–S105) | Planned |
+| 8+ | Programming lab, Vault, transfer, calibrated estimators | After first ship |
 
 ---
 

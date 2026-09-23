@@ -4,13 +4,13 @@
 **Document role:** The product we are actually building, the next phase, and the phases after it  
 **Last updated:** September 23, 2026
 
-Earlier notes called some choices “locks.” They are not. This file is the current judgment. `03-build-plan.md` (S01–S50) and `06-first-ship-plan.md` (S51–S96) are the only sequential build lists. When they disagree, this file decides the product and the build plan decides the next commit.
+Earlier notes called some choices “locks.” They are not. This file is the current judgment. `03-build-plan.md` (S01–S50) and `06-first-ship-plan.md` (S51–S105) are the only sequential build lists. When they disagree, this file decides the product and the build plan decides the next commit.
 
 ---
 
 ## The final vision (center of every decision)
 
-The learner can **learn anything they want**, keep their learning **organized in one place**, get **real learning content, technique, and performance**, and have Dolphin **adapt to the task and the time they actually have**. The interface stays **clean and easy to use**; most of the machinery is **behind the scenes**.
+The learner can **learn anything they want**, keep their learning **organized in one place**, get **real learning content, technique, and performance**, and have Dolphin **adapt to the task and the time they actually have**. The interface stays **clean and easy to use**; most of the machinery is **behind the scenes** — and that machinery is **AI/ML**: the tutor explains differently and hints, drafts lessons and practice for any subject, normalizes goals, explains plans, and proposes misconception notes; the learner model calibrates effort and selects items. The **deterministic core stays the referee**: grading by key, evidence rows by the evidence writer, plans by the planner; every model output is schema- and feature-validated, labeled, and `provisional` until reviewed. Seeded content works with no key.
 
 Every feature and every screen is judged on three questions: is it appealing, is it useful, is it easy for the learner. Honesty rules do not move (assisted ≠ independent, same-session ≠ retention, no percent, no streak guilt, active minutes not dates). They are expressed through structure — chips, deferred lists, minutes — not through caveats on every line.
 
@@ -18,7 +18,7 @@ Every feature and every screen is judged on three questions: is it appealing, is
 
 The machinery is real and tested: minutes measured, plans fit the budget, help labeled, retention earned from a due review, ownership enforced (53 pytest, 19 Playwright). The learner-facing surface is not yet a product: one sign-in card style on every route; raw keys (`python.names`, `insufficient_minutes`) as visible vocabulary; seven thin competencies with one to three multiple-choice items; a subject picker that refuses anything not seeded; a Learn tab that is a dead end; honesty rules rendered as disclaimers; a priority control that changes nothing; a stored session length that is never read; no accessibility or performance harness; dev-only sign-in.
 
-The gaps, in order: (1) “learn anything” stops at a dropdown, (2) content is demo-thin, (3) time is measured but not felt inside a sitting, (4) the surface leaks the machinery, (5) no place where learning is organized, (6) not shippable to strangers. `06-first-ship-plan.md` spends S51–S96 on exactly those, in that order of dependency, with a verification gate between phases.
+The gaps, in order: (1) “learn anything” stops at a dropdown, (2) content is demo-thin, (3) time is measured but not felt inside a sitting, (4) the surface leaks the machinery, (5) no place where learning is organized, (6) not shippable to strangers. `06-first-ship-plan.md` spends S51–S105 on exactly those, in that order of dependency, with a verification gate between phases.
 
 ---
 
@@ -117,27 +117,30 @@ Phases 0–1D (S01–S50) are finished.
 
 ## Next: the first-ship plan (build this)
 
-**`06-first-ship-plan.md`, S51–S96.** Five phases, each closed by a verification gate (full test suite green; axe zero serious/critical on every route; API p95 and page budgets met and recorded; design review checklist per screen; design docs updated).
+**`06-first-ship-plan.md`, S51–S105.** Six phases, each closed by a verification gate (full test suite green with AI off and with the fake provider; axe zero serious/critical on every route; API p95 and page budgets met and recorded; AI evaluation fixtures pass; design review checklist per screen; design docs updated).
 
 | Phase | Steps | What the learner gets |
 |---|---|---|
-| 2 — Clean surface | S51–S61 | A harness that measures a11y, perf, and design; a UI kit; names not keys; Home, Learn, shell, Studio, path, and Progress that read like a product; replan with a preview |
-| 3 — Time you can feel | S62–S68 | Minute presets with a plain total; a priority that changes the plan; “how long do you have right now?”; a quiet remaining estimate and a good stopping point; minutes on the path and on reviews |
-| 4 — Real content and technique | S69–S80 | Content as validated files; unseen item pools; explanations and misconception notes; short-answer and numeric items; free recall; a two-week-deep Python path; deeper math and software; the **General route** for anything; placement with learner-confirmed skips; worked examples |
-| 5 — Optional AI behind the scenes | S81–S86 | Flagged. A gateway that can explain differently, hint (validated against the key), suggest a goal, and draft provisional outlines for General goals. It never grades or writes evidence. Ship may go dark. |
-| 6 — Account, trust, release | S87–S96 | Settings; managed sign-in for production; export and delete; security headers and rate limits; containers and a runbook; logs and honest funnel events; a golden release suite; a release-candidate review; **v0.1.0** |
+| 2 — Foundations | S51–S58 | A harness that measures a11y, perf, and design; a UI kit; names not keys; the activity-type model; content as validated files; the **AI gateway** (typed outputs, validators, limits, audit, fake provider, degraded mode); the Studio payload contract |
+| 3 — The learning session | S59–S70 | Studio for every activity type; feedback with explanations and the note for your mistake; worked examples; unseen item pools; typed answers; free recall with a self-report ceiling; a **tutor that explains differently and hints** (validated against the key); **AI misconception notes** and **recall comparison** as labeled advice; “how long do you have right now?”; a quiet remaining estimate and a good stopping point; an honest summary |
+| 4 — Organized in one place, adaptive to time | S71–S80 | A priority that changes the plan; Home around one next action; Learn as the shelf for every goal (pause/archive); mobile tabs, landing, Help; the path with minutes and a replan preview → accept; an **AI plan explainer** over the deterministic planner; Progress by goal; reviews with what fits |
+| 5 — Learn anything | S81–S90 | The **General route** for any subject (goal-owned outcomes, the learner's material, free recall); placement with learner-confirmed skips; the **AI goal normalizer**; wizard v2; **AI provisional outlines and recall prompts**; **AI item drafting with reviewer approval before graded use**; a two-week-deep Python path; deeper math and software; content CI and audit |
+| 6 — Learner model and adaptivity | S91–S95 | Effort estimates calibrated from measured active minutes; item selection by difficulty and history; one evaluation and safety suite for every prompt; the learning dataset future estimators will train on |
+| 7 — Account, trust, release | S96–S105 | Settings (incl. tutor on/off); managed sign-in for production; export and delete; security headers and rate limits; containers and a runbook; logs and AI metrics; a golden release suite run with AI off and fake; a release-candidate review with a live AI evaluation; **v0.1.0** |
 
-The earlier working labels “1E scope,” “1F tutor,” “2A lab,” “2B Vault,” “2C transfer” are superseded by this numbering. Scope-by-priority is S63; the tutor that cannot grade is Phase 5.
+The earlier working labels “1E scope,” “1F tutor,” “2A lab,” “2B Vault,” “2C transfer” are superseded by this numbering. Scope-by-priority is S71; the tutor that cannot grade begins at S63 inside the learning session, not in a separate phase.
 
 ## After first ship
 
 Build order, not a learner’s required path. Write numbered steps only when starting the phase, after v0.1 feedback.
 
-**Phase 7 — A programming lab (first activity adapter).** Learner code runs outside the API process, with no credentials and no path to another user’s data. Passing tests can support an attempt. The model does not award the facet by itself. Other subjects will add their own adapters later; the ledger stays shared.
+**Phase 8 — A programming lab (first activity adapter).** Learner code runs outside the API process, with no credentials and no path to another user’s data. Passing tests can support an attempt. The model does not award the facet by itself. Other subjects will add their own adapters later; the ledger stays shared.
 
-**Phase 8 — Knowledge Vault.** Private files. Ownership is checked before any retrieval. Answers that come from a file cite a span the learner can open. Uploads are untrusted. Nothing is redistributed to other people. (Until then, the General route accepts pasted notes.)
+**Phase 9 — Knowledge Vault.** Private files. Ownership is checked before any retrieval. Answers that come from a file cite a span the learner can open. Uploads are untrusted. Nothing is redistributed to other people. (Until then, the General route accepts pasted notes.)
 
-**Phase 9 — Transfer.** A task that is meaningfully new can set `applied`. Repeating the lesson cannot.
+**Phase 10 — Transfer.** A task that is meaningfully new can set `applied`. Repeating the lesson cannot.
+
+**Phase 11 — Calibrated estimators.** Probabilistic mastery or spacing models only after validity and fairness studies on the v0.1 dataset (`v_attempt_features`, `v_review_outcomes`), and only as advice the deterministic referee can override.
 
 **After that.** More domains and activity types on the same platform — whatever people ask to learn, as soon as we can teach and check it honestly. Deeper accessibility. A community only with moderation and privacy. Younger learners only as a separate reviewed product. A fancier review scheduler only after these plain durations have real data.
 
@@ -150,4 +153,4 @@ Build order, not a learner’s required path. Write numbered steps only when sta
 - Diagnose learning styles.
 - Claim every subject is fully assessed.
 - Split into a microservice fleet before the learning loop needs it.
-- Let a model both teach and record proficiency.
+- Let a model both teach and record proficiency. The tutor explains, hints, and drafts; the deterministic referee grades and writes evidence.
