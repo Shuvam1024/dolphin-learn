@@ -101,7 +101,9 @@ Phase 1C is finished. The next numbered steps deepen honest demo content without
 
 ## Next phase (build this)
 
-**Phase 1D — Honest demo content on the shared core. S47, then S48, then S49, then S50.**
+**Phase 1D — Honest demo content on the shared core.** Done (S47–S50).
+
+**Next: Phase 1E — Scope, same evidence** (write numbered steps when starting).
 
 | Step | Commit | Done when |
 |---|---|---|

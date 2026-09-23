@@ -4,7 +4,7 @@
 - **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S40 Prove Loop (Phase 1A exit); S41–S42 delayed retention; S43–S46 physical study time (Phase 1C exit)
 - **Verified working user journey:** Study minutes are active session time. Home and the goal path show usable minutes beside studied minutes. Replan uses what remains. A due review can wait 24 hours with Not now, without retention or a longer interval.
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, an honest session-finish summary, a review due queue with 1/3/7/14-day intervals, a Home snapshot of the next action, a Progress ledger of facets plus unassessed plan gaps, a goal path overview, replan that writes the next plan version, and a Studio control to move to the next activity or a different question; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
-- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Phase 1D in progress (S47 done; S48–S50 next).
+- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, the tutor, and the sandbox are not built. Phase 1D done (S47–S50). Next is 1E scope with the same evidence rules.
 - **Schema/API changes:** Alembic through `0009_goal_domain_key`; goals require `domain_key`; `GET /api/v1/domains`; `POST /api/v1/goals/{id}/replan` writes accepted plan version N+1 from remaining study minutes and demonstrated competencies and leaves older versions in place; `GET /api/v1/goals/{id}/overview` returns the path, deferred topics, usable and studied minutes, and the session to continue; `POST /api/v1/reviews/{id}/snooze` moves `due_at` by hours without retention
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
@@ -54,8 +54,8 @@
   - S40 exit, September 23, 2026: `cd services/api && .venv/bin/ruff check app tests` → `All checks passed!`; `.venv/bin/mypy app` → `Success: no issues found in 40 source files`; `.venv/bin/pytest --tb=no` → `41 passed, 1 warning in 2.41s`. `cd apps/web && npx playwright test e2e/phase0.spec.ts e2e/quick-learn.spec.ts e2e/math-windows.spec.ts e2e/refresh-resume.spec.ts --reporter=line` → `4 passed (10.4s)`. Demo script `docs/prove-loop-demo.md`. Next phase is 1B, not Vault
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S49**
-- **Next step:** **S50 — Pick a domain in the goal wizard**
+- **Completed steps:** **S01–S50**
+- **Next step:** **Phase 1E — Scope, same evidence (write numbered steps next)**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -69,7 +69,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | 1A | Prove Loop (S20–S40) | Done (S20–S40) |
 | 1B | Delayed retention (S41–S42) | Done (S42) |
 | 1C | Physical study time (S43–S46) | Done (S46) |
-| 1D | Honest demo content (S47–S50) | In progress (S49 done) |
+| 1D | Honest demo content (S47–S50) | Done (S50) |
 | Later | 1E scope, tutor, lab, Vault | Later |
 
 ---
@@ -133,3 +133,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S47** | `feat(goals): require an explicit domain for plans` | Domain stored on goal; GET /domains; cooking is not Python; wizard picks a subject |
 | **S48** | `feat(seed): add python conditionals with real checks` | Conditionals lesson with reading + graded items; short plans defer it |
 | **S49** | `feat(seed): add software practice mini curriculum` | software domain on shared ledger; plans only software competencies |
+| **S50** | `feat(web): pick a domain in the goal wizard` | Subject required; software e2e is not Python; copy says more subjects come later |
