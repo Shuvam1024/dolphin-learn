@@ -47,14 +47,16 @@ dolphin-learn/
    docker compose up -d
    ```
 
-3. **API** (after S04 — FastAPI health):
+3. **API** (FastAPI health):
 
    ```bash
    cd services/api
-   python -m venv .venv && source .venv/bin/activate
-   pip install -r requirements.txt   # added in S04
+   python3 -m venv .venv && source .venv/bin/activate
+   pip install -r requirements.txt
    uvicorn app.main:app --reload --port 8000
    ```
+
+   `GET http://localhost:8000/health` returns `{"status":"ok"}`.
 
 4. **Web** (after S05 — Next.js shell):
 
