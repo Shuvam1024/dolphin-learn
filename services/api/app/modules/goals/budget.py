@@ -6,12 +6,14 @@ block of minutes or a repeating weekly window — never both, and never negative
 
 from typing import Literal
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, ConfigDict, model_validator
 
 BudgetMode = Literal["one_off", "weekly"]
 
 
 class TimeBudgetSpec(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     mode: BudgetMode
     one_off_minutes: int | None = None
     weekly_minutes_per_day: int | None = None
