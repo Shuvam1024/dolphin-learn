@@ -1,8 +1,8 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S37 of the Prove Loop
-- **Verified working user journey:** A 120-minute Python Quick Learn goes from sign-in through an accepted plan, Session Studio, an independent check, and `independently_demonstrated` on Home and Progress. Allocated activity minutes stay within 120. No AI key.
+- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S38 of the Prove Loop
+- **Verified working user journey:** A two-week math goal at 30 minutes a day uses 420 usable minutes, not 14×24 hours. Studio shows the seeded fraction checkpoint.
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, review tables, an honest session-finish summary, a review due queue with 1/3/7/14-day intervals, a Home snapshot of the next action, a Progress ledger of facets plus unassessed plan gaps, a goal path overview, replan that writes the next plan version, and a Studio control to move to the next activity or a different question; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
 - **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Vault, RAG, and the sandbox are not built
 - **Schema/API changes:** Alembic through `0008_attempt_idempotency`; `POST /api/v1/goals/{id}/replan` writes accepted plan version N+1 from the current budget and demonstrated competencies and leaves older versions in place; `GET /api/v1/goals/{id}/overview` returns the path, deferred topics, and the session to continue
@@ -44,10 +44,11 @@
   - S35: a 15-minute plan overview is version 1, orders activities from position 1, labels the first names activity `prereq`, defers `python.calls` with `insufficient_minutes`, and says why that activity is next; before a session, continue is `start`; after start, continue href is that session; another user gets 404; Playwright shows the deferred line and Continue opens the names reading; pytest 39 passed; ruff, mypy, tsc, and eslint clean
   - S36: after an independent names answer and a budget change to 15 minutes, `POST …/replan` returns version 2 with `insufficient_minutes` and “Already demonstrated: python.names”; version 1 remains; attempt count stays 1; `POST …/plan-proposals` does not create version 3; another user gets 404; Playwright shows “Plan version 2” and the deferred calls line; pytest 40 passed; ruff, mypy, tsc, and eslint clean
   - S37: Playwright signs in, saves a 120-minute Python goal, accepts a plan with `usable_minutes` 120 and allocated activity minutes ≤ 120, reads the names note, answers one question independently, checks a different question, and sees `python.names: independently_demonstrated` on Home and Progress with no “% mastered”; `OPENAI_API_KEY` was empty; ruff, mypy, tsc, and eslint clean
+  - S38: Playwright saves Fractions as 30 minutes a day for 14 days; accepted plan `usable_minutes` is 420 and the rationale is not 20160; Studio shows “three parts out of four” and the seeded question “What is 1/4 + 2/4?”; `OPENAI_API_KEY` was empty
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S37**
-- **Next step:** **S38 — Automate E2E-02 math availability windows**
+- **Completed steps:** **S01–S38**
+- **Next step:** **S39 — Test IDOR denial and mid-session refresh resume**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -58,7 +59,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | Phase | Milestone | Status |
 |---|---|---|
 | 0 | Foundation (S01–S19) | Done (S01–S19) |
-| 1A | Prove Loop (S20–S40) | In progress (S37) |
+| 1A | Prove Loop (S20–S40) | In progress (S38) |
 | Later | Vault / labs / community | Not started |
 
 ---
@@ -104,3 +105,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S35** | `feat(goals): path overview with feasibility and sessions` | Accepted plan renders; deferred competencies stay visible; continue opens the right session |
 | **S36** | `feat(plan): add replan endpoint creating new plan version` | Budget edit then replan writes version N+1; older versions and attempts stay; proposals still do not write a version |
 | **S37** | `test(e2e): cover 120-minute python quick learn prove loop` | Browser journey accepts a plan whose activities fit in 120 minutes, then shows independent evidence on Home and Progress |
+| **S38** | `test(e2e): cover two-week math thirty-minute days` | Usable minutes are 14×30, not 14×24h; the seeded fraction question appears in Studio |
