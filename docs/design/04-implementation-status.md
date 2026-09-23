@@ -1,10 +1,10 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S28 of the Prove Loop
-- **Verified working user journey:** Read an explanation or submit an objective answer; the same idempotency key does not create a second attempt
+- **Milestone completed:** S01–S19 (Phase 0 foundation); S20–S29 of the Prove Loop
+- **Verified working user journey:** An unassisted correct answer is eligible for independent evidence; asking for the solution marks the next answer assisted
 - **Implemented modules/features:** Layout; env template; Postgres; API health; Next.js shell; Clear Depth; error envelope; Alembic; checks; auth mapping; protected `/app`; learner preferences; adult acknowledgment; curriculum graph; goals and time budgets; plans, sessions, attempts, evidence, and review tables; seeded Python and math lessons (reading + objective); `POST/GET /api/v1/goals`, `GET/PATCH /api/v1/goals/{id}` with one-off XOR weekly time budgets
-- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Attempts are stored but not graded yet
+- **Stubbed or unavailable features:** Library discloses that the Knowledge Vault is later and has no file control. Dev sign-in is email-only (no password store). Graded attempts do not update the Evidence Ledger yet
 - **Schema/API changes:** Alembic through `0008_attempt_idempotency`; `POST /api/v1/sessions/{id}/attempts` stores an immutable answer snapshot keyed by `idempotency_key`
 - **Tests run and exact results:**
   - S01: `tree` shows `apps/web`, `services/api`, `packages/contracts`, `infra`, `docs/`
@@ -35,10 +35,11 @@
   - S26: start from an accepted 120-minute plan lands on the first activity; a progress event moves to the next; GET returns that same activity; the same `client_event_id` does not move it back and does not add a second event; pause survives GET; another user gets 404; pytest 29 passed; ruff and mypy clean
   - S27: session GET includes the reading body “binds the name”, mode `guided`, and no `answer_key`; Playwright opens `/app/learn/:sessionId`, shows the explanation and “No countdown”, Pause then reload still says Paused; phase 0 smoke passed; no AI key
   - S28: `alembic upgrade head` applied `0008_attempt_idempotency`; submit choice `b` returns `created` true and assistance `independent`; the same key with choice `a` returns the same attempt id and choice `b`; another user gets 404; one attempt row; Playwright records “Answer recorded: b” and reload keeps it; pytest 30 passed
+  - S29: correct choice `b` with no help is `independent` / `correct` and eligible; challenge mode refuses the solution and does not reveal it; after an explicit solution the next attempt is `assisted` and not eligible; hint text does not reveal the letter; no competency evidence row; pytest 32 passed; studio browser tests still passed; no LLM
 - **Known bugs/security/accessibility concerns:** None in the shell. Light theme only until a later contrast pass.
 - **Build plan:** `docs/design/03-build-plan.md`
-- **Completed steps:** **S01–S28**
-- **Next step:** **S29 — Grade closed-form items and label assisted vs independent**
+- **Completed steps:** **S01–S29**
+- **Next step:** **S30 — Issue independent check and update competency evidence**
 
 Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
 
@@ -49,7 +50,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | Phase | Milestone | Status |
 |---|---|---|
 | 0 | Foundation (S01–S19) | Done (S01–S19) |
-| 1A | Prove Loop (S20–S40) | In progress (S28) |
+| 1A | Prove Loop (S20–S40) | In progress (S29) |
 | Later | Vault / labs / community | Not started |
 
 ---
@@ -86,3 +87,4 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | **S26** | `feat(sessions): create and resume persisted sessions` | Start from an accepted plan; refresh keeps progress; duplicate client event id does not double-apply |
 | **S27** | `feat(studio): render session studio reading activity` | Seeded explanation shows; pause persists; no countdown; no AI |
 | **S28** | `feat(studio): add question activity and attempt submit` | Immutable attempt; same idempotency key returns the same result; other user denied |
+| **S29** | `feat(assess): deterministic grading and assistance labels` | Unassisted correct is eligible; after show-solution the next attempt is assisted |

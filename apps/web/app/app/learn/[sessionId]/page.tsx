@@ -13,6 +13,10 @@ type StudioActivity = {
   body: string;
   mode: "guided";
   recorded_choice: string;
+  help: string;
+  revealed_choice: string;
+  outcome: string;
+  attempt_assistance: string;
 };
 
 function questionChoices(prompt: string): { value: string; label: string }[] {
@@ -86,8 +90,22 @@ export default async function StudioPage({
           <article className={styles.body}>{session.activity.body}</article>
         ) : null}
         <p className={styles.prompt}>{session.activity.prompt}</p>
+        {question && session.activity.help === "hint" ? (
+          <p className={styles.meta}>
+            Hint: compare each choice with the note. The letter stays hidden.
+          </p>
+        ) : null}
+        {question && session.activity.revealed_choice ? (
+          <p className={styles.meta}>
+            You asked for the solution: {session.activity.revealed_choice}. A later answer is
+            assisted.
+          </p>
+        ) : null}
         {question && recorded ? (
-          <p className={styles.meta}>Answer recorded: {recorded}. This does not claim mastery.</p>
+          <p className={styles.meta}>
+            Answer recorded: {recorded}. Marked {session.activity.attempt_assistance || "independent"}.{" "}
+            {session.activity.outcome ? `Outcome: ${session.activity.outcome}.` : ""}
+          </p>
         ) : null}
         {question && !recorded ? (
           <form action={`/api/sessions/${session.id}/attempts`} method="post">
@@ -102,6 +120,22 @@ export default async function StudioPage({
             </fieldset>
             <button className={styles.button} type="submit">
               Submit answer
+            </button>
+          </form>
+        ) : null}
+        {question ? (
+          <form action={`/api/sessions/${session.id}/help`} method="post">
+            <input type="hidden" name="kind" value="hint" />
+            <button className={styles.button} type="submit">
+              Show a hint
+            </button>
+          </form>
+        ) : null}
+        {question && !session.activity.revealed_choice ? (
+          <form action={`/api/sessions/${session.id}/help`} method="post">
+            <input type="hidden" name="kind" value="solution" />
+            <button className={styles.button} type="submit">
+              Show the solution
             </button>
           </form>
         ) : null}

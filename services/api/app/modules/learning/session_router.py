@@ -7,17 +7,20 @@ from app.db import get_db
 from app.modules.goals.service import get_owned_goal
 from app.modules.identity.deps import current_user
 from app.modules.identity.models import User
-from app.modules.learning.models import LearningSession
+from app.modules.learning.grading import eligible_for_independent_evidence
+from app.modules.learning.models import Evaluation, LearningSession
 from app.modules.learning.sessions import (
     activity_snapshot,
     apply_event,
     event_count,
     get_owned_session,
+    record_help,
     start_session,
     submit_attempt,
 )
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
@@ -58,6 +61,10 @@ class ActivityOut(BaseModel):
     body: str
     mode: Literal["guided"]
     recorded_choice: str = ""
+    help: str = "none"
+    revealed_choice: str = ""
+    outcome: str = ""
+    attempt_assistance: str = ""
 
 
 class SessionOut(BaseModel):
@@ -156,6 +163,8 @@ class AttemptOut(BaseModel):
     choice: str
     assistance: str
     prompt: str
+    outcome: str
+    eligible_for_independent_evidence: bool
     created: bool
 
 
@@ -173,11 +182,50 @@ def post_attempt(
         idempotency_key=body.idempotency_key,
         choice=body.choice,
     )
+    evaluation = db.scalar(select(Evaluation).where(Evaluation.attempt_id == attempt.id))
+    outcome = evaluation.outcome if evaluation is not None else ""
+    assistance = str(attempt.response.get("assistance", "independent"))
     return AttemptOut(
         id=attempt.id,
         activity_version_id=attempt.activity_version_id,
         choice=str(attempt.response.get("choice", "")),
-        assistance=str(attempt.response.get("assistance", "independent")),
+        assistance=assistance,
         prompt=str(attempt.response.get("prompt", "")),
+        outcome=outcome,
+        eligible_for_independent_evidence=eligible_for_independent_evidence(assistance, outcome),
         created=created,
     )
+
+
+class HelpIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    mode: Literal["guided", "challenge"] = "guided"
+
+
+class HelpOut(BaseModel):
+    kind: str
+    message: str
+    revealed_choice: str
+
+
+@router.post("/{session_id}/hint", response_model=HelpOut)
+def post_hint(
+    session_id: uuid.UUID,
+    body: HelpIn | None = None,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> HelpOut:
+    mode = "guided" if body is None else body.mode
+    return HelpOut.model_validate(record_help(db, user, session_id, kind="hint", mode=mode))
+
+
+@router.post("/{session_id}/solution", response_model=HelpOut)
+def post_solution(
+    session_id: uuid.UUID,
+    body: HelpIn | None = None,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> HelpOut:
+    mode = "guided" if body is None else body.mode
+    return HelpOut.model_validate(record_help(db, user, session_id, kind="solution", mode=mode))
