@@ -1,0 +1,26 @@
+# Local Postgres for Dolphin (Phase 0+)
+#
+# App processes (Next.js, FastAPI) stay on the host.
+# Only the database runs in Compose.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: dolphin-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dolphin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dolphin}
+      POSTGRES_DB: ${POSTGRES_DB:-dolphin}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dolphin} -d ${POSTGRES_DB:-dolphin}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:
