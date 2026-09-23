@@ -9,7 +9,9 @@
 
 Dolphin is an **all-in learning platform** for **anyone**, for **anything**, in **any time**, **personalized for each user**.
 
-Architecture welcomes every domain. Shipping honesty requires staged delivery: V1 is a deep vertical slice (Python + foundational math + generic reading path) without fake “all subjects fully validated” marketing.
+**Final product vision (the center of every decision):** the learner can **learn anything they want**, keep their learning **organized in one place**, get **real learning content, technique, and performance**, and have Dolphin **adapt to the task and the time they actually have**. The interface stays **clean and easy to use**; most of the machinery is **behind the scenes**. Every feature and screen is judged on appeal, usefulness, and ease for the learner — and verified (tests, accessibility, performance, design review) before it is called done.
+
+Architecture welcomes every domain. Shipping honesty requires staged delivery: v0.1 ships **checked subjects** (Python, foundational math, software practice — seeded and graded deterministically) plus a **General route** for any subject the learner names (their own material, free recall, self-rating, spaced review — recorded as self-reported evidence), without fake “all subjects fully validated” marketing.
 
 **One-sentence vision:** Dolphin turns any appropriately scoped subject, question, personal resource, or skill objective into a guided learning experience that adapts to starting knowledge, goals, **real available minutes**, demonstrated performance, and preferred interaction methods — then helps the learner practice, retain, and independently apply what they learned.
 
@@ -97,7 +99,7 @@ Vs generic AI tutors, flashcard apps, and planner-only tools:
 | Boundary | Decision |
 |---|---|
 | Audience | Adults **18+**; age-gate until a child-specific product is designed and reviewed |
-| Subjects | Any subject on one platform. Early demos may prefer computing content we can grade well; that is not a required learner path |
+| Subjects | Any subject on one platform: checked subjects with deterministic grading, plus the General route (self-reported evidence) for everything else. Early demos may prefer computing content we can grade well; that is not a required learner path |
 | Client | Accessible responsive web |
 | Loop | Prove Loop: goal → feasible plan → Session Studio → independent check → Evidence Ledger → review → Home |
 | AI | Optional; seeded content must work without API keys |
@@ -127,7 +129,7 @@ Vs generic AI tutors, flashcard apps, and planner-only tools:
 
 ## Direction
 
-`05-direction.md` is the current product judgment, including how time is measured. It is not a second build plan. Sequential steps stay in `03-build-plan.md`.
+`05-direction.md` is the current product judgment, including how time is measured. It is not a second build plan. Sequential steps stay in `03-build-plan.md` (S01–S50, complete) and `06-first-ship-plan.md` (S51–S96, to v0.1).
 
 ## Near-term non-goals
 

@@ -3,7 +3,9 @@
 **Document status:** Learning-oriented implementation sequence — not a claim of shipped code  
 **Last updated:** September 23, 2026  
 **Audience:** Learner building Dolphin step by step with Cursor  
-**Scope:** Phase 0 through Phase 1D (S01–S50). Phase 1C ended at S46. Phase 1D deepens honest demo content on the shared core and removes the silent Python default. Computing-related seeds may lead demos; that is not a required learner path. Stop before Vault, RAG, a tutor gateway, or a sandbox.
+**Scope:** Phase 0 through Phase 1D (S01–S50) — **all complete.** Phase 1C ended at S46. Phase 1D deepened honest demo content on the shared core and removed the silent Python default. Computing-related seeds may lead demos; that is not a required learner path.
+
+**Continues in:** [`06-first-ship-plan.md`](06-first-ship-plan.md) — S51–S96, Phases 2–6, to a shippable v0.1. That plan is built around the final vision: learn **anything**, keep it **organized in one place**, get **real content, technique, and performance**, have Dolphin **adapt to the task and the time you actually have**, with a **clean UI** and the machinery **behind the scenes**. Every step there carries acceptance with tests, and each phase closes with a verification gate (full suite, accessibility, performance budget, design review, docs).
 
 ---
 
@@ -846,9 +848,9 @@ Phase 1C finished the active-minute clock. Phase 1D makes domain choice honest, 
 
 ## Stop line
 
-Do **not** start Vault, RAG, a tutor gateway, or a code sandbox in Phase 1D. Do **not** add a goal deadline date. After S50, Phase 1E is scope with the same evidence rules (`05-direction.md`). Computing seeds may lead demos; the product stays for anything they want to learn.
+Phase 1D closed at S50. Do **not** add a goal deadline date. Do **not** start Vault, RAG, or a code sandbox before v0.1 ships; `06-first-ship-plan.md` places an **optional, flagged** AI gateway in its Phase 5 (a model may explain and draft; it never grades or writes evidence). Computing seeds may lead demos; the product stays for anything they want to learn.
 
-Tiny seams allowed only as listed (e.g. S36 replan, honest Library empty state). No upload pipelines, embeddings, or in-process code execution in this plan.
+Next step: **S51** in `06-first-ship-plan.md`. Tiny seams allowed only as listed there. No upload pipelines, embeddings, or in-process code execution before first ship.
 
 ---
 
@@ -906,3 +908,4 @@ Tiny seams allowed only as listed (e.g. S36 replan, honest Library empty state).
 | S48 | 1D | Seed python conditionals with real checks |
 | S49 | 1D | Seed software practice mini curriculum |
 | S50 | 1D | Pick a domain in the goal wizard |
+| S51–S96 | 2–6 | See [`06-first-ship-plan.md`](06-first-ship-plan.md): Clean surface → Time you can feel → Real content and technique → Optional AI behind the scenes → Account, trust, release (v0.1) |

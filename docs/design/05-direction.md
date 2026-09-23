@@ -4,7 +4,21 @@
 **Document role:** The product we are actually building, the next phase, and the phases after it  
 **Last updated:** September 23, 2026
 
-Earlier notes called some choices “locks.” They are not. This file is the current judgment. `03-build-plan.md` is the only sequential build list. When they disagree, this file decides the product and the build plan decides the next commit.
+Earlier notes called some choices “locks.” They are not. This file is the current judgment. `03-build-plan.md` (S01–S50) and `06-first-ship-plan.md` (S51–S96) are the only sequential build lists. When they disagree, this file decides the product and the build plan decides the next commit.
+
+---
+
+## The final vision (center of every decision)
+
+The learner can **learn anything they want**, keep their learning **organized in one place**, get **real learning content, technique, and performance**, and have Dolphin **adapt to the task and the time they actually have**. The interface stays **clean and easy to use**; most of the machinery is **behind the scenes**.
+
+Every feature and every screen is judged on three questions: is it appealing, is it useful, is it easy for the learner. Honesty rules do not move (assisted ≠ independent, same-session ≠ retention, no percent, no streak guilt, active minutes not dates). They are expressed through structure — chips, deferred lists, minutes — not through caveats on every line.
+
+## Where we stand after S50 (assessment, September 23, 2026)
+
+The machinery is real and tested: minutes measured, plans fit the budget, help labeled, retention earned from a due review, ownership enforced (53 pytest, 19 Playwright). The learner-facing surface is not yet a product: one sign-in card style on every route; raw keys (`python.names`, `insufficient_minutes`) as visible vocabulary; seven thin competencies with one to three multiple-choice items; a subject picker that refuses anything not seeded; a Learn tab that is a dead end; honesty rules rendered as disclaimers; a priority control that changes nothing; a stored session length that is never read; no accessibility or performance harness; dev-only sign-in.
+
+The gaps, in order: (1) “learn anything” stops at a dropdown, (2) content is demo-thin, (3) time is measured but not felt inside a sitting, (4) the surface leaks the machinery, (5) no place where learning is organized, (6) not shippable to strangers. `06-first-ship-plan.md` spends S51–S96 on exactly those, in that order of dependency, with a verification gate between phases.
 
 ---
 
@@ -57,7 +71,7 @@ That list is a **build and demo priority**. It is not the curriculum every user 
 
 Mathematics shows up when a goal needs it (the fractions lesson is that kind of support). Other fields use the same goals, minute clock, competency graph, sessions, evidence ledger, and reviews. A new field is more curriculum data and activity types, not a second app.
 
-Do not special-case computing in the planner, the clock, or the ledger. Known seam: a goal that names neither the seeded Python domain nor math is still planned as Python. Remove that silent default as soon as domain selection is honest.
+Do not special-case computing in the planner, the clock, or the ledger. The silent Python default was removed in S47; the next honesty step is the **General route** (S76): any subject the learner names, taught with the technique that works everywhere — read, recall without looking, self-rate, review later — recorded as self-reported evidence that never becomes “independently demonstrated.”
 
 ---
 
@@ -95,38 +109,35 @@ Two things decide whether a step is done. Neither one is a polish pass at the en
 - Keyboard use, a phone-width screen, and the path through sign-in stay intact.
 - The app should feel quick in a study session. That is responsiveness a person notices, not a made-up benchmark.
 
-Phase 1C is finished. The next numbered steps deepen honest demo content without turning Dolphin into a computing-only school.
+A third bar joins those two for the first ship: **the surface itself**. Tokens only; one primary action per screen; no raw keys, ids, reason codes, or version numbers as learner copy; at most one explanatory sentence per screen (definitions live in Help); loading, empty, and error states present. This is the design review checklist created in S51 and applied at every gate.
+
+Phases 0–1D (S01–S50) are finished.
 
 ---
 
-## Next phase (build this)
+## Next: the first-ship plan (build this)
 
-**Phase 1D — Honest demo content on the shared core.** Done (S47–S50).
+**`06-first-ship-plan.md`, S51–S96.** Five phases, each closed by a verification gate (full test suite green; axe zero serious/critical on every route; API p95 and page budgets met and recorded; design review checklist per screen; design docs updated).
 
-**Next: Phase 1E — Scope, same evidence** (write numbered steps when starting).
-
-| Step | Commit | Done when |
+| Phase | Steps | What the learner gets |
 |---|---|---|
-| S47 | `feat(goals): require an explicit domain for plans` | No silent Python; goal stores `domain_key`; unknown domain is 422 |
-| S48 | `feat(seed): add python conditionals with real checks` | New competency with reading + graded items; planner can include or defer it |
-| S49 | `feat(seed): add software practice mini curriculum` | `software` domain plans its own competencies on the shared ledger |
-| S50 | `feat(web): pick a domain in the goal wizard` | Learner chooses a seeded domain; software e2e is not Python |
+| 2 — Clean surface | S51–S61 | A harness that measures a11y, perf, and design; a UI kit; names not keys; Home, Learn, shell, Studio, path, and Progress that read like a product; replan with a preview |
+| 3 — Time you can feel | S62–S68 | Minute presets with a plain total; a priority that changes the plan; “how long do you have right now?”; a quiet remaining estimate and a good stopping point; minutes on the path and on reviews |
+| 4 — Real content and technique | S69–S80 | Content as validated files; unseen item pools; explanations and misconception notes; short-answer and numeric items; free recall; a two-week-deep Python path; deeper math and software; the **General route** for anything; placement with learner-confirmed skips; worked examples |
+| 5 — Optional AI behind the scenes | S81–S86 | Flagged. A gateway that can explain differently, hint (validated against the key), suggest a goal, and draft provisional outlines for General goals. It never grades or writes evidence. Ship may go dark. |
+| 6 — Account, trust, release | S87–S96 | Settings; managed sign-in for production; export and delete; security headers and rate limits; containers and a runbook; logs and honest funnel events; a golden release suite; a release-candidate review; **v0.1.0** |
 
-Phase 1C (S43–S46) is done.
+The earlier working labels “1E scope,” “1F tutor,” “2A lab,” “2B Vault,” “2C transfer” are superseded by this numbering. Scope-by-priority is S63; the tutor that cannot grade is Phase 5.
 
-## Later phases
+## After first ship
 
-These are build order, not a learner’s required path. Write numbered steps only when starting the phase.
+Build order, not a learner’s required path. Write numbered steps only when starting the phase, after v0.1 feedback.
 
-**Phase 1E — Scope, same evidence.** A priority (understand, apply, or go deeper) may drop topics from the plan. It must not change what “retained” means. “How close” is a count of unassessed topics, deferred topics, and due reviews. Never a percent.
+**Phase 7 — A programming lab (first activity adapter).** Learner code runs outside the API process, with no credentials and no path to another user’s data. Passing tests can support an attempt. The model does not award the facet by itself. Other subjects will add their own adapters later; the ledger stays shared.
 
-**Phase 1F — A tutor that cannot grade.** Optional model for hints and explanations. Seeded lessons still run with no key. The evidence writer stays the deterministic grader.
+**Phase 8 — Knowledge Vault.** Private files. Ownership is checked before any retrieval. Answers that come from a file cite a span the learner can open. Uploads are untrusted. Nothing is redistributed to other people. (Until then, the General route accepts pasted notes.)
 
-**Phase 2A — A programming lab (first activity adapter).** Learner code runs outside the API process, with no credentials and no path to another user’s data. Passing tests can support an attempt. The model does not award the facet by itself. Other subjects will add their own adapters later; the ledger stays shared.
-
-**Phase 2B — Knowledge Vault.** Private files. Ownership is checked before any retrieval. Answers that come from a file cite a span the learner can open. Uploads are untrusted. Nothing is redistributed to other people.
-
-**Phase 2C — Transfer.** A task that is meaningfully new can set `applied`. Repeating the lesson cannot.
+**Phase 9 — Transfer.** A task that is meaningfully new can set `applied`. Repeating the lesson cannot.
 
 **After that.** More domains and activity types on the same platform — whatever people ask to learn, as soon as we can teach and check it honestly. Deeper accessibility. A community only with moderation and privacy. Younger learners only as a separate reviewed product. A fancier review scheduler only after these plain durations have real data.
 

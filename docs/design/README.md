@@ -14,19 +14,20 @@ This folder is the **source of truth** for product vision, UX, architecture, seq
 | [`00-vision-and-principles.md`](00-vision-and-principles.md) | Omega vision, first-class pillars, differentiation, principles |
 | [`01-product-and-ux.md`](01-product-and-ux.md) | IA, Home, Session Studio, Prove Loop, Clear Depth visual |
 | [`02-architecture.md`](02-architecture.md) | Stack, modules, data model, API/AI/security boundaries |
-| [`03-build-plan.md`](03-build-plan.md) | Sequential steps. Phase 0 through 1A are S01–S40. Phase 1B is S41–S44. |
+| [`03-build-plan.md`](03-build-plan.md) | Sequential steps S01–S50 (Phases 0, 1A–1D) — complete |
 | [`04-implementation-status.md`](04-implementation-status.md) | What is done, next step, test results |
-| [`05-direction.md`](05-direction.md) | What to keep from the external ATLAS brief, and the phase order after 1B |
+| [`05-direction.md`](05-direction.md) | Final vision at the center, assessment after S50, phase order to v0.1 and after |
+| [`06-first-ship-plan.md`](06-first-ship-plan.md) | Sequential steps S51–S96 (Phases 2–6) to a shippable v0.1, with verification gates |
 | [`project-context.md`](project-context.md) | Locked decisions (name, repo, stack, non-goals) |
 | [`brand.md`](brand.md) | Locked name, tagline, Clear Depth tokens; retired names appendix |
 
 ## How to use (agents and humans)
 
 1. Read `project-context.md` locks first.
-2. Implement one step at a time from `03-build-plan.md`.
+2. Implement one step at a time: `03-build-plan.md` for S01–S50 (done), then `06-first-ship-plan.md` from **S51**.
 3. Update `04-implementation-status.md` after every completed step.
 4. Explain **what / how / why** from each step’s teach note while building.
-5. The current build is Phase 1C (S43–S46): study time is active minutes, not a date. Read `05-direction.md` before adding a later phase. No Vault, RAG, tutor gateway, or sandbox in 1C.
+5. The current build is Phase 2 (S51–S61, clean surface). Read `05-direction.md` first: the final vision is the center of every decision. Each phase ends at a verification gate (suite, a11y, perf budget, design review, docs). No Vault, RAG, or sandbox before v0.1; AI only behind the Phase 5 flag.
 
 ## Slim pointer
 
