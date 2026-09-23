@@ -303,6 +303,8 @@ def apply_event(
     )
     if existing is not None:
         return session, False
+    if session.status == "finished":
+        raise ApiError("validation_error", "This session is already finished", status_code=422)
 
     if event_type == "progress":
         raw = payload.get("plan_activity_id", "")

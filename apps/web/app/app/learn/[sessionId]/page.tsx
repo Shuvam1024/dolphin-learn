@@ -27,10 +27,28 @@ function questionChoices(prompt: string): { value: string; label: string }[] {
     .map((line) => ({ value: line[0].toLowerCase(), label: line }));
 }
 
+type SummaryItem = {
+  competency_key: string;
+  title: string;
+  reason: string;
+  attempt_id: string;
+  outcome: string;
+  choice: string;
+};
+
+type StudioSummary = {
+  topics: SummaryItem[];
+  independent_attempts: SummaryItem[];
+  unresolved: SummaryItem[];
+  suggested_review: SummaryItem[];
+  note: string;
+};
+
 type StudioSession = {
   id: string;
   status: string;
   activity: StudioActivity | null;
+  summary: StudioSummary | null;
 };
 
 async function loadSession(sessionId: string): Promise<StudioSession | null> {
@@ -67,6 +85,47 @@ export default async function StudioPage({
       <main className={styles.shell}>
         <section className={styles.card}>
           <h1 className={styles.title}>Session not found</h1>
+        </section>
+      </main>
+    );
+  }
+
+  if (session.status === "finished" && session.summary) {
+    const summary = session.summary;
+    return (
+      <main className={styles.shell}>
+        <section className={styles.card}>
+          <p className={styles.kicker}>Session summary</p>
+          <h1 className={styles.title}>Session finished</h1>
+          <p className={styles.meta}>{summary.note}</p>
+          <h2 className={styles.meta}>Independent attempts</h2>
+          <ul>
+            {summary.independent_attempts.map((item) => (
+              <li key={item.attempt_id}>
+                {item.competency_key}: {item.outcome} ({item.choice})
+              </li>
+            ))}
+          </ul>
+          <h2 className={styles.meta}>Unresolved</h2>
+          {summary.unresolved.length === 0 ? (
+            <p className={styles.meta}>No unresolved questions in this session.</p>
+          ) : (
+            <ul>
+              {summary.unresolved.map((item) => (
+                <li key={item.title}>
+                  {item.title}. {item.reason}
+                </li>
+              ))}
+            </ul>
+          )}
+          <h2 className={styles.meta}>Suggested review</h2>
+          <ul>
+            {summary.suggested_review.map((item) => (
+              <li key={item.competency_key}>
+                {item.competency_key}. {item.reason}
+              </li>
+            ))}
+          </ul>
         </section>
       </main>
     );
@@ -139,6 +198,11 @@ export default async function StudioPage({
             </button>
           </form>
         ) : null}
+        <form action={`/api/sessions/${session.id}/finish`} method="post">
+          <button className={styles.button} type="submit">
+            Finish session
+          </button>
+        </form>
         <form action={`/api/sessions/${session.id}/event`} method="post">
           <input type="hidden" name="event_type" value={paused ? "resume" : "pause"} />
           <button className={styles.button} type="submit">

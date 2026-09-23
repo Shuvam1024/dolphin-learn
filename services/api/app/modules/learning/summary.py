@@ -1,0 +1,119 @@
+"""Honest end-of-session summary built from stored attempts. No celebration copy."""
+
+import uuid
+from datetime import datetime, timezone
+
+from app.modules.curriculum.models import Competency
+from app.modules.identity.models import User
+from app.modules.learning.models import (
+    ActivityVersion,
+    Attempt,
+    Evaluation,
+    LearningSession,
+    Lesson,
+    PlanActivity,
+)
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+
+def _plan_version_id(db: Session, session: LearningSession):
+    if session.plan_activity_id is None:
+        return None
+    plan = db.get(PlanActivity, session.plan_activity_id)
+    if plan is None:
+        return None
+    return plan.plan_version_id
+
+
+def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
+    rows = db.execute(
+        select(Attempt, Evaluation, Competency.key, Lesson.title)
+        .join(Evaluation, Evaluation.attempt_id == Attempt.id)
+        .join(ActivityVersion, Attempt.activity_version_id == ActivityVersion.id)
+        .join(Lesson, ActivityVersion.lesson_id == Lesson.id)
+        .join(Competency, Lesson.competency_id == Competency.id)
+        .where(Attempt.session_id == session.id)
+        .order_by(Attempt.submitted_at, Attempt.id)
+    ).all()
+
+    topics: list[dict[str, str]] = []
+    seen_topics: set[str] = set()
+    independent: list[dict[str, str]] = []
+    demonstrated: set[str] = set()
+    for attempt, evaluation, key, title in rows:
+        if key not in seen_topics:
+            seen_topics.add(key)
+            topics.append({"competency_key": key, "title": title})
+        if evaluation.assistance == "independent":
+            independent.append(
+                {
+                    "attempt_id": str(attempt.id),
+                    "competency_key": key,
+                    "outcome": evaluation.outcome,
+                    "choice": str(attempt.response.get("choice", "")),
+                }
+            )
+            if evaluation.outcome == "correct":
+                demonstrated.add(key)
+
+    unresolved: list[dict[str, str]] = []
+    version_id = _plan_version_id(db, session)
+    if version_id is not None:
+        planned = db.execute(
+            select(PlanActivity, ActivityVersion, Competency.key)
+            .join(ActivityVersion, PlanActivity.activity_version_id == ActivityVersion.id)
+            .join(Lesson, ActivityVersion.lesson_id == Lesson.id)
+            .join(Competency, Lesson.competency_id == Competency.id)
+            .where(
+                PlanActivity.plan_version_id == version_id,
+                ActivityVersion.activity_type == "objective",
+            )
+            .order_by(PlanActivity.position)
+        ).all()
+        solved_activities = {
+            attempt.activity_version_id
+            for attempt, evaluation, _key, _title in rows
+            if evaluation.assistance == "independent" and evaluation.outcome == "correct"
+        }
+        for plan, activity, key in planned:
+            if activity.id in solved_activities:
+                continue
+            unresolved.append(
+                {
+                    "title": plan.title,
+                    "competency_key": key,
+                    "reason": "No independent correct attempt in this session",
+                }
+            )
+
+    suggested = [
+        {
+            "competency_key": key,
+            "reason": "Independent success in this session. Not retention.",
+        }
+        for key in sorted(demonstrated)
+    ]
+    return {
+        "topics": topics,
+        "independent_attempts": independent,
+        "unresolved": unresolved,
+        "suggested_review": suggested,
+        "note": "This summary counts stored attempts only. It does not claim retention.",
+    }
+
+
+def finish_session(
+    db: Session,
+    user: User,
+    session_id: uuid.UUID,
+) -> tuple[LearningSession, dict[str, object]]:
+    from app.modules.learning.sessions import get_owned_session
+
+    session = get_owned_session(db, user, session_id)
+    if session.status != "finished":
+        session.status = "finished"
+        session.updated_at = datetime.now(timezone.utc)
+        db.commit()
+        db.refresh(session)
+    return session, build_summary(db, session)

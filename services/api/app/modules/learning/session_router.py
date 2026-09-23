@@ -19,6 +19,7 @@ from app.modules.learning.sessions import (
     start_session,
     submit_attempt,
 )
+from app.modules.learning.summary import build_summary, finish_session
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator
 from sqlalchemy import select
@@ -68,6 +69,23 @@ class ActivityOut(BaseModel):
     attempt_assistance: str = ""
 
 
+class SummaryItemOut(BaseModel):
+    competency_key: str
+    title: str = ""
+    reason: str = ""
+    attempt_id: str = ""
+    outcome: str = ""
+    choice: str = ""
+
+
+class SummaryOut(BaseModel):
+    topics: list[SummaryItemOut]
+    independent_attempts: list[SummaryItemOut]
+    unresolved: list[SummaryItemOut]
+    suggested_review: list[SummaryItemOut]
+    note: str
+
+
 class SessionOut(BaseModel):
     id: uuid.UUID
     status: str
@@ -76,6 +94,7 @@ class SessionOut(BaseModel):
     event_count: int
     applied: bool
     activity: ActivityOut | None = None
+    summary: SummaryOut | None = None
 
 
 def _out(
@@ -93,6 +112,9 @@ def _out(
         event_count=event_count(db, row.id),
         applied=applied,
         activity=ActivityOut.model_validate(snap) if (snap := activity_snapshot(db, row)) else None,
+        summary=(
+            SummaryOut.model_validate(build_summary(db, row)) if row.status == "finished" else None
+        ),
     )
 
 
@@ -208,6 +230,16 @@ class HelpOut(BaseModel):
     kind: str
     message: str
     revealed_choice: str
+
+
+@router.post("/{session_id}/finish", response_model=SessionOut)
+def post_finish(
+    session_id: uuid.UUID,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> SessionOut:
+    row, _summary = finish_session(db, user, session_id)
+    return _out(row, db, applied=True)
 
 
 @router.post("/{session_id}/independent-check", response_model=SessionOut)
