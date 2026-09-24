@@ -50,6 +50,9 @@ class ProfileOut(BaseModel):
     locale: str
     a11y_prefs: A11yPrefs
     adult_acknowledged_at: datetime | None
+    default_session_minutes: int = 25
+    ai_opt_out: bool = False
+    use_tutor: bool = True
 
 
 class MeOut(BaseModel):
@@ -69,6 +72,9 @@ class PreferencesIn(BaseModel):
     timezone: str | None = None
     locale: str | None = None
     a11y_prefs: A11yPrefs | None = None
+    default_session_minutes: int | None = None
+    ai_opt_out: bool | None = None
+    use_tutor: bool | None = None
 
     @field_validator("display_name")
     @classmethod
@@ -102,6 +108,15 @@ class PreferencesIn(BaseModel):
             raise ValueError("locale must look like en or en-US")
         return value
 
+    @field_validator("default_session_minutes")
+    @classmethod
+    def _minutes(cls, value: int | None) -> int | None:
+        if value is None:
+            return None
+        if value < 5 or value > 180:
+            raise ValueError("default_session_minutes must be between 5 and 180")
+        return value
+
 
 def _profile_out(profile: LearnerProfile) -> ProfileOut:
     raw = profile.a11y_prefs or {}
@@ -114,6 +129,9 @@ def _profile_out(profile: LearnerProfile) -> ProfileOut:
             larger_text=bool(raw.get("larger_text", False)),
         ),
         adult_acknowledged_at=profile.adult_acknowledged_at,
+        default_session_minutes=int(profile.default_session_minutes or 25),
+        ai_opt_out=bool(profile.ai_opt_out),
+        use_tutor=not bool(profile.ai_opt_out),
     )
 
 
@@ -152,6 +170,9 @@ def patch_preferences(
     db: Session = Depends(get_db),
 ) -> MeOut:
     sent = body.model_fields_set
+    ai_opt_out = body.ai_opt_out
+    if "use_tutor" in sent and body.use_tutor is not None:
+        ai_opt_out = not body.use_tutor
     profile = update_preferences(
         db,
         user,
@@ -160,6 +181,8 @@ def patch_preferences(
         locale=body.locale,
         a11y_prefs=body.a11y_prefs.model_dump() if body.a11y_prefs is not None else None,
         set_display_name="display_name" in sent,
+        default_session_minutes=body.default_session_minutes,
+        ai_opt_out=ai_opt_out,
     )
     return _me(user, profile, db)
 

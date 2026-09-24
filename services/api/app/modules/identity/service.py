@@ -54,6 +54,8 @@ def update_preferences(
     locale: str | None,
     a11y_prefs: dict[str, bool] | None,
     set_display_name: bool,
+    default_session_minutes: int | None = None,
+    ai_opt_out: bool | None = None,
 ) -> LearnerProfile:
     """Update only fields the caller sent. Always the authenticated user."""
     profile = ensure_profile(db, user)
@@ -65,6 +67,10 @@ def update_preferences(
         profile.locale = locale
     if a11y_prefs is not None:
         profile.a11y_prefs = a11y_prefs
+    if default_session_minutes is not None:
+        profile.default_session_minutes = int(default_session_minutes)
+    if ai_opt_out is not None:
+        profile.ai_opt_out = bool(ai_opt_out)
     db.commit()
     db.refresh(profile)
     return profile

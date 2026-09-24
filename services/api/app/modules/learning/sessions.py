@@ -60,10 +60,14 @@ def start_session(
     minutes = target_minutes
     if minutes is None:
         budget = budget_for(db, goal)
+        profile = None
+        from app.modules.identity.service import ensure_profile
+
+        profile = ensure_profile(db, user)
         minutes = (
             budget.preferred_session_minutes
             if budget is not None and budget.preferred_session_minutes
-            else 25
+            else int(profile.default_session_minutes or 25)
         )
     if minutes < 5 or minutes > 180:
         raise ApiError(

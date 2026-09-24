@@ -79,3 +79,21 @@ kbd,
     transition: none !important;
   }
 }
+
+html[data-text="large"] {
+  --text-body: 18px;
+  --text-body-lg: 20px;
+  --text-meta: 16px;
+  --text-display: clamp(32px, 4.5vw, 48px);
+}
+
+html[data-text="large"] body {
+  font-size: var(--text-body);
+}
+
+html[data-motion="reduce"] *,
+html[data-motion="reduce"] *::before,
+html[data-motion="reduce"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
