@@ -20,7 +20,7 @@ def current_user(
 ) -> User:
     if credentials is None or credentials.scheme.lower() != "bearer":
         raise ApiError("unauthorized", "Authentication required", status_code=401)
-    claims = decode_access_token(credentials.credentials)
+    claims = decode_access_token(credentials.credentials, db=db)
     email = claims.get("email")
     return get_or_create_user(
         db,

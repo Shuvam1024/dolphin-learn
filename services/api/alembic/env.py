@@ -6,6 +6,7 @@ import app.analytics.events  # noqa: F401
 import app.modules.curriculum.models  # noqa: F401
 import app.modules.goals.models  # noqa: F401
 import app.modules.identity.models  # noqa: F401
+import app.modules.identity.revocations  # noqa: F401
 import app.modules.learner_model.effort  # noqa: F401
 import app.modules.learning.models  # noqa: F401
 from alembic import context

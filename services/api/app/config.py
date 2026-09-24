@@ -21,6 +21,11 @@ class Settings(BaseSettings):
     auth_audience: str = "dolphin-api"
     auth_jwks_url: str = ""
     auth_dev_secret: str = "dev-only-not-a-password"
+    auth_client_id: str = ""
+    auth_client_secret: str = ""
+    auth_authorize_url: str = ""
+    auth_token_url: str = ""
+    retention_days: int = 30
 
     # AI gateway — off by default; FakeProvider in CI via AI_PROVIDER=fake
     ai_gateway_enabled: bool = False

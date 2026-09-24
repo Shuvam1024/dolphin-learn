@@ -10,8 +10,8 @@ from app.errors import ApiError
 from app.modules.identity.deps import current_user
 from app.modules.identity.models import LearnerProfile, User
 from app.modules.identity.service import acknowledge_adult, ensure_profile, update_preferences
-from app.modules.identity.tokens import dev_tokens_enabled, issue_dev_token
-from fastapi import APIRouter, Depends
+from app.modules.identity.tokens import dev_tokens_enabled, issue_dev_token, revoke_access_token
+from fastapi import APIRouter, Depends, Header
 from pydantic import BaseModel, ConfigDict, field_validator
 from sqlalchemy.orm import Session
 
@@ -21,6 +21,8 @@ _LOCALE = re.compile(r"^[a-z]{2}(-[A-Z]{2})?$")
 
 
 class DevTokenIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     email: str
 
     @field_validator("email")
@@ -194,3 +196,35 @@ def adult_acknowledgment(
 ) -> MeOut:
     """Record that this adult learner accepted the 18+ enrollment notice."""
     return _me(user, acknowledge_adult(db, user), db)
+
+
+class RevokeOut(BaseModel):
+    revoked: bool = True
+
+
+@router.post("/auth/revoke", response_model=RevokeOut)
+def revoke_session(
+    authorization: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+) -> RevokeOut:
+    """Revoke the bearer access token on logout. Managed auth only — no credentials stored."""
+    if not authorization or not authorization.lower().startswith("bearer "):
+        raise ApiError("unauthorized", "Authentication required", status_code=401)
+    token = authorization.split(" ", 1)[1].strip()
+    user: User | None = None
+    try:
+        from app.modules.identity.tokens import decode_access_token
+
+        claims = decode_access_token(token, db=None)
+        email = claims.get("email")
+        from app.modules.identity.service import get_or_create_user
+
+        user = get_or_create_user(
+            db,
+            auth_subject=str(claims["sub"]),
+            email=email if isinstance(email, str) else None,
+        )
+    except ApiError:
+        user = None
+    revoke_access_token(db, token, user_id=user.id if user else None)
+    return RevokeOut(revoked=True)
