@@ -1,0 +1,322 @@
+[
+  {
+    "id": "goal_normalize-ok-1",
+    "inputs": {
+      "text": "sample 1"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-2",
+    "inputs": {
+      "text": "sample 2"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-3",
+    "inputs": {
+      "text": "sample 3"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-4",
+    "inputs": {
+      "text": "sample 4"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-5",
+    "inputs": {
+      "text": "sample 5"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-6",
+    "inputs": {
+      "text": "sample 6"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-7",
+    "inputs": {
+      "text": "sample 7"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-8",
+    "inputs": {
+      "text": "sample 8"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-9",
+    "inputs": {
+      "text": "sample 9"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-10",
+    "inputs": {
+      "text": "sample 10"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-11",
+    "inputs": {
+      "text": "sample 11"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-12",
+    "inputs": {
+      "text": "sample 12"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-13",
+    "inputs": {
+      "text": "sample 13"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-14",
+    "inputs": {
+      "text": "sample 14"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-ok-15",
+    "inputs": {
+      "text": "sample 15"
+    },
+    "scripted_output": {
+      "title": "Learn Python",
+      "domain_key": "python",
+      "outcomes": [
+        "I can name a value"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.8
+    },
+    "expected_validator_result": true
+  },
+  {
+    "id": "goal_normalize-bad-1",
+    "inputs": {
+      "text": "sample bad 1"
+    },
+    "scripted_output": {
+      "title": "X",
+      "domain_key": "alchemy",
+      "outcomes": [
+        "I can invent gold"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.9
+    },
+    "expected_validator_result": false
+  },
+  {
+    "id": "goal_normalize-bad-2",
+    "inputs": {
+      "text": "sample bad 2"
+    },
+    "scripted_output": {
+      "title": "X",
+      "domain_key": "alchemy",
+      "outcomes": [
+        "I can invent gold"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.9
+    },
+    "expected_validator_result": false
+  },
+  {
+    "id": "goal_normalize-bad-3",
+    "inputs": {
+      "text": "sample bad 3"
+    },
+    "scripted_output": {
+      "title": "X",
+      "domain_key": "alchemy",
+      "outcomes": [
+        "I can invent gold"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.9
+    },
+    "expected_validator_result": false
+  },
+  {
+    "id": "goal_normalize-bad-4",
+    "inputs": {
+      "text": "sample bad 4"
+    },
+    "scripted_output": {
+      "title": "X",
+      "domain_key": "alchemy",
+      "outcomes": [
+        "I can invent gold"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.9
+    },
+    "expected_validator_result": false
+  },
+  {
+    "id": "goal_normalize-bad-5",
+    "inputs": {
+      "text": "sample bad 5"
+    },
+    "scripted_output": {
+      "title": "X",
+      "domain_key": "alchemy",
+      "outcomes": [
+        "I can invent gold"
+      ],
+      "minutes_hint_per_outcome": 15,
+      "confidence": 0.9
+    },
+    "expected_validator_result": false
+  }
+]

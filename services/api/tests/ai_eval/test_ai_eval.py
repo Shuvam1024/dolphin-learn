@@ -24,3 +24,7 @@ def test_ai_eval_live_record_when_requested(monkeypatch) -> None:
     text = path.read_text()
     assert "hint" in text
     assert "recall_compare" in text
+    assert "goal_normalize" in text
+    assert "general_outline" in text
+    assert "item_draft" in text
+    assert "plan_explain" in text

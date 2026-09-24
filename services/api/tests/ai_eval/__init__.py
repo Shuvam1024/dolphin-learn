@@ -16,6 +16,10 @@ PROMPTS = (
     "explain_differently",
     "misconception_note",
     "recall_compare",
+    "goal_normalize",
+    "general_outline",
+    "item_draft",
+    "plan_explain",
 )
 
 

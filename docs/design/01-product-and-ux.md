@@ -180,3 +180,8 @@ Subtle depth gradients / soft water-grain; real learning imagery where used. Def
 - Explicit user choice can override recommendations; AI never silently deletes or rewrites learner history.
 - Adult enrollment acknowledgment before learning flows.
 - Every async feature needs idle/loading/success/empty/error/retry. No dead buttons; no cosmetic progress.
+
+
+## Wizard v2 and General route (Phase 5)
+
+Five steps: Learn, Time, Focus, Placement, Plan. Subject chips include Something else. AI suggestions are labeled and editable. Placement is skippable. General-route outcomes own their competencies; free recall evidence stays at practicing.

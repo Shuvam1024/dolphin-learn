@@ -214,3 +214,8 @@ Challenge mode withholds `revealed_answer`. Explanations stay empty until an att
 ### Definition of done (per milestone)
 
 Usable UI; real persistence; server authz; loading/empty/error; real control behavior; tests pass; docs/`.env.example` updated; privacy considered; no fake progress.
+
+
+## Owned competencies and provisional pipeline (Phase 5)
+
+Competencies and lessons may carry `owner_user_id` / `goal_id` for the General route. Owner filters apply in proposals, progress, home, and reviews. AI outlines and item drafts land provisional; graded use requires review. Prompts: `goal_normalize`, `general_outline`, `item_draft`, `plan_explain`.

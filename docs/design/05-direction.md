@@ -2,7 +2,7 @@
 
 **Product:** Dolphin  
 **Document role:** The product we are actually building, the next phase, and the phases after it  
-**Last updated:** September 23, 2026
+**Last updated:** September 24, 2026
 
 Earlier notes called some choices “locks.” They are not. This file is the current judgment. `03-build-plan.md` (S01–S50) and `06-first-ship-plan.md` (S51–S105) are the only sequential build lists. When they disagree, this file decides the product and the build plan decides the next commit.
 
@@ -21,6 +21,12 @@ The machinery is real and tested: minutes measured, plans fit the budget, help l
 The gaps, in order: (1) “learn anything” stops at a dropdown, (2) content is demo-thin, (3) time is measured but not felt inside a sitting, (4) the surface leaks the machinery, (5) no place where learning is organized, (6) not shippable to strangers. `06-first-ship-plan.md` spends S51–S105 on exactly those, in that order of dependency, with a verification gate between phases.
 
 ---
+
+## Where we stand after Gate 5 (September 24, 2026)
+
+Phase 5 is verified. The General route accepts any subject with learner-owned outcomes; placement proposes skips the learner confirms; the goal normalizer and wizard v2 guide creation; provisional outlines and item drafts stay under review; checked subjects are deep enough for real sittings; content CI publishes an audit with zero errors.
+
+Next is **Phase 6 — Learner model and adaptivity** (S91).
 
 ## The product
 

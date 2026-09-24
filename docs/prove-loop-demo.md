@@ -58,4 +58,11 @@ npx playwright test \
 
 Recorded on September 24, 2026: pytest **112 passed, 6 skipped** (AI off and fake); `make ai-eval` green; gate Playwright **13 passed, 1 skipped**.
 
-Phase 4 (Gate 4) is verified. Next is **Phase 5 — S81** (General route).
+Phase 5 (Gate 5) is verified. Next is **Phase 6 — S91** (effort calibration).
+
+### Demo v2 — General route with outline
+
+1. Create a Something else goal (Spanish greetings) with one outcome.
+2. Request an outline proposal (`POST /goals/{id}/outline-proposals`) and accept it.
+3. Accept the plan; free recall stays at practicing and schedules a later review.
+

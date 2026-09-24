@@ -98,9 +98,74 @@ def validate_recall_compare(inputs: dict[str, Any], output: dict[str, Any]) -> b
     return True
 
 
+def validate_goal_normalize(inputs: dict[str, Any], output: dict[str, Any]) -> bool:
+    from app.modules.goals.normalize import GoalNormalizeOut
+
+    try:
+        parsed = GoalNormalizeOut.model_validate(output)
+    except ValidationError:
+        return False
+    allowed = set(inputs.get("allowed_domain_keys") or ["python", "math", "software", "general"])
+    if parsed.domain_key not in allowed:
+        return False
+    if _INJECTION.search(parsed.title):
+        return False
+    return True
+
+
+def validate_general_outline(inputs: dict[str, Any], output: dict[str, Any]) -> bool:
+    from app.modules.goals.outline import OutlinePayload
+
+    try:
+        parsed = OutlinePayload.model_validate(output)
+    except ValidationError:
+        return False
+    blob = " ".join(
+        f"{item.statement} {item.reading_markdown} {item.recall_prompt} {item.reflection_prompt}"
+        for item in parsed.outcomes
+    )
+    if _INJECTION.search(blob) or _ANSWER_PHRASE.search(blob):
+        return False
+    return True
+
+
+def validate_item_draft(inputs: dict[str, Any], output: dict[str, Any]) -> bool:
+    from app.content.draft_items import DraftPayload
+
+    try:
+        parsed = DraftPayload.model_validate(output)
+    except ValidationError:
+        return False
+    for item in parsed.items:
+        if item.type not in {"objective", "short_answer", "numeric"}:
+            return False
+        if _ANSWER_PHRASE.search(item.prompt) or _INJECTION.search(item.prompt):
+            return False
+    return True
+
+
+def validate_plan_explain(inputs: dict[str, Any], output: dict[str, Any]) -> bool:
+    from app.modules.learning.plan_explain import PlanExplainOut
+
+    try:
+        parsed = PlanExplainOut.model_validate(output)
+    except ValidationError:
+        return False
+    blob = f"{parsed.summary} {parsed.why_order} {parsed.what_is_left_out}"
+    if _INJECTION.search(blob) or _ANSWER_PHRASE.search(blob):
+        return False
+    if "999" in blob:
+        return False
+    return True
+
+
 VALIDATORS = {
     "hint": validate_hint,
     "explain_differently": validate_explain,
     "misconception_note": validate_misconception,
     "recall_compare": validate_recall_compare,
+    "goal_normalize": validate_goal_normalize,
+    "general_outline": validate_general_outline,
+    "item_draft": validate_item_draft,
+    "plan_explain": validate_plan_explain,
 }

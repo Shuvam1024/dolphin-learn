@@ -1,8 +1,13 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S89; Content audit
+- **Milestone completed:** S01–S90; Gate 5 learn anything
 - **Schema/API changes:** Alembic through `0015_goal_status`
+- **Tests run and exact results (S90 Gate 5):**
+  - `AI_GATEWAY_ENABLED=false` pytest → green
+  - `AI_PROVIDER=fake` pytest → green
+  - ai-eval extended: goal_normalize, general_outline, item_draft, plan_explain
+  - content audit Errors: 0
 - **Tests run and exact results (S89):**
   - `python -m app.content.audit` → Errors: 0
   - `pytest -q` → 148 passed, 6 skipped (`test_content_audit`)
@@ -132,7 +137,7 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S89**
+- **Completed steps:** **S01–S90**
 - **Next step:** **S75 — Goal path v2 with replan preview → accept**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
@@ -254,3 +259,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S87** | `feat(content): python fundamentals with eight competencies` | 8 competencies |
 | **S88** | `feat(content): deeper fractions and software practice paths` | four each |
 | **S89** | `test(content): enforce content checklist in ci and publish the audit` | audit + CI |
+| **S90** | `docs: phase 5 learn anything verified; general route and ai drafting in vision, ux, and architecture` | Gate 5 |
