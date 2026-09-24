@@ -163,19 +163,26 @@ def build_studio(
             outcome = str(snap.get("outcome") if snap else "")
             assistance = str(snap.get("attempt_assistance") if snap else "")
             help_kind = str(snap.get("help") if snap else "none")
+            revealed = ""
+            if not challenge and snap:
+                revealed = str(snap.get("revealed_choice") or "")
             explanation = ""
             misconception = ""
-            if recorded and activity.explanation:
+            show_feedback = recorded or bool(revealed)
+            if show_feedback and activity.explanation:
                 explanation = activity.explanation
-            if recorded and snap and snap.get("recorded_choice") and activity.misconceptions:
+            if (
+                recorded
+                and snap
+                and snap.get("recorded_choice")
+                and activity.misconceptions
+                and activity.activity_type == "objective"
+            ):
                 key = str(snap["recorded_choice"])
                 notes = activity.misconceptions
                 if isinstance(notes, dict):
                     misconception = str(notes.get(key, ""))
-            revealed = ""
-            if not challenge and snap:
-                revealed = str(snap.get("revealed_choice") or "")
-            if not recorded:
+            if not show_feedback:
                 explanation = ""
                 misconception = ""
             activity_payload = {

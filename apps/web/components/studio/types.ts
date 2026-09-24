@@ -51,6 +51,7 @@ export type SummaryItem = {
   attempt_id: string;
   outcome: string;
   choice: string;
+  note?: string;
 };
 
 export type StudioSession = {
@@ -83,6 +84,7 @@ export type StudioSession = {
     independent_attempts: SummaryItem[];
     unresolved: SummaryItem[];
     suggested_review: SummaryItem[];
+    watch_out_for?: SummaryItem[];
     note: string;
   } | null;
 };

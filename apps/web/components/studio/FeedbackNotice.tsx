@@ -4,17 +4,13 @@ import type { StudioActivity } from "./types";
 
 export function FeedbackNotice({ activity }: { activity: StudioActivity }) {
   const { state } = activity;
-  if (!state.recorded && !state.revealed_answer) {
+  if (!state.recorded && !state.revealed_answer && !state.explanation) {
     return null;
   }
 
   const assisted = state.assistance === "assisted";
-  const tone =
-    state.outcome === "correct" || state.outcome === "independently_demonstrated"
-      ? "success"
-      : state.outcome
-        ? "warning"
-        : "info";
+  const incorrect = Boolean(state.recorded && state.outcome && state.outcome !== "correct");
+  const tone = state.outcome === "correct" ? "success" : incorrect ? "warning" : "info";
 
   return (
     <InlineNotice tone={tone}>
@@ -33,7 +29,7 @@ export function FeedbackNotice({ activity }: { activity: StudioActivity }) {
       {state.explanation ? <p>{state.explanation}</p> : null}
       {state.misconception_note ? (
         <p>
-          {state.misconception_source === "ai" ? <Chip tone="ai">AI</Chip> : null}{" "}
+          {state.misconception_source === "ai" ? <Chip tone="ai">AI</Chip> : null}
           {state.misconception_note}
         </p>
       ) : null}

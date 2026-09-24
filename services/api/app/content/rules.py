@@ -162,6 +162,22 @@ def validate_domain(bundle: DomainContent) -> list[RuleFailure]:
                             "Graded items need explanation",
                         )
                     )
+                if item.type == "objective":
+                    notes = item.misconceptions
+                    count = 0
+                    if isinstance(notes, dict):
+                        count = sum(1 for value in notes.values() if str(value).strip())
+                    elif isinstance(notes, list):
+                        count = sum(1 for value in notes if str(value).strip())
+                    if count < 1:
+                        failures.append(
+                            RuleFailure(
+                                path,
+                                item_line,
+                                "misconception_required",
+                                "Objective items need at least one misconception note",
+                            )
+                        )
                 if _prompt_contains_answer(item):
                     failures.append(
                         RuleFailure(

@@ -107,11 +107,39 @@ def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
         }
         for key in sorted(demonstrated)
     ]
+
+    watch_out: list[dict[str, str]] = []
+    seen_notes: set[str] = set()
+    for attempt, evaluation, key, name, title in rows:
+        if evaluation.outcome == "correct":
+            continue
+        activity = db.get(ActivityVersion, attempt.activity_version_id)
+        if activity is None or not activity.misconceptions:
+            continue
+        choice = str(attempt.response.get("choice", ""))
+        notes = activity.misconceptions
+        note = ""
+        if isinstance(notes, dict):
+            note = str(notes.get(choice, "")).strip()
+        if not note or note in seen_notes:
+            continue
+        seen_notes.add(note)
+        watch_out.append(
+            {
+                "competency_key": key,
+                "competency_name": name,
+                "lesson_title": title,
+                "note": note,
+                "choice": choice,
+            }
+        )
+
     return {
         "topics": topics,
         "independent_attempts": independent,
         "unresolved": unresolved,
         "suggested_review": suggested,
+        "watch_out_for": watch_out,
         "note": "This summary counts stored attempts only. It does not claim retention.",
     }
 

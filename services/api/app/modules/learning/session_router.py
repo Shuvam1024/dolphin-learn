@@ -80,6 +80,7 @@ class SummaryItemOut(BaseModel):
     attempt_id: str = ""
     outcome: str = ""
     choice: str = ""
+    note: str = ""
 
 
 class SummaryOut(BaseModel):
@@ -87,6 +88,7 @@ class SummaryOut(BaseModel):
     independent_attempts: list[SummaryItemOut]
     unresolved: list[SummaryItemOut]
     suggested_review: list[SummaryItemOut]
+    watch_out_for: list[SummaryItemOut] = []
     note: str
 
 

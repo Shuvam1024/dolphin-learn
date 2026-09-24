@@ -88,6 +88,18 @@ export default async function StudioPage({
             </li>
           ))}
         </ul>
+        <h2>Watch out for</h2>
+        {(summary.watch_out_for ?? []).length === 0 ? (
+          <p>Nothing flagged from this session.</p>
+        ) : (
+          <ul>
+            {(summary.watch_out_for ?? []).map((item) => (
+              <li key={`${item.competency_key}-${item.note}`}>
+                {item.competency_name}: {item.note}
+              </li>
+            ))}
+          </ul>
+        )}
       </main>
     );
   }

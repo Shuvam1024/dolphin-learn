@@ -14,7 +14,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## Next incomplete step
 
-**S60 — Feedback with explanation and misconception note** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
+**S61 — Worked examples** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
 
 ---
 
@@ -45,4 +45,18 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — smoke 23 passed; studio-v2 green; pytest 81 passed, 6 skipped; tsc/eslint/vitest clean.
 
 **Push:** `010f1ba` is on origin/main
+
+## S60 — Feedback with explanation and misconception note
+
+**Commit:**  — feat(studio): feedback with explanation and the note for your mistake
+
+**What:** After every graded attempt (or reveal), Studio shows the explanation and — for a wrong objective choice — the seeded note for that mistake. Assisted answers make the primary "Try a fresh question." The session summary collects a "Watch out for" list.
+
+**How:** `studio_view` fills explanation after attempt or reveal and misconception notes by choice; content rules require ≥1 misconception on objectives; `summary.watch_out_for` aggregates incorrect-attempt notes; FeedbackNotice uses success/warning tones without celebration copy.
+
+**Why:** Immediate, specific feedback is the teaching moment — the referee stays deterministic; the note names the mistake.
+
+**Acceptance:** passed — pytest 84 passed, 6 skipped; studio-v2 e2e extended; content ok.
+
+**Push:**  is on origin/main
 
