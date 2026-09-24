@@ -550,3 +550,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `86352dd` is on origin/main
 
+## S96 — Settings
+
+**Commit:** `13d176c` — feat(settings): preferences page wired to the profile api
+
+**What:** Settings covers name, timezone, usual sitting length, larger text, reduced motion, and Use the tutor. Larger text sets data-text=large; reduced motion sets data-motion=reduce. Tutor off writes ai_opt_out and hides the Studio tutor panel. Privacy section points ahead to download/delete.
+
+**How:** Alembic 0021_profile_session_minutes; preferences PATCH; /app/settings form; PrefsBootstrap on the app shell.
+
+**Why:** Learners need control of comfort and AI before strangers use the product.
+
+**Acceptance:** passed — pytest 176 passed, 6 skipped (test_settings); e2e/settings.spec.ts green.
+
+**Push:** `13d176c` is on origin/main
+
