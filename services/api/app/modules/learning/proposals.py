@@ -1,10 +1,13 @@
 """Load seeded competencies and propose a plan for one owned goal."""
 
+from __future__ import annotations
+
 from app.errors import ApiError
 from app.modules.curriculum.models import EDGE_REQUIRES, Competency, CompetencyEdge, Domain
 from app.modules.goals.budget import BudgetMode, TimeBudgetSpec
 from app.modules.goals.general import GENERAL_DOMAIN_KEY
 from app.modules.goals.models import Goal, TimeBudget
+from app.modules.identity.models import User
 from app.modules.learning.models import ActivityVersion, Lesson
 from app.modules.learning.planner import CompetencyWork, PlanProposal, propose_plan
 from sqlalchemy import select
@@ -51,7 +54,10 @@ def work_for_domain(
     domain_key: str,
     *,
     goal: Goal | None = None,
+    user: User | None = None,
 ) -> list[CompetencyWork]:
+    from app.modules.learner_model.effort import scale_effort
+
     domain = db.scalar(select(Domain).where(Domain.key == domain_key))
     if domain is None:
         raise ApiError("validation_error", "Unknown domain", status_code=422)
@@ -86,6 +92,10 @@ def work_for_domain(
                 continue
             prereqs[source.key].append(target.key)
 
+    learner = user
+    if learner is None and goal is not None:
+        learner = db.get(User, goal.user_id)
+
     work: list[CompetencyWork] = []
     for competency in competencies:
         activities = list(
@@ -95,12 +105,24 @@ def work_for_domain(
                 .where(Lesson.competency_id == competency.id)
             )
         )
+        low = 0
+        high = 0
+        for item in activities:
+            scaled_low, scaled_high = scale_effort(
+                db,
+                learner,
+                item.activity_type,
+                int(item.effort_minutes_low),
+                int(item.effort_minutes_high),
+            )
+            low += scaled_low
+            high += scaled_high
         work.append(
             CompetencyWork(
                 key=competency.key,
                 name=competency.name,
-                effort_low=sum(item.effort_minutes_low for item in activities),
-                effort_high=sum(item.effort_minutes_high for item in activities),
+                effort_low=low,
+                effort_high=high,
                 prereq_keys=tuple(sorted(prereqs[competency.key])),
             )
         )
@@ -118,10 +140,12 @@ def propose_for_goal(
     persist_skips: bool = True,
 ) -> PlanProposal:
     from app.modules.goals.models import GoalCompetency
+    from app.modules.identity.models import User
     from app.modules.learning.planner import DeferredCompetency, REASON_SKIPPED
 
     resolved = resolve_domain_key(db, goal, domain_key)
-    work = work_for_domain(db, resolved, goal=goal)
+    learner = db.get(User, goal.user_id)
+    work = work_for_domain(db, resolved, goal=goal, user=learner)
     chosen = priority if priority is not None else getattr(goal, "priority", None) or "understand"
 
     if skip_competency_keys is not None and persist_skips:

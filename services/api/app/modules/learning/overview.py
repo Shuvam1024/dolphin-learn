@@ -142,6 +142,9 @@ def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
     # usable field (which already stores leftover minutes after a replan).
     budget_total = usable_minutes(budget) if budget is not None else int(usable)
     remaining = rem(int(budget_total), studied)
+    from app.modules.learner_model.effort import calibration_note
+
+    note = calibration_note(db, user)
     return {
         "goal_id": str(goal.id),
         "title": goal.title,
@@ -155,4 +158,5 @@ def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
         "activities": activities,
         "deferred": deferred,
         "plan_history": plan_history(db, user, goal),
+        "effort_note": note,
     }

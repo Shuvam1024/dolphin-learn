@@ -675,6 +675,7 @@ class OverviewOut(BaseModel):
     activities: list[OverviewActivityOut]
     deferred: list[DeferredOut]
     plan_history: list[PlanHistoryOut] = []
+    effort_note: str = ""
 
 
 class ReplanProposalOut(BaseModel):

@@ -412,11 +412,40 @@ def apply_event(
                 status_code=422,
             ) from exc
         _activity_on_same_plan(db, session, activity_id)
+        previous_id = session.plan_activity_id
+        if previous_id is not None and previous_id != activity_id:
+            previous = db.get(PlanActivity, previous_id)
+            if previous is not None:
+                from app.modules.learner_model.effort import record_activity_minutes
+                from app.modules.learning.study_time import session_active_minutes
+
+                # Attribute a share of session active minutes to the activity just left.
+                # Prefer an explicit payload minutes value when the client sends one.
+                raw_minutes = payload.get("active_minutes") or payload.get("observed_minutes")
+                if raw_minutes is not None and str(raw_minutes).strip().isdigit():
+                    observed = float(raw_minutes)
+                else:
+                    observed = float(max(1, session_active_minutes(db, session) // 2 or 1))
+                record_activity_minutes(db, user, previous, observed_minutes=observed)
         session.plan_activity_id = activity_id
     elif event_type == "pause":
         session.status = "paused"
     elif event_type == "resume":
         session.status = "active"
+    elif event_type == "finish":
+        session.status = "finished"
+        if session.plan_activity_id is not None:
+            from app.modules.learner_model.effort import record_activity_minutes
+            from app.modules.learning.study_time import session_active_minutes
+
+            current = db.get(PlanActivity, session.plan_activity_id)
+            if current is not None:
+                raw_minutes = payload.get("active_minutes") or payload.get("observed_minutes")
+                if raw_minutes is not None and str(raw_minutes).strip().isdigit():
+                    observed = float(raw_minutes)
+                else:
+                    observed = float(max(1, session_active_minutes(db, session) or 1))
+                record_activity_minutes(db, user, current, observed_minutes=observed)
     else:
         raise ApiError("validation_error", "Unknown session event", status_code=422)
 
