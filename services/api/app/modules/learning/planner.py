@@ -1,14 +1,20 @@
 """Deterministic plan proposal. No model calls.
 
 Prerequisite closure, then a topological order, then a greedy fit against the
-minutes the learner actually has. Anything that does not fit is deferred with
-a reason. A proposal is not an accepted plan.
+minutes the learner actually has. Priority shapes breadth, depth, and a review
+reserve. A proposal is not an accepted plan.
 """
 
 from dataclasses import dataclass
+from typing import Literal
+
+from app.modules.learning.copy import priority_effect, priority_label
 
 REASON_INSUFFICIENT = "insufficient_minutes"
 REASON_PREREQ = "prerequisite_deferred"
+
+Priority = Literal["understand", "apply", "make_it_stick"]
+PRIORITIES = frozenset({"understand", "apply", "make_it_stick"})
 
 
 @dataclass(frozen=True)
@@ -27,6 +33,7 @@ class PlannedCompetency:
     effort_low: int
     effort_high: int
     position: int
+    practice_depth: str = "standard"
 
 
 @dataclass(frozen=True)
@@ -46,11 +53,32 @@ class PlanProposal:
     scope_conflict: bool
     included: tuple[PlannedCompetency, ...]
     deferred: tuple[DeferredCompetency, ...]
+    priority: Priority = "understand"
+    priority_label: str = "Understand"
+    priority_effect: str = ""
+    review_reserve_minutes: int = 0
+    learning_minutes: int = 0
 
 
-def propose_plan(work: list[CompetencyWork], usable_minutes: int) -> PlanProposal:
+def normalize_priority(value: str | None) -> Priority:
+    if value is None:
+        return "understand"
+    cleaned = value.strip()
+    if cleaned not in PRIORITIES:
+        raise ValueError("priority must be understand, apply, or make_it_stick")
+    return cleaned  # type: ignore[return-value]
+
+
+def propose_plan(
+    work: list[CompetencyWork],
+    usable_minutes: int,
+    priority: Priority | str | None = "understand",
+) -> PlanProposal:
     if usable_minutes < 0:
         raise ValueError("usable minutes cannot be negative")
+    priority_key = normalize_priority(
+        priority if isinstance(priority, str) or priority is None else str(priority)
+    )
     by_key = {item.key: item for item in work}
     if len(by_key) != len(work):
         raise ValueError("competency keys must be unique")
@@ -63,6 +91,15 @@ def propose_plan(work: list[CompetencyWork], usable_minutes: int) -> PlanProposa
     included_keys: set[str] = set()
     used = 0
 
+    review_reserve = 0
+    learning_budget = usable_minutes
+    if priority_key == "make_it_stick":
+        review_reserve = usable_minutes // 5  # 20%, never more than usable
+        learning_budget = usable_minutes - review_reserve
+
+    fit_by_high = priority_key == "apply"
+    depth = "full" if fit_by_high else "standard"
+
     for item in order:
         missing = [key for key in item.prereq_keys if key in by_key and key not in included_keys]
         if missing:
@@ -72,7 +109,8 @@ def propose_plan(work: list[CompetencyWork], usable_minutes: int) -> PlanProposa
                 )
             )
             continue
-        if used + item.effort_low > usable_minutes:
+        cost = item.effort_high if fit_by_high else item.effort_low
+        if used + cost > learning_budget:
             deferred.append(
                 DeferredCompetency(
                     item.key,
@@ -83,7 +121,7 @@ def propose_plan(work: list[CompetencyWork], usable_minutes: int) -> PlanProposa
                 )
             )
             continue
-        used += item.effort_low
+        used += cost
         included.append(
             PlannedCompetency(
                 item.key,
@@ -91,10 +129,13 @@ def propose_plan(work: list[CompetencyWork], usable_minutes: int) -> PlanProposa
                 item.effort_low,
                 item.effort_high,
                 len(included) + 1,
+                practice_depth=depth,
             )
         )
         included_keys.add(item.key)
 
+    label = priority_label(priority_key)
+    effect = priority_effect(priority_key)
     return PlanProposal(
         usable_minutes=usable_minutes,
         estimated_required_low=required_low,
@@ -102,6 +143,11 @@ def propose_plan(work: list[CompetencyWork], usable_minutes: int) -> PlanProposa
         scope_conflict=required_low > usable_minutes,
         included=tuple(included),
         deferred=tuple(deferred),
+        priority=priority_key,
+        priority_label=label,
+        priority_effect=effect,
+        review_reserve_minutes=review_reserve,
+        learning_minutes=learning_budget,
     )
 
 

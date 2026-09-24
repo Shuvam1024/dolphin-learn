@@ -24,7 +24,13 @@ def rationale_for(proposal: PlanProposal) -> str:
             "Estimated required minutes: "
             f"{proposal.estimated_required_low}–{proposal.estimated_required_high}."
         ),
+        f"Focus: {proposal.priority_label}. {proposal.priority_effect}".rstrip(),
     ]
+    if proposal.review_reserve_minutes:
+        lines.append(
+            f"Review reserve: {proposal.review_reserve_minutes} minutes "
+            f"(learning budget {proposal.learning_minutes})."
+        )
     if proposal.scope_conflict:
         lines.append("Scope conflict: the low estimate is above the usable minutes.")
     if not proposal.deferred:

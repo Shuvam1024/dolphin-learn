@@ -18,6 +18,18 @@ REASON_TEXT: dict[str, str] = {
     "skipped_by_learner": "You chose to skip this",
 }
 
+PRIORITY_LABEL: dict[str, str] = {
+    "understand": "Understand",
+    "apply": "Apply",
+    "make_it_stick": "Make it stick",
+}
+
+PRIORITY_EFFECT: dict[str, str] = {
+    "understand": "Fits more topics using the low effort estimate (breadth).",
+    "apply": "Fits fewer topics using the high effort estimate so practice can go deeper.",
+    "make_it_stick": "Keeps about one fifth of the minutes for later review.",
+}
+
 AI_LABEL = "Written by the tutor — check it against the lesson"
 
 
@@ -27,3 +39,11 @@ def facet_label(facet: str) -> str:
 
 def reason_text(code: str) -> str:
     return REASON_TEXT.get(code, code.replace("_", " "))
+
+
+def priority_label(priority: str) -> str:
+    return PRIORITY_LABEL.get(priority, "Understand")
+
+
+def priority_effect(priority: str) -> str:
+    return PRIORITY_EFFECT.get(priority, PRIORITY_EFFECT["understand"])

@@ -22,6 +22,7 @@ from app.modules.learning.accept import accept_proposal, activities_for, latest_
 from app.modules.learning.copy import reason_text
 from app.modules.learning.models import PlanVersion
 from app.modules.learning.overview import build_overview
+from app.modules.learning.planner import PRIORITIES, normalize_priority
 from app.modules.learning.proposals import propose_for_goal
 from app.modules.learning.replan import replan_goal
 from fastapi import APIRouter, Depends
@@ -29,6 +30,8 @@ from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/goals", tags=["goals"])
+
+PriorityLiteral = Literal["understand", "apply", "make_it_stick"]
 
 
 def _clean_required(value: str) -> str:
@@ -45,6 +48,7 @@ class GoalIn(BaseModel):
     raw_request: str
     domain_key: str
     normalized_objective: str | None = None
+    priority: PriorityLiteral = "understand"
     time_budget: TimeBudgetSpec | None = None
 
     @field_validator("title", "raw_request", "domain_key")
@@ -67,6 +71,11 @@ class GoalIn(BaseModel):
         cleaned = value.strip()
         return cleaned or None
 
+    @field_validator("priority")
+    @classmethod
+    def _priority(cls, value: str) -> str:
+        return normalize_priority(value)
+
 
 class GoalUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -75,6 +84,7 @@ class GoalUpdate(BaseModel):
     raw_request: str | None = None
     domain_key: str | None = None
     normalized_objective: str | None = None
+    priority: PriorityLiteral | None = None
     time_budget: TimeBudgetSpec | None = None
 
     @field_validator("title", "raw_request", "domain_key")
@@ -99,6 +109,13 @@ class GoalUpdate(BaseModel):
         cleaned = value.strip()
         return cleaned or None
 
+    @field_validator("priority")
+    @classmethod
+    def _priority(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        return normalize_priority(value)
+
 
 class TimeBudgetOut(BaseModel):
     mode: Literal["one_off", "weekly"]
@@ -114,6 +131,7 @@ class GoalOut(BaseModel):
     raw_request: str
     domain_key: str
     normalized_objective: str | None
+    priority: PriorityLiteral
     status: str
     created_at: datetime
     time_budget: TimeBudgetOut | None
@@ -133,12 +151,14 @@ def _budget_out(row: TimeBudget | None) -> TimeBudgetOut | None:
 
 
 def _out(goal: Goal, budget: TimeBudget | None) -> GoalOut:
+    priority = goal.priority if goal.priority in PRIORITIES else "understand"
     return GoalOut(
         id=goal.id,
         title=goal.title,
         raw_request=goal.raw_request,
         domain_key=goal.domain_key,
         normalized_objective=goal.normalized_objective,
+        priority=priority,  # type: ignore[arg-type]
         status=goal.status,
         created_at=goal.created_at,
         time_budget=_budget_out(budget),
@@ -159,6 +179,7 @@ def post_goal(
         domain_key=body.domain_key,
         normalized_objective=body.normalized_objective,
         time_budget=body.time_budget,
+        priority=body.priority,
     )
     return _out(goal, budget_for(db, goal))
 
@@ -192,6 +213,8 @@ def patch_goal(
         normalized_objective=body.normalized_objective,
         set_objective="normalized_objective" in sent,
         time_budget=body.time_budget,
+        priority=body.priority,
+        set_priority="priority" in sent,
     )
     return _out(goal, budget_for(db, goal))
 
@@ -293,6 +316,14 @@ class ProposalIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     domain_key: str | None = None
+    priority: PriorityLiteral | None = None
+
+    @field_validator("priority")
+    @classmethod
+    def _priority(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        return normalize_priority(value)
 
 
 class ProposalItemOut(BaseModel):
@@ -304,6 +335,7 @@ class ProposalItemOut(BaseModel):
     position: int | None = None
     reason_code: str | None = None
     reason_text: str | None = None
+    practice_depth: str | None = None
 
 
 class ProposalOut(BaseModel):
@@ -313,6 +345,11 @@ class ProposalOut(BaseModel):
     scope_conflict: bool
     included: list[ProposalItemOut]
     deferred: list[ProposalItemOut]
+    priority: PriorityLiteral
+    priority_label: str
+    priority_effect: str
+    review_reserve_minutes: int = 0
+    learning_minutes: int = 0
 
 
 @router.post("/{goal_id}/plan-proposals", response_model=ProposalOut)
@@ -331,7 +368,14 @@ def post_plan_proposal(
             "Add a time budget before asking for a plan",
             status_code=422,
         )
-    proposal = propose_for_goal(db, goal, budget, None if body is None else body.domain_key)
+    override = None if body is None else body.priority
+    proposal = propose_for_goal(
+        db,
+        goal,
+        budget,
+        None if body is None else body.domain_key,
+        priority=override,
+    )
     return ProposalOut(
         usable_minutes=proposal.usable_minutes,
         estimated_required_low=proposal.estimated_required_low,
@@ -345,6 +389,7 @@ def post_plan_proposal(
                 effort_low=item.effort_low,
                 effort_high=item.effort_high,
                 position=item.position,
+                practice_depth=item.practice_depth,
             )
             for item in proposal.included
         ],
@@ -360,6 +405,11 @@ def post_plan_proposal(
             )
             for item in proposal.deferred
         ],
+        priority=proposal.priority,
+        priority_label=proposal.priority_label,
+        priority_effect=proposal.priority_effect,
+        review_reserve_minutes=proposal.review_reserve_minutes,
+        learning_minutes=proposal.learning_minutes,
     )
 
 

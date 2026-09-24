@@ -96,6 +96,9 @@ def propose_for_goal(
     goal: Goal,
     budget: TimeBudget,
     domain_key: str | None,
+    *,
+    priority: str | None = None,
 ) -> PlanProposal:
     work = work_for_domain(db, resolve_domain_key(db, goal, domain_key))
-    return propose_plan(work, usable_minutes(budget))
+    chosen = priority if priority is not None else getattr(goal, "priority", None) or "understand"
+    return propose_plan(work, usable_minutes(budget), priority=chosen)

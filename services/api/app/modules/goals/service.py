@@ -72,6 +72,7 @@ def create_goal(
     domain_key: str,
     normalized_objective: str | None,
     time_budget: TimeBudgetSpec | None,
+    priority: str = "understand",
 ) -> Goal:
     goal = Goal(
         user_id=user.id,
@@ -79,6 +80,7 @@ def create_goal(
         raw_request=raw_request,
         domain_key=require_domain(db, domain_key),
         normalized_objective=normalized_objective,
+        priority=priority,
         status="active",
     )
     db.add(goal)
@@ -102,6 +104,8 @@ def update_goal(
     normalized_objective: str | None,
     set_objective: bool,
     time_budget: TimeBudgetSpec | None,
+    priority: str | None = None,
+    set_priority: bool = False,
 ) -> Goal:
     goal = get_owned_goal(db, user, goal_id)
     if title is not None:
@@ -118,6 +122,14 @@ def update_goal(
         goal.domain_key = require_domain(db, domain_key)
     if set_objective:
         goal.normalized_objective = normalized_objective
+    if set_priority:
+        if priority is None:
+            raise ApiError(
+                "validation_error",
+                "Choose how you want to focus this goal",
+                status_code=422,
+            )
+        goal.priority = priority
     if time_budget is not None:
         upsert_budget(db, goal, time_budget)
     db.commit()

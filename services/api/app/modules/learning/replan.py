@@ -43,7 +43,7 @@ def replan_goal(
     budget_minutes = usable_minutes(budget)
     studied = studied_minutes_for_goal(db, user, goal)
     left = remaining_minutes(budget_minutes, studied)
-    proposal = propose_plan(work, left)
+    proposal = propose_plan(work, left, priority=getattr(goal, "priority", None) or "understand")
     shown = ", ".join(name for _key, name in demonstrated) if demonstrated else "none"
     note = (
         f"Already demonstrated: {shown}. "

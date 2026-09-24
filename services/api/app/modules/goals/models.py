@@ -30,6 +30,7 @@ class Goal(Base):
         String(64), ForeignKey("domains.key"), nullable=False
     )
     normalized_objective: Mapped[str | None] = mapped_column(Text, nullable=True)
+    priority: Mapped[str] = mapped_column(String(32), nullable=False, default="understand")
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="active")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
