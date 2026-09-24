@@ -1,0 +1,123 @@
+- id: reading-1
+  type: reading
+  prompt: Read the short note. You are not scored for reading.
+  effort_minutes:
+    low: 8
+    high: 12
+- id: objective-2
+  type: objective
+  prompt: 'What does NameError usually mean?
+
+
+    a) a list is empty
+
+
+    b) a name has no binding
+
+
+    c) a file is missing'
+  choices:
+  - a list is empty
+  - a name has no binding
+  - a file is missing
+  answer: b
+  explanation: 'The reading supports: a name has no binding.'
+  misconceptions:
+    a: That does not match the reading.
+    c: That does not match the reading.
+  difficulty: 3
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-3
+  type: objective
+  prompt: 'What does IndexError usually mean?
+
+
+    a) a name is missing
+
+
+    b) an index is out of range
+
+
+    c) a string is immutable'
+  choices:
+  - a name is missing
+  - an index is out of range
+  - a string is immutable
+  answer: b
+  explanation: 'The reading supports: an index is out of range.'
+  misconceptions:
+    a: That does not match the reading.
+    c: That does not match the reading.
+  difficulty: 1
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-4
+  type: objective
+  prompt: 'What should you read first in a traceback?
+
+
+    a) only the first line
+
+
+    b) the failing line near the bottom
+
+
+    c) the file size'
+  choices:
+  - only the first line
+  - the failing line near the bottom
+  - the file size
+  answer: b
+  explanation: 'The reading supports: the failing line near the bottom.'
+  misconceptions:
+    a: That does not match the reading.
+    c: That does not match the reading.
+  difficulty: 2
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-5
+  type: objective
+  prompt: 'What does TypeError usually mean?
+
+
+    a) infinite loop
+
+
+    b) wrong kinds of values for an operation
+
+
+    c) missing import always'
+  choices:
+  - infinite loop
+  - wrong kinds of values for an operation
+  - missing import always
+  answer: b
+  explanation: 'The reading supports: wrong kinds of values for an operation.'
+  misconceptions:
+    a: That does not match the reading.
+    c: That does not match the reading.
+  difficulty: 3
+  effort_minutes:
+    low: 3
+    high: 5
+- id: short-answer-6
+  type: short_answer
+  prompt: In one short phrase, name the core idea from the reading.
+  answer: traceback
+  alternates:
+  - traceback
+  explanation: Name the core idea from the reading.
+  difficulty: 2
+  effort_minutes:
+    low: 3
+    high: 5
+- id: free-recall-7
+  type: free_recall
+  prompt: From memory, write what you can about this topic.
+  effort_minutes:
+    low: 5
+    high: 8

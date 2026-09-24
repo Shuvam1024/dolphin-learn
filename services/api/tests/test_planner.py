@@ -72,7 +72,7 @@ def test_proposal_endpoint_does_not_create_a_plan_version() -> None:
         return proposed.json()
 
     short = goal(15)
-    long = goal(120)
+    long = goal(500)
     assert [item["competency_key"] for item in short["included"]] != [
         item["competency_key"] for item in long["included"]
     ]

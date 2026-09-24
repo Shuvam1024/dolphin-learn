@@ -59,7 +59,7 @@ def test_home_empty_then_live_next_action_without_streak() -> None:
     assert planned.json()["next_action"]["goal_id"] == goal_id
     assert "/start" in planned.json()["next_action"]["href"]
     assert "Usable minutes: 120" in planned.json()["goals"][0]["feasibility_note"]
-    assert "Deferred: none" in planned.json()["goals"][0]["feasibility_note"]
+    assert "Focus:" in planned.json()["goals"][0]["feasibility_note"]
     assert planned.json()["goals"][0]["subject_name"]
     assert planned.json()["goals"][0]["next_lesson_title"]
 

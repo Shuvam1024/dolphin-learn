@@ -1,0 +1,123 @@
+- id: reading-1
+  type: reading
+  prompt: Read the short note. You are not scored for reading.
+  effort_minutes:
+    low: 8
+    high: 12
+- id: objective-2
+  type: objective
+  prompt: 'What does `nums[0]` do for `nums = [3, 1, 4]`?
+
+
+    a) deletes 3
+
+
+    b) looks up the first value
+
+
+    c) appends 0'
+  choices:
+  - deletes 3
+  - looks up the first value
+  - appends 0
+  answer: b
+  explanation: 'The reading supports: looks up the first value.'
+  misconceptions:
+    a: That does not match the reading.
+    c: That does not match the reading.
+  difficulty: 3
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-3
+  type: objective
+  prompt: 'What does `nums.append(5)` change?
+
+
+    a) a new list replaces nums forever
+
+
+    b) the list object grows
+
+
+    c) indexing starts at 1'
+  choices:
+  - a new list replaces nums forever
+  - the list object grows
+  - indexing starts at 1
+  answer: b
+  explanation: 'The reading supports: the list object grows.'
+  misconceptions:
+    a: That does not match the reading.
+    c: That does not match the reading.
+  difficulty: 1
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-4
+  type: objective
+  prompt: 'What does `len(nums)` return?
+
+
+    a) the last element
+
+
+    b) how many elements
+
+
+    c) the first index'
+  choices:
+  - the last element
+  - how many elements
+  - the first index
+  answer: b
+  explanation: 'The reading supports: how many elements.'
+  misconceptions:
+    a: That does not match the reading.
+    c: That does not match the reading.
+  difficulty: 2
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-5
+  type: objective
+  prompt: 'Does slicing `nums[1:3]` modify nums?
+
+
+    a) yes, it deletes items
+
+
+    b) no, it builds a new list
+
+
+    c) yes, it appends'
+  choices:
+  - yes, it deletes items
+  - no, it builds a new list
+  - yes, it appends
+  answer: b
+  explanation: 'The reading supports: no, it builds a new list.'
+  misconceptions:
+    a: That does not match the reading.
+    c: That does not match the reading.
+  difficulty: 3
+  effort_minutes:
+    low: 3
+    high: 5
+- id: short-answer-6
+  type: short_answer
+  prompt: In one short phrase, name the core idea from the reading.
+  answer: ordered sequence
+  alternates:
+  - ordered sequence
+  explanation: Name the core idea from the reading.
+  difficulty: 2
+  effort_minutes:
+    low: 3
+    high: 5
+- id: free-recall-7
+  type: free_recall
+  prompt: From memory, write what you can about this topic.
+  effort_minutes:
+    low: 5
+    high: 8

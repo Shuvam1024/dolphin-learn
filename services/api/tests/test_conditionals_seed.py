@@ -76,7 +76,7 @@ def test_conditionals_seed_and_plan_scope() -> None:
     assert "python.names" in included_short
     assert deferred_short.get("python.conditionals") == "insufficient_minutes"
 
-    long = propose(200)
+    long = propose(500)
     included_long = [item["competency_key"] for item in long["included"]]
     assert "python.names" in included_long
     assert "python.conditionals" in included_long
