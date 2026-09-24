@@ -1,8 +1,10 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S96; Settings preferences
-- **Schema/API changes:** Alembic through `0021_profile_session_minutes`
+- **Milestone completed:** S01–S97; Managed auth for production
+- **Schema/API changes:** Alembic through `0022_auth_revocations`
+- **Tests run and exact results (S97):**
+  - `pytest -q` → 181 passed, 6 skipped (`test_auth_production`)
 - **Tests run and exact results (S96):**
   - `alembic upgrade head` → `0021_profile_session_minutes`
   - `pytest -q` → 176 passed, 6 skipped (`test_settings`)
@@ -286,3 +288,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S94** | `feat(analytics): learning dataset views and product events` | product_events; views; funnel docs |
 | **S95** | `docs: phase 6 learner model verified; adaptivity rules and dataset in architecture` | Gate 6 |
 | **S96** | `feat(settings): preferences page wired to the profile api` | sitting; a11y; tutor toggle |
+| **S97** | `feat(auth): managed provider sign-in for production with dev token gated` | JWKS; revoke; callback |

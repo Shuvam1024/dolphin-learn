@@ -564,3 +564,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `13d176c` is on origin/main
 
+## S97 — Managed auth for production
+
+**Commit:** `8d7b2d9` — feat(auth): managed provider sign-in for production with dev token gated
+
+**What:** Production verifies RS256 via AUTH_JWKS_URL; the email form and /dev/token exist only in development. Logout revokes the token jti. OIDC callback sets a Secure HttpOnly SameSite=Lax cookie. No password field.
+
+**How:** auth_revocations table; /auth/revoke; session/callback; NEXT_PUBLIC_ENVIRONMENT gate; docs/evaluations/auth-sandbox-s97.md.
+
+**Why:** Strangers need a real managed sign-in; the local form must not ship.
+
+**Acceptance:** passed — pytest 181 passed, 6 skipped (test_auth_production).
+
+**Push:** `8d7b2d9` is on origin/main
+
