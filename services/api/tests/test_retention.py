@@ -5,12 +5,24 @@ from datetime import datetime, timedelta, timezone
 
 from app.db import SessionLocal
 from app.main import app
-from app.modules.learning.models import ReviewItem
+from app.modules.learning.models import ActivityVersion, ReviewItem
 from app.seed import seed
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
 client = TestClient(app)
+
+
+def _correct_for_prompt(prompt: str) -> str:
+    with SessionLocal() as db:
+        activity = db.scalar(select(ActivityVersion).where(ActivityVersion.prompt == prompt))
+        assert activity is not None and activity.answer_key is not None
+        return str(activity.answer_key.get("correct", ""))
+
+
+def _due_choice(headers: dict[str, str]) -> str:
+    due = client.get("/api/v1/reviews/due", headers=headers).json()["due"][0]
+    return _correct_for_prompt(str(due["prompt"]))
 
 
 def _headers(prefix: str) -> dict[str, str]:
@@ -108,10 +120,11 @@ def test_due_independent_review_sets_retained() -> None:
         assert item is not None
         item.due_at = datetime.now(timezone.utc) - timedelta(hours=1)
         db.commit()
+    choice = _due_choice(headers)
     done = client.post(
         f"/api/v1/reviews/{review_id}/attempts",
         headers=headers,
-        json={"choice": "b"},
+        json={"choice": choice},
     )
     assert done.status_code == 200
     assert done.json()["retained"] is True
@@ -137,10 +150,13 @@ def test_early_or_assisted_review_does_not_retain() -> None:
     session_id, questions = _session(early)
     _answer(early, session_id, questions[0]["id"], "once", "b")
     review_id = _review_id(early)
+    due = client.get("/api/v1/reviews/due", headers=early).json()
+    # Not due yet — still answer against the scheduled prompt's key.
+    scheduled = due["scheduled"][0]
     soon = client.post(
         f"/api/v1/reviews/{review_id}/attempts",
         headers=early,
-        json={"choice": "b"},
+        json={"choice": _correct_for_prompt(str(scheduled["prompt"]))},
     )
     assert soon.json()["extended"] is True
     assert soon.json()["retained"] is False
@@ -161,10 +177,11 @@ def test_early_or_assisted_review_does_not_retain() -> None:
         json={"mode": "guided"},
     )
     assert shown.status_code == 200
+    choice = shown.json()["revealed_choice"]
     assisted = client.post(
         f"/api/v1/reviews/{review_id}/attempts",
         headers=helped,
-        json={"choice": "b"},
+        json={"choice": choice},
     )
     assert assisted.json()["assistance"] == "assisted"
     assert assisted.json()["retained"] is False

@@ -14,7 +14,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## Next incomplete step
 
-**S62 — Unseen item pools** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
+**S63 — Tutor: explain differently and validated hints** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
 
 ---
 
@@ -62,7 +62,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## S61 — Worked examples
 
-**Commit:** `a94132e` — feat(content): worked example activity between reading and practice
+**Commit:** `2c06fb2` — feat(content): worked example activity between reading and practice
 
 **What:** Every checked-subject lesson now has a worked example between the reading and the first question. Studio labels the primary "Now you try"; continuing it writes no evidence.
 
@@ -72,5 +72,19 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Acceptance:** passed — pytest 88 passed, 6 skipped; smoke 25; content ok.
 
-**Push:** `a94132e` is on origin/main
+**Push:** `2c06fb2` is on origin/main
+
+## S62 — Unseen item pools
+
+**Commit:** `e2632e6` — feat(assess): unseen item selection; provisional items never graded
+
+**What:** Fresh checks and reviews serve items the learner has not seen yet. Provisional graded items are never selected for grading. Exhausted pools mark `repeat`; a correct answer on an item whose solution was revealed stays practicing.
+
+**How:** Added `item_pool.pick_unseen` (never-attempted first, then least-recent; filters `provisional=false` when graded). Wired into `move_to_unseen_question` and `reviews._objective`; studio `state.repeat` from fresh-check events; evidence caps revealed items at practicing.
+
+**Why:** A fresh check only proves something if it is actually new — and AI drafts must not grade until reviewed.
+
+**Acceptance:** passed — pytest 93 passed, 6 skipped (`test_item_pools.py`: avoid seen, repeat, provisional excluded, reviews rotate, ownership 404).
+
+**Push:** `e2632e6` is on origin/main
 

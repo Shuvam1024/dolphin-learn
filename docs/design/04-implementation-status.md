@@ -1,10 +1,13 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S61; worked examples between reading and practice
-- **Verified working user journey:** Learner-facing payloads and screens show competency names and plain reason/facet labels; keys stay in the API for machines. Content loads from files; AI gateway works off and with FakeProvider; Session Studio payload carries actions and tutor slots.
-- **Implemented modules/features:** Prior surface plus verification harness, Clear Depth UI kit, `learning/copy.py`, activity content fields, `content/` loader, `ai_gateway` + FakeProvider, `studio_view` session payload. Vault/RAG/sandbox still later.
+- **Milestone completed:** S01–S62; unseen item pools; provisional items never graded
+- **Verified working user journey:** Learner-facing payloads and screens show competency names and plain reason/facet labels; keys stay in the API for machines. Content loads from files; AI gateway works off and with FakeProvider; Session Studio payload carries actions and tutor slots; fresh checks and reviews rotate unseen items.
+- **Implemented modules/features:** Prior surface plus verification harness, Clear Depth UI kit, `learning/copy.py`, activity content fields, `content/` loader, `ai_gateway` + FakeProvider, `studio_view` session payload, `item_pool.pick_unseen`. Vault/RAG/sandbox still later.
 - **Schema/API changes:** Alembic through `0011_ai_calls`
+- **Tests run and exact results (S62):**
+  - `pytest -q` → 93 passed, 6 skipped (`test_item_pools.py`: A→B/C never A, exhausted marks repeat, provisional excluded, reviews rotate, ownership 404; revealed item stays practicing)
+  - ruff clean on changed modules
 - **Tests run and exact results (S61):**
   - `pytest -q` → 88 passed, 6 skipped (`test_worked_example.py`)
   - `python -m app.content.validate` → content ok
@@ -54,8 +57,8 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S61**
-- **Next step:** **S62 — Unseen item pools**
+- **Completed steps:** **S01–S62**
+- **Next step:** **S63 — Tutor: explain differently and validated hints**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
 
@@ -71,7 +74,7 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | 1C | Physical study time (S43–S46) | Done |
 | 1D | Honest demo content (S47–S50) | Done |
 | 2 | Foundations (S51–S58) | Done |
-| 3 | The learning session (S59–S70) | In progress (next: S62) |
+| 3 | The learning session (S59–S70) | In progress (next: S63) |
 | Later | Phases 4–7 per first-ship plan | Later |
 
 ---
@@ -147,3 +150,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S59** | `feat(studio): studio v2 renderer for every activity type with tutor panel` | StudioHeader/Body/AnswerInput/FeedbackNotice/TutorPanel/ActionBar; studio-v2 e2e green |
 | **S60** | `feat(studio): feedback with explanation and the note for your mistake` | FeedbackNotice; watch_out_for summary; misconception rule |
 | **S61** | `feat(content): worked example activity between reading and practice` | ## Worked example → activity; Now you try; warning rule |
+| **S62** | `feat(assess): unseen item selection; provisional items never graded` | pick_unseen; provisional excluded; repeat flag; reviews rotate |

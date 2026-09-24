@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import uuid
 from typing import Any
 
 from app.modules.ai_gateway.service import is_enabled
@@ -15,11 +16,41 @@ from app.modules.learning.models import (
     Lesson,
     PlanActivity,
     PlanVersion,
+    SessionEvent,
 )
 from app.modules.learning.sessions import activity_snapshot
 from app.modules.learning.study_time import session_active_minutes
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+INPUT_KIND = {
+    "reading": "none",
+    "worked_example": "none",
+    "objective": "choice",
+    "short_answer": "text",
+    "numeric": "number",
+    "free_recall": "recall",
+    "reflection": "text",
+}
+
+
+def _repeat_for_activity(
+    db: Session,
+    session: LearningSession,
+    activity_id: uuid.UUID,
+) -> bool:
+    event = db.scalar(
+        select(SessionEvent)
+        .where(
+            SessionEvent.session_id == session.id,
+            SessionEvent.event_type == "fresh_check",
+            SessionEvent.payload["activity_version_id"].astext == str(activity_id),
+        )
+        .order_by(SessionEvent.created_at.desc(), SessionEvent.id.desc())
+    )
+    if event is None:
+        return False
+    return str(event.payload.get("repeat", "")).lower() == "true"
 
 INPUT_KIND = {
     "reading": "none",
@@ -211,7 +242,7 @@ def build_studio(
                     "misconception_note": misconception,
                     "misconception_source": "seed",
                     "alt_explanation": "",
-                    "repeat": False,
+                    "repeat": _repeat_for_activity(db, session, activity.id),
                 },
             }
             actions = compute_actions(

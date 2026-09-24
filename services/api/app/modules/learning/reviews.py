@@ -8,6 +8,7 @@ from app.modules.curriculum.models import Competency
 from app.modules.identity.models import User
 from app.modules.learning.evidence import award_retained
 from app.modules.learning.grading import grade_choice
+from app.modules.learning.item_pool import pick_unseen
 from app.modules.learning.models import (
     ActivityVersion,
     Attempt,
@@ -64,24 +65,16 @@ def _reason(interval_days: int, due_now: bool) -> str:
     )
 
 
-def _objective(db: Session, competency_id: uuid.UUID) -> ActivityVersion:
-    row = db.execute(
-        select(ActivityVersion)
-        .join(Lesson, ActivityVersion.lesson_id == Lesson.id)
-        .where(
-            Lesson.competency_id == competency_id,
-            ActivityVersion.activity_type == "objective",
-        )
-        .order_by(ActivityVersion.version)
-    ).scalars().first()
-    if row is None:
+def _objective(db: Session, user: User, competency_id: uuid.UUID) -> ActivityVersion:
+    picked = pick_unseen(db, user, competency_id, graded=True)
+    if picked is None:
         raise ApiError("validation_error", "No review question is seeded", status_code=422)
-    return row
+    return picked.activity
 
 
-def _payload(db: Session, item: ReviewItem, *, due_now: bool) -> dict[str, object]:
+def _payload(db: Session, user: User, item: ReviewItem, *, due_now: bool) -> dict[str, object]:
     competency = db.get(Competency, item.competency_id)
-    activity = _objective(db, item.competency_id)
+    activity = _objective(db, user, item.competency_id)
     lesson = db.get(Lesson, activity.lesson_id)
     revealed = ""
     if _solution_pending(db, item.id) and activity.answer_key is not None:
@@ -109,7 +102,7 @@ def queue_for_user(db: Session, user: User) -> dict[str, list[dict[str, object]]
     scheduled: list[dict[str, object]] = []
     for item in rows:
         due_now = item.due_at <= now
-        payload = _payload(db, item, due_now=due_now)
+        payload = _payload(db, user, item, due_now=due_now)
         if due_now:
             due.append(payload)
         else:
@@ -147,7 +140,7 @@ def reveal_solution(db: Session, user: User, review_id: uuid.UUID, *, mode: str)
             status_code=403,
         )
     item = get_owned_review(db, user, review_id)
-    activity = _objective(db, item.competency_id)
+    activity = _objective(db, user, item.competency_id)
     correct = ""
     if activity.answer_key is not None:
         correct = str(activity.answer_key.get("correct", ""))
@@ -172,7 +165,7 @@ def submit_review_attempt(
     choice: str,
 ) -> dict[str, object]:
     item = get_owned_review(db, user, review_id)
-    activity = _objective(db, item.competency_id)
+    activity = _objective(db, user, item.competency_id)
     assisted = _solution_pending(db, item.id)
     assistance = "assisted" if assisted else "independent"
     outcome, score = grade_choice(activity.answer_key, choice)

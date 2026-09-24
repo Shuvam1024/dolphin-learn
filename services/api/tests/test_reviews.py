@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 
 from app.db import SessionLocal
 from app.main import app
-from app.modules.learning.models import ReviewItem
+from app.modules.learning.models import ActivityVersion, ReviewItem
 from app.seed import seed
 from fastapi.testclient import TestClient
 from sqlalchemy import select
@@ -19,6 +19,13 @@ def _auth(prefix: str) -> dict[str, str]:
         json={"email": f"{prefix}-{uuid.uuid4().hex[:8]}@example.com"},
     )
     return {"Authorization": f"Bearer {issued.json()['access_token']}"}
+
+
+def _correct_for_prompt(prompt: str) -> str:
+    with SessionLocal() as db:
+        activity = db.scalar(select(ActivityVersion).where(ActivityVersion.prompt == prompt))
+        assert activity is not None and activity.answer_key is not None
+        return str(activity.answer_key.get("correct", ""))
 
 
 def _python_session(headers: dict[str, str]) -> tuple[str, list[dict[str, str]]]:
@@ -95,19 +102,20 @@ def test_independent_success_schedules_future_due_and_review_updates_it() -> Non
     assert "Not retention" in body["due"][0]["reason"]
     assert "answer_key" not in body["due"][0]
     assert body["due"][0]["revealed_choice"] == ""
+    choice = _correct_for_prompt(body["due"][0]["prompt"])
 
     other = _auth("s32-other")
     hidden = client.post(
         f"/api/v1/reviews/{review_id}/attempts",
         headers=other,
-        json={"choice": "b"},
+        json={"choice": choice},
     )
     assert hidden.status_code == 404
 
     done = client.post(
         f"/api/v1/reviews/{review_id}/attempts",
         headers=headers,
-        json={"choice": "b"},
+        json={"choice": choice},
     )
     assert done.status_code == 200
     assert done.json()["assistance"] == "independent"
@@ -172,11 +180,12 @@ def test_assisted_path_does_not_schedule_or_extend() -> None:
         json={"mode": "guided"},
     )
     assert shown.status_code == 200
-    assert shown.json()["revealed_choice"] == "b"
+    choice = shown.json()["revealed_choice"]
+    assert choice in {"a", "b", "c"}
     helped = client.post(
         f"/api/v1/reviews/{review_id}/attempts",
         headers=headers,
-        json={"choice": "b"},
+        json={"choice": choice},
     )
     assert helped.json()["assistance"] == "assisted"
     assert helped.json()["extended"] is False

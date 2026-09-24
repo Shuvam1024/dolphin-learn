@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 
 from app.errors import ApiError
 from app.modules.identity.models import User
+from app.modules.learning.item_pool import pick_unseen
 from app.modules.learning.models import (
     ActivityVersion,
     Attempt,
@@ -13,6 +14,7 @@ from app.modules.learning.models import (
     LearningSession,
     Lesson,
     PlanActivity,
+    SessionEvent,
 )
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -26,9 +28,40 @@ _RANK = {
 }
 
 
-def facet_for_attempt(assistance: str, outcome: str) -> str:
-    """Assisted success is practice. Independent success is a demonstration. Never retention."""
-    if assistance == "independent" and outcome == "correct":
+def solution_revealed_for_item(
+    db: Session,
+    user: User,
+    activity_id: uuid.UUID,
+) -> bool:
+    """True when this learner has already seen the solution for this exact item."""
+    return (
+        db.scalar(
+            select(SessionEvent.id)
+            .join(LearningSession, SessionEvent.session_id == LearningSession.id)
+            .where(
+                LearningSession.user_id == user.id,
+                SessionEvent.event_type == "solution",
+                SessionEvent.payload["activity_version_id"].astext == str(activity_id),
+            )
+            .limit(1)
+        )
+        is not None
+    )
+
+
+def facet_for_attempt(
+    assistance: str,
+    outcome: str,
+    *,
+    solution_revealed: bool = False,
+) -> str:
+    """Assisted success is practice. Independent success is a demonstration. Never retention.
+
+    A correct answer on the exact item whose solution was revealed stays practicing.
+    """
+    if solution_revealed and outcome == "correct":
+        facet = "practicing"
+    elif assistance == "independent" and outcome == "correct":
         facet = "independently_demonstrated"
     elif outcome == "correct":
         facet = "practicing"
@@ -52,7 +85,8 @@ def record_evidence(
     assistance: str,
     outcome: str,
 ) -> str:
-    facet = facet_for_attempt(assistance, outcome)
+    revealed = solution_revealed_for_item(db, user, activity.id)
+    facet = facet_for_attempt(assistance, outcome, solution_revealed=revealed)
     lesson = db.get(Lesson, activity.lesson_id)
     if lesson is None:
         raise ApiError("internal_error", "Activity has no lesson", status_code=500)
@@ -123,29 +157,51 @@ def award_retained(
 
 
 def move_to_unseen_question(db: Session, user: User, session_id: uuid.UUID) -> LearningSession:
-    """After help, the next check is a different seeded question."""
+    """After help, the next check is a different item from the competency pool."""
     from app.modules.learning.sessions import get_owned_session
 
     session = get_owned_session(db, user, session_id)
     if session.plan_activity_id is None:
         raise ApiError("validation_error", "Session has no activity", status_code=422)
     current = db.get(PlanActivity, session.plan_activity_id)
-    if current is None:
+    if current is None or current.activity_version_id is None:
         raise ApiError("validation_error", "Session has no activity", status_code=422)
-    rows = db.execute(
-        select(PlanActivity, ActivityVersion)
-        .join(ActivityVersion, PlanActivity.activity_version_id == ActivityVersion.id)
-        .where(
-            PlanActivity.plan_version_id == current.plan_version_id,
-            ActivityVersion.activity_type == "objective",
-            PlanActivity.id != current.id,
-        )
-        .order_by(PlanActivity.position)
-    ).all()
-    if not rows:
+    current_activity = db.get(ActivityVersion, current.activity_version_id)
+    if current_activity is None:
+        raise ApiError("validation_error", "Session has no activity", status_code=422)
+    lesson = db.get(Lesson, current_activity.lesson_id)
+    if lesson is None:
+        raise ApiError("validation_error", "Session has no activity", status_code=422)
+    picked = pick_unseen(
+        db,
+        user,
+        lesson.competency_id,
+        {current_activity.id},
+        graded=True,
+    )
+    if picked is None:
         raise ApiError("validation_error", "No other question is available", status_code=422)
-    session.plan_activity_id = rows[0][0].id
+    plan_row = db.scalar(
+        select(PlanActivity).where(
+            PlanActivity.plan_version_id == current.plan_version_id,
+            PlanActivity.activity_version_id == picked.activity.id,
+        )
+    )
+    if plan_row is None:
+        raise ApiError("validation_error", "No other question is available", status_code=422)
+    session.plan_activity_id = plan_row.id
     session.updated_at = datetime.now(timezone.utc)
+    db.add(
+        SessionEvent(
+            session_id=session.id,
+            client_event_id=f"fresh_check:{picked.activity.id}:{uuid.uuid4().hex[:8]}",
+            event_type="fresh_check",
+            payload={
+                "activity_version_id": str(picked.activity.id),
+                "repeat": "true" if picked.repeat else "false",
+            },
+        )
+    )
     db.commit()
     db.refresh(session)
     return session
