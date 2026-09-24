@@ -38,7 +38,7 @@
 - **Completed steps:** **S01–S57**
 - **Next step:** **S58 — Gate 2: foundations**
 
-Design package SoT: `docs/design/`. This file is the live tracker; `docs/implementation-status.md` mirrors it.
+Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
 
 ---
 
@@ -51,7 +51,7 @@ Design package SoT: `docs/design/`. This file is the live tracker; `docs/impleme
 | 1B | Delayed retention (S41–S42) | Done |
 | 1C | Physical study time (S43–S46) | Done |
 | 1D | Honest demo content (S47–S50) | Done |
-| 2 | Foundations (S51–S58) | In progress (S57) |
+| 2 | Foundations (S51–S58) | In progress (next: S58 gate) |
 | Later | Phases 3–7 per first-ship plan | Later |
 
 ---

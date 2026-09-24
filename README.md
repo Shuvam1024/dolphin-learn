@@ -5,8 +5,8 @@
 Dolphin is an adaptive learning platform for adults (18+): a Home hub, time-adaptive plans from real available minutes, Session Studio lessons, and an honest Evidence Ledger. V1 wedge: Python + foundational math on an accessible web client.
 
 Design source of truth: [`docs/design/`](docs/design/)  
-Build sequence: [`docs/design/03-build-plan.md`](docs/design/03-build-plan.md)  
-Status: [`docs/implementation-status.md`](docs/implementation-status.md)  
+Build sequence: [`docs/design/03-build-plan.md`](docs/design/03-build-plan.md) (S01–S50) then [`docs/design/06-first-ship-plan.md`](docs/design/06-first-ship-plan.md) (S51–S105)  
+Status: [`docs/design/04-implementation-status.md`](docs/design/04-implementation-status.md)  
 Prove Loop demo: [`docs/prove-loop-demo.md`](docs/prove-loop-demo.md)
 
 ## Stack
@@ -113,4 +113,4 @@ make api-lint api-type api-test
 
 ## License
 
-To be decided. Repository is intended public under `shuvam1024/dolphin-learn`.
+No `LICENSE` file yet. SPDX / OSI terms are **not chosen**. Treat the repository as source-available until a license is added. Intended public location: `shuvam1024/dolphin-learn`.
