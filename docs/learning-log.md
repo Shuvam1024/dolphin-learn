@@ -255,3 +255,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — shell e2e added; pytest 118 passed, 6 skipped.
 
 **Push:** `4074358` is on origin/main
+
+## S75 — Goal path v2 with replan preview → accept
+
+**Commit:** `6a2d945` — feat(goals): path v2 with chips and minutes; replan preview then accept
+
+**What:** The goal path shows remaining minutes, lesson chips with effort ranges, Not in this plan, and plan history. Update plan previews first; Accept writes the next version. A stale preview hash is rejected.
+
+**How:** `POST /replan-proposals` (no write) and `POST /replan/accept {proposal_hash}` (409 on stale); overview adds effort, facet labels, remaining_minutes, plan_history; ReplanPanel + e2e goal-path-v2.
+
+**Why:** Learners should see the change before the plan moves, and minutes should stay honest against the original budget.
+
+**Acceptance:** passed — pytest 121 passed, 6 skipped (`test_replan_preview`).
+
+**Push:** `6a2d945` is on origin/main

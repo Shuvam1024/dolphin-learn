@@ -1,8 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S74; responsive shell, landing, Help
+- **Milestone completed:** S01–S75; path v2 with replan preview → accept
 - **Schema/API changes:** Alembic through `0015_goal_status`
+- **Tests run and exact results (S75):**
+  - `pytest -q` → 121 passed, 6 skipped (`test_replan_preview`)
+  - e2e/goal-path-v2.spec.ts; replan preview → accept
 - **Tests run and exact results (S74):**
   - web shell + landing + Help; e2e/shell.spec.ts
   - pytest unchanged at 118 passed, 6 skipped
@@ -92,7 +95,7 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S74**
+- **Completed steps:** **S01–S75**
 - **Next step:** **S75 — Goal path v2 with replan preview → accept**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
@@ -199,3 +202,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S72** | `feat(home): home v2 with one next action, goal cards, reviews, and evidence chips` | next_action shape; cards; due_reviews object; no Log out |
 | **S73** | `feat(learn): goal list with continue, pause, and archive` | status active/paused/archived; Learn sections |
 | **S74** | `feat(web): responsive shell, landing page, and help` | bottom tabs; landing; Help; More links |
+| **S75** | `feat(goals): path v2 with chips and minutes; replan preview then accept` | replan-proposals → accept; chips; minutes |
