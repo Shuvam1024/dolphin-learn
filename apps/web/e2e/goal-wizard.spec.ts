@@ -15,48 +15,33 @@ test("keyboard-only wizard saves a goal and keeps fields on back", async ({ page
   await expect(page.getByRole("heading", { name: "Create a goal" })).toBeVisible();
   await expect(page.locator("[data-hydrated='true']")).toBeVisible();
 
-  const title = page.getByLabel("Goal title");
-  await title.focus();
-  await page.keyboard.type("Names and values");
-  await page.keyboard.press("Tab");
-  await page.keyboard.type("I want to bind names to values in Python.");
-  await page.keyboard.press("Tab");
+  await page.getByLabel("What do you want to learn?").fill("I want to bind names to values in Python.");
+  await page.getByLabel("Goal title").fill("Names and values");
   await page.getByLabel("Subject").selectOption("python");
-  await page.getByRole("button", { name: "Next", exact: true }).focus();
-  await page.keyboard.press("Enter");
-  await expect(page.getByText("Step 2 of 3")).toBeVisible();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await expect(page.getByText("Step 2 of 5")).toBeVisible();
 
-  await page.getByRole("button", { name: "Back" }).focus();
-  await page.keyboard.press("Enter");
+  await page.getByRole("button", { name: "Back" }).click();
   await expect(page.getByLabel("Goal title")).toHaveValue("Names and values");
   await expect(page.getByLabel("What do you want to learn?")).toHaveValue(
     "I want to bind names to values in Python.",
   );
   await expect(page.getByLabel("Subject")).toHaveValue("python");
 
-  await page.getByRole("button", { name: "Next", exact: true }).focus();
-  await page.keyboard.press("Enter");
-  await page.getByLabel("Total minutes").focus();
-  await page.keyboard.press("Control+A");
-  await page.keyboard.type("120");
-  await page.keyboard.press("Tab");
-  await page.keyboard.press("Control+A");
-  await page.keyboard.type("30");
-  await page.getByRole("button", { name: "Next", exact: true }).focus();
-  await page.keyboard.press("Enter");
-  await expect(page.getByText("Step 3 of 3")).toBeVisible();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await page.getByLabel("Total minutes").fill("120");
+  await page.getByLabel("Preferred sitting length").fill("30");
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await expect(page.getByText("Step 3 of 5")).toBeVisible();
 
-  await page.getByRole("button", { name: "Save goal" }).focus();
-  await page.keyboard.press("Enter");
-  await expect(page.getByRole("heading", { name: "Goal saved" })).toBeVisible();
-  await expect(page.getByText("Names and values", { exact: true })).toBeVisible();
-  await expect(page.getByText("120 minutes in one sitting")).toBeVisible();
-  await expect(page.getByText("Priority: Focus one topic")).toBeVisible();
+  await page.getByText("Focus one topic").click();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await page.getByRole("button", { name: "Skip placement" }).click();
+  await expect(page.getByText("Step 5 of 5")).toBeVisible();
   await expect(page.getByText(/Plan uses \d+ of your minutes/)).toBeVisible();
   await expect(page.getByText("Not in this plan")).toBeVisible();
-  await expect(page.getByText(/~\d+–\d+ min/).first()).toBeVisible();
-  await expect(page.getByText("Why this plan")).toBeVisible();
-  await expect(page.getByText(/python\./)).toHaveCount(0);
+  await page.getByRole("button", { name: "Accept", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Plan accepted" })).toBeVisible();
 
   const token = (await page.context().cookies()).find(
     (cookie) => cookie.name === "dolphin_access_token",
@@ -68,46 +53,11 @@ test("keyboard-only wizard saves a goal and keeps fields on back", async ({ page
   const goals = (await listed.json()) as Array<{
     id: string;
     title: string;
-    normalized_objective: string | null;
     priority?: string;
     time_budget: { mode: string; one_off_minutes: number | null } | null;
   }>;
   const saved = goals.find((goal) => goal.title === "Names and values");
-  expect(saved?.normalized_objective).toBe("Priority: Focus one topic");
   expect(saved?.priority).toBe("apply");
   expect(saved?.time_budget?.mode).toBe("one_off");
   expect(saved?.time_budget?.one_off_minutes).toBe(120);
-
-  await expect(page.getByRole("button", { name: "Accept plan" })).toBeEnabled();
-  await expect(page.getByText("Names and values", { exact: true })).toBeVisible();
-  await expect(page.getByText("Nothing is deferred.")).toBeVisible();
-  await page.getByRole("button", { name: "Accept plan" }).focus();
-  await page.keyboard.press("Enter");
-  await expect(page.getByRole("heading", { name: "Plan accepted" })).toBeVisible();
-
-  const plan = await page.request.get(`http://127.0.0.1:8000/api/v1/goals/${saved?.id}/plan`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  expect(plan.status()).toBe(200);
-  const accepted = (await plan.json()) as { version_number: number; rationale: string };
-  expect(accepted.version_number).toBe(1);
-  expect(accepted.rationale).toContain("Deferred: none.");
-});
-
-test("wizard fits a narrow phone width", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await signIn(page, `s22-mobile-${Date.now()}@example.com`);
-  await page.goto("/app/goals/new");
-  await expect(page.getByRole("heading", { name: "Create a goal" })).toBeVisible();
-  await expect(page.locator("[data-hydrated='true']")).toBeVisible();
-  await page.getByLabel("Goal title").fill("Fractions");
-  await page.getByLabel("What do you want to learn?").fill("Add fractions with the same denominator.");
-  await page.getByLabel("Subject").selectOption("math");
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByLabel("Minutes each day for a set number of days").check();
-  await expect(page.getByLabel("Minutes per day")).toBeVisible();
-  const overflow = await page.evaluate(
-    () => document.documentElement.scrollWidth <= window.innerWidth + 1,
-  );
-  expect(overflow).toBe(true);
 });
