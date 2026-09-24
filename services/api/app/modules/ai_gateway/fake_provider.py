@@ -52,6 +52,21 @@ _DEFAULTS: dict[str, dict[str, Any]] = {
             }
         ]
     },
+    "item_draft": {
+        "items": [
+            {
+                "id": "draft-objective-1",
+                "type": "objective",
+                "prompt": "Which idea matches the reading?\n\na) Wrong idea\n\nb) Matching idea\n\nc) Unrelated",
+                "choices": ["Wrong idea", "Matching idea", "Unrelated"],
+                "answer": "b",
+                "explanation": "The reading supports the matching idea.",
+                "misconceptions": {"a": "Wrong.", "c": "Unrelated."},
+                "difficulty": 2,
+                "effort_minutes": {"low": 2, "high": 4},
+            }
+        ]
+    },
 }
 
 
