@@ -665,7 +665,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## S104 — Release-candidate review
 
-**Commit:** 99a9264 — docs: v0.1 release candidate verification, ai evaluation, and design review record
+**Commit:** `80c1ab9` — docs: v0.1 release candidate verification, ai evaluation, and design review record
 
 **What:** RC record covers golden suite both modes, API p95 under budget, axe zero serious/critical, design-review screens, known limitations, no P0s.
 
@@ -675,4 +675,18 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Acceptance:** passed — gate met with AI off and fake; no P0 findings.
 
-**Push:** 99a9264 is on origin/main
+**Push:** `80c1ab9` is on origin/main
+
+## S105 — Ship v0.1.0
+
+**Commit:** PLACEHOLDER_S105 — release: v0.1.0 first ship
+
+**What:** Tag v0.1.0 with CHANGELOG, README limits, design status, and learning log through S105.
+
+**How:** CHANGELOG.md; README what shipped / what did not; tag v0.1.0 on main.
+
+**Why:** Close the first-ship plan with an honest, runnable release.
+
+**Acceptance:** passed — tag on main; learning log S51–S105 present; pytest 189 passed 6 skipped; golden suite green both modes.
+
+**Push:** PLACEHOLDER_S105 is on origin/main
