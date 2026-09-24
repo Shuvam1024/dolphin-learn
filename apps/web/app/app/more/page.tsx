@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import styles from "../../auth.module.css";
 
 export default function MorePage() {
@@ -6,15 +8,20 @@ export default function MorePage() {
       <section className={styles.card}>
         <p className={styles.kicker}>More</p>
         <h1 className={styles.title}>Account</h1>
-        <p className={styles.lede}>
-          Settings beyond the basics are not here yet. Privacy notes and sign-out are.
-        </p>
-        <p className={styles.meta}>
-          <a href="/privacy">Privacy summary</a>
-        </p>
+        <ul>
+          <li>
+            <Link href="/app/settings">Settings</Link>
+          </li>
+          <li>
+            <Link href="/app/help">Help</Link>
+          </li>
+          <li>
+            <Link href="/privacy">Privacy</Link>
+          </li>
+        </ul>
         <form action="/api/session/logout" method="post">
           <button className={styles.button} type="submit">
-            Log out
+            Sign out
           </button>
         </form>
       </section>
