@@ -109,6 +109,14 @@ export function GoalWizard() {
     }
     let cancelled = false;
     void (async () => {
+      await fetch(`/api/goals/${saved.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priority }),
+      });
+      if (cancelled) {
+        return;
+      }
       const response = await fetch(`/api/goals/${saved.id}/plan-proposals`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
