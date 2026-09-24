@@ -807,6 +807,71 @@ def get_overview(
     return OverviewOut.model_validate(build_overview(db, user, goal))
 
 
+class OutlineOutcomeOut(BaseModel):
+    statement: str
+    reading_markdown: str
+    recall_prompt: str
+    reflection_prompt: str
+
+
+class OutlineProposalOut(BaseModel):
+    outcomes: list[OutlineOutcomeOut]
+    source: str
+    provisional: bool
+    note: str
+
+
+class OutlineAcceptIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    outcomes: list[OutlineOutcomeOut]
+
+
+@router.post("/{goal_id}/outline-proposals", response_model=OutlineProposalOut)
+def post_outline_proposal(
+    goal_id: uuid.UUID,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> OutlineProposalOut:
+    from app.modules.goals.outline import build_outline_proposal
+
+    goal = get_owned_goal(db, user, goal_id)
+    return OutlineProposalOut.model_validate(build_outline_proposal(db, user, goal))
+
+
+@router.post("/{goal_id}/outline/accept")
+def post_outline_accept(
+    goal_id: uuid.UUID,
+    body: OutlineAcceptIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, object]:
+    from app.modules.goals.outline import accept_outline
+
+    goal = get_owned_goal(db, user, goal_id)
+    applied = accept_outline(
+        db,
+        user,
+        goal,
+        [item.model_dump() for item in body.outcomes],
+    )
+    return {"applied": applied, "note": "Draft by the tutor — edit or remove"}
+
+
+@router.delete("/{goal_id}/outline/items/{activity_id}")
+def delete_outline_item(
+    goal_id: uuid.UUID,
+    activity_id: uuid.UUID,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, str]:
+    from app.modules.goals.outline import delete_provisional_item
+
+    goal = get_owned_goal(db, user, goal_id)
+    delete_provisional_item(db, user, goal, str(activity_id))
+    return {"status": "deleted"}
+
+
 @router.get("/{goal_id}", response_model=GoalOut)
 def get_goal(
     goal_id: uuid.UUID,

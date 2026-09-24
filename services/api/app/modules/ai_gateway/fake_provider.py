@@ -42,6 +42,16 @@ _DEFAULTS: dict[str, dict[str, Any]] = {
         "minutes_hint_per_outcome": 15,
         "confidence": 0.8,
     },
+    "general_outline": {
+        "outcomes": [
+            {
+                "statement": "I can say hello",
+                "reading_markdown": "Hola means hello. Use it when you meet someone.",
+                "recall_prompt": "Write how you say hello in Spanish.",
+                "reflection_prompt": "When will you use this greeting?",
+            }
+        ]
+    },
 }
 
 

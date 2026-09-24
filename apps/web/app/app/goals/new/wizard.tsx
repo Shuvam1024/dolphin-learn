@@ -160,7 +160,6 @@ export function GoalWizard() {
   const [aiSuggested, setAiSuggested] = useState(false);
   const [suggestedSkips, setSuggestedSkips] = useState<string[]>([]);
   const [skipKeys, setSkipKeys] = useState<string[]>([]);
-  const [placementSkipped, setPlacementSkipped] = useState(false);
   const [customTime, setCustomTime] = useState(false);
 
   useEffect(() => {
@@ -378,18 +377,10 @@ export function GoalWizard() {
     event.preventDefault();
     setError(null);
     if (domainKey === "general") {
-      setPlacementSkipped(true);
       void saveAndPreview([]);
       return;
     }
     setStep(4);
-  }
-
-  async function runPlacement(action: "start" | "skip") {
-    if (!saved && action === "start") {
-      // Placement runs after goal exists; create first then start.
-      await saveGoalOnly();
-    }
   }
 
   async function saveGoalOnly(): Promise<string | null> {
@@ -448,7 +439,6 @@ export function GoalWizard() {
   }
 
   async function onPlacementSkip() {
-    setPlacementSkipped(true);
     await saveAndPreview([]);
   }
 
