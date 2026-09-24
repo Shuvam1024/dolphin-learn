@@ -85,6 +85,9 @@ def _payload(db: Session, user: User, item: ReviewItem, *, due_now: bool) -> dic
     revealed = ""
     if _solution_pending(db, item.id) and activity.answer_key is not None:
         revealed = str(activity.answer_key.get("correct", ""))
+    low = int(activity.effort_minutes_low or 5)
+    high = int(activity.effort_minutes_high or low)
+    estimated = max(1, (low + high) // 2)
     return {
         "id": str(item.id),
         "competency_key": competency.key if competency is not None else "",
@@ -96,10 +99,25 @@ def _payload(db: Session, user: User, item: ReviewItem, *, due_now: bool) -> dic
         "title": lesson.title if lesson is not None else "",
         "prompt": activity.prompt,
         "revealed_choice": revealed,
+        "estimated_minutes": estimated,
     }
 
 
-def queue_for_user(db: Session, user: User) -> dict[str, list[dict[str, object]]]:
+def _preferred_session_minutes(db: Session, user: User) -> int:
+    from app.modules.goals.models import TimeBudget
+    from app.modules.goals.service import list_goals
+
+    preferred = 25
+    for goal in list_goals(db, user):
+        if goal.status != "active":
+            continue
+        budget = db.scalar(select(TimeBudget).where(TimeBudget.goal_id == goal.id))
+        if budget is not None and budget.preferred_session_minutes > 0:
+            preferred = max(preferred, int(budget.preferred_session_minutes))
+    return preferred
+
+
+def queue_for_user(db: Session, user: User) -> dict[str, object]:
     now = datetime.now(timezone.utc)
     rows = db.scalars(
         select(ReviewItem).where(ReviewItem.user_id == user.id).order_by(ReviewItem.due_at)
@@ -113,7 +131,22 @@ def queue_for_user(db: Session, user: User) -> dict[str, list[dict[str, object]]
             due.append(payload)
         else:
             scheduled.append(payload)
-    return {"due": due, "scheduled": scheduled}
+    preferred = _preferred_session_minutes(db, user)
+    fits_count = 0
+    fits_minutes = 0
+    for item in due:
+        est = int(item.get("estimated_minutes") or 5)
+        if fits_count == 0 or fits_minutes + est <= preferred:
+            fits_count += 1
+            fits_minutes += est
+        else:
+            break
+    return {
+        "due": due,
+        "scheduled": scheduled,
+        "preferred_session_minutes": preferred,
+        "fits": {"count": fits_count, "minutes": fits_minutes},
+    }
 
 
 def get_owned_review(db: Session, user: User, review_id: uuid.UUID) -> ReviewItem:

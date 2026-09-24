@@ -30,11 +30,19 @@ class ReviewOut(BaseModel):
     title: str
     prompt: str
     revealed_choice: str = ""
+    estimated_minutes: int = 5
+
+
+class FitsOut(BaseModel):
+    count: int
+    minutes: int
 
 
 class QueueOut(BaseModel):
     due: list[ReviewOut]
     scheduled: list[ReviewOut]
+    preferred_session_minutes: int = 25
+    fits: FitsOut = FitsOut(count=0, minutes=0)
 
 
 class SolutionIn(BaseModel):
@@ -74,7 +82,7 @@ class SnoozeIn(BaseModel):
     @field_validator("hours")
     @classmethod
     def _hours(cls, value: int) -> int:
-        if value < 1 or value > 168:
+        if value not in (3, 24, 72) and (value < 1 or value > 168):
             raise ValueError("hours must be between 1 and 168")
         return value
 

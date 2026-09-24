@@ -16,11 +16,14 @@ type ReviewItem = {
   title: string;
   prompt: string;
   revealed_choice: string;
+  estimated_minutes: number;
 };
 
 type ReviewQueue = {
   due: ReviewItem[];
   scheduled: ReviewItem[];
+  preferred_session_minutes: number;
+  fits: { count: number; minutes: number };
 };
 
 function questionChoices(prompt: string): { value: string; label: string }[] {
@@ -49,6 +52,9 @@ async function loadQueue(): Promise<ReviewQueue> {
 export default async function ReviewPage() {
   const queue = await loadQueue();
   const current = queue.due[0];
+  const dueCount = queue.due.length;
+  const fitCount = queue.fits?.count ?? 0;
+  const fitMinutes = queue.fits?.minutes ?? 0;
 
   return (
     <main className={styles.shell}>
@@ -57,16 +63,22 @@ export default async function ReviewPage() {
         {current ? (
           <>
             <h1 className={styles.title}>Due now</h1>
-            <p className={styles.lede}>{current.reason}</p>
+            <p className={styles.lede}>
+              {dueCount} due · start with {fitCount} (about {fitMinutes}{" "}
+              {fitMinutes === 1 ? "minute" : "minutes"})
+            </p>
+            <p className={styles.meta}>{current.reason}</p>
             <p className={styles.meta}>
-              {current.competency_name}. {current.lesson_title || current.title}. Interval{" "}
-              {current.interval_days} day{current.interval_days === 1 ? "" : "s"}.
+              {current.competency_name}. {current.lesson_title || current.title}. About{" "}
+              {current.estimated_minutes} min. Interval {current.interval_days} day
+              {current.interval_days === 1 ? "" : "s"}.
             </p>
             <p className={styles.meta}>{current.prompt}</p>
             {current.revealed_choice ? (
               <p className={styles.meta}>
                 You asked for the solution: {current.revealed_choice}. This answer is assisted and
-                does not lengthen the interval.
+                does not lengthen the interval. After you answer, the tutor can explain differently
+                when AI is on.
               </p>
             ) : (
               <form action={`/api/reviews/${current.id}/solution`} method="post">
@@ -88,26 +100,34 @@ export default async function ReviewPage() {
                 Submit review
               </button>
             </form>
-            <form action={`/api/reviews/${current.id}/snooze`} method="post">
-              <input type="hidden" name="hours" value="24" />
-              <button className={styles.button} type="submit">
-                Not now
-              </button>
-            </form>
+            <p className={styles.meta}>Not now</p>
+            {[3, 24, 72].map((hours) => (
+              <form
+                key={hours}
+                action={`/api/reviews/${current.id}/snooze`}
+                method="post"
+                style={{ display: "inline-block", marginRight: 8 }}
+              >
+                <input type="hidden" name="hours" value={String(hours)} />
+                <button className={styles.button} type="submit">
+                  {hours}h
+                </button>
+              </form>
+            ))}
             <p className={styles.meta}>
-              Not now waits 24 hours. Skipping is not study and does not count as remembering.
+              Snooze waits 3, 24, or 72 hours. Skipping is not study and does not count as
+              remembering.
             </p>
           </>
         ) : (
           <>
             <h1 className={styles.title}>Nothing is due</h1>
             <p className={styles.lede}>
-              Reviews show up after you practice. There is no streak to protect and nothing to
-              catch up on today.
+              Reviews show up after you practice. There is nothing to catch up on today.
             </p>
             {queue.scheduled.map((item) => (
               <p key={item.id} className={styles.meta}>
-                {item.competency_name}. {item.reason}
+                {item.competency_name}. About {item.estimated_minutes} min. {item.reason}
               </p>
             ))}
           </>
