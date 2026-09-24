@@ -1,8 +1,10 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S84; Wizard v2
+- **Milestone completed:** S01–S85; General outline AI
 - **Schema/API changes:** Alembic through `0015_goal_status`
+- **Tests run and exact results (S85):**
+  - `pytest -q` → 139 passed, 6 skipped (`test_provisional_outline`)
 - **Tests run and exact results (S84):**
   - Wizard v2: 5 steps, presets, placement, general route, draft reload
 - **Tests run and exact results (S83):**
@@ -120,7 +122,7 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S84**
+- **Completed steps:** **S01–S85**
 - **Next step:** **S75 — Goal path v2 with replan preview → accept**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
@@ -237,3 +239,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S82** | `feat(goals): placement diagnostic proposes skips confirmed by the learner` | skip confirm; no general placement |
 | **S83** | `feat(goals): ai goal normalizer suggests title, subject, and outcomes` | normalize; nothing saved |
 | **S84** | `feat(web): wizard v2 with ai suggestions, subject chips, presets, focus, placement, and preview` | 5-step wizard |
+| **S85** | `feat(general): ai provisional outlines, readings, and recall prompts` | provisional; never graded |

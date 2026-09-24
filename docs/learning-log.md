@@ -395,3 +395,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** `e2e/wizard-v2.spec.ts` and updated `goal-wizard.spec.ts`.
 
 **Push:** `d50cafe` is on origin/main
+
+## S85 — AI provisional outlines for General
+
+**Commit:** `e7949df` — feat(general): ai provisional outlines, readings, and recall prompts
+
+**What:** Something else goals can request a provisional outline with short readings and recall prompts. Drafts are never graded and never carry answer keys.
+
+**How:** `POST /goals/{id}/outline-proposals` → `general_outline.v1`; accept replaces gather-material prompts; `pick_unseen(graded=True)` returns none.
+
+**Why:** AI drafts material; the learner edits or removes before trust.
+
+**Acceptance:** passed — pytest 139 passed, 6 skipped (`test_provisional_outline`).
+
+**Push:** `e7949df` is on origin/main
