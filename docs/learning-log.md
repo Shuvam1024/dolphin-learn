@@ -367,3 +367,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 134 passed, 6 skipped (`test_placement_skips`).
 
 **Push:** `0a63610` is on origin/main
+
+## S83 — AI goal normalizer
+
+**Commit:** `35f16d5` — feat(goals): ai goal normalizer suggests title, subject, and outcomes
+
+**What:** Free text becomes a suggested title, subject, and "I can …" outcomes. Nothing is saved. When AI is off, the endpoint returns 404 so the wizard falls back to manual fields.
+
+**How:** `POST /goals/normalize` → `goal_normalize.v1`; unknown domains rejected; web proxy included.
+
+**Why:** The learner still edits every field — AI only drafts the first pass.
+
+**Acceptance:** passed — pytest 137 passed, 6 skipped (`test_goal_normalize`).
+
+**Push:** `35f16d5` is on origin/main
