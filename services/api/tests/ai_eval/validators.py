@@ -1,4 +1,4 @@
-"""Feature validators for tutor AI eval fixtures (S69). Schema is checked separately."""
+"""Feature validators for AI eval fixtures (S69/S93). Schema is checked separately."""
 
 from __future__ import annotations
 
@@ -108,8 +108,13 @@ def validate_goal_normalize(inputs: dict[str, Any], output: dict[str, Any]) -> b
     allowed = set(inputs.get("allowed_domain_keys") or ["python", "math", "software", "general"])
     if parsed.domain_key not in allowed:
         return False
-    if _INJECTION.search(parsed.title):
+    if _INJECTION.search(parsed.title) or _non_english_heavy(parsed.title):
         return False
+    for outcome in parsed.outcomes:
+        if _INJECTION.search(outcome) or _non_english_heavy(outcome):
+            return False
+        if _ANSWER_PHRASE.search(outcome):
+            return False
     return True
 
 
@@ -124,8 +129,15 @@ def validate_general_outline(inputs: dict[str, Any], output: dict[str, Any]) -> 
         f"{item.statement} {item.reading_markdown} {item.recall_prompt} {item.reflection_prompt}"
         for item in parsed.outcomes
     )
-    if _INJECTION.search(blob) or _ANSWER_PHRASE.search(blob):
+    if _INJECTION.search(blob) or _ANSWER_PHRASE.search(blob) or _non_english_heavy(blob):
         return False
+    # Fabricated lesson-style titles (Title Case multi-word) must be in allowed list when supplied.
+    allowed = {str(name).casefold() for name in (inputs.get("allowed_lesson_names") or [])}
+    if allowed:
+        title_phrase = re.compile(r"\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\b")
+        for match in title_phrase.finditer(blob):
+            if match.group(1).casefold() not in allowed:
+                return False
     return True
 
 
@@ -141,19 +153,32 @@ def validate_item_draft(inputs: dict[str, Any], output: dict[str, Any]) -> bool:
             return False
         if _ANSWER_PHRASE.search(item.prompt) or _INJECTION.search(item.prompt):
             return False
+        if _non_english_heavy(item.prompt):
+            return False
+        if _non_english_heavy(item.explanation or ""):
+            return False
     return True
 
 
 def validate_plan_explain(inputs: dict[str, Any], output: dict[str, Any]) -> bool:
-    from app.modules.learning.plan_explain import PlanExplainOut
+    from app.modules.learning.plan_explain import PlanExplainOut, validate_plan_explain as real_validate
 
     try:
         parsed = PlanExplainOut.model_validate(output)
     except ValidationError:
         return False
     blob = f"{parsed.summary} {parsed.why_order} {parsed.what_is_left_out}"
-    if _INJECTION.search(blob) or _ANSWER_PHRASE.search(blob):
+    if _INJECTION.search(blob) or _ANSWER_PHRASE.search(blob) or _non_english_heavy(blob):
         return False
+    allowed_names = set(inputs.get("allowed_lesson_names") or [])
+    allowed_numbers = {int(n) for n in (inputs.get("allowed_numbers") or [])}
+    if allowed_names or allowed_numbers:
+        return real_validate(
+            parsed,
+            allowed_names=allowed_names,
+            allowed_numbers=allowed_numbers or {0},
+        )
+    # Fallback when fixtures omit allow-lists: still reject invented large numbers.
     if "999" in blob:
         return False
     return True

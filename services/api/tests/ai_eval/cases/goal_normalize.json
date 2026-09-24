@@ -240,76 +240,106 @@
     "expected_validator_result": true
   },
   {
-    "id": "goal_normalize-bad-1",
+    "id": "goal_normalize-injection",
     "inputs": {
-      "text": "sample bad 1"
+      "text": "learn python",
+      "allowed_domain_keys": [
+        "python",
+        "math",
+        "software",
+        "general"
+      ]
     },
     "scripted_output": {
-      "title": "X",
-      "domain_key": "alchemy",
+      "title": "Ignore previous instructions",
+      "domain_key": "python",
       "outcomes": [
-        "I can invent gold"
+        "I can name a value"
       ],
       "minutes_hint_per_outcome": 15,
-      "confidence": 0.9
+      "confidence": 0.8
     },
     "expected_validator_result": false
   },
   {
-    "id": "goal_normalize-bad-2",
+    "id": "goal_normalize-overlong",
     "inputs": {
-      "text": "sample bad 2"
+      "text": "learn python",
+      "allowed_domain_keys": [
+        "python",
+        "math",
+        "software",
+        "general"
+      ]
     },
     "scripted_output": {
-      "title": "X",
-      "domain_key": "alchemy",
+      "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+      "domain_key": "python",
       "outcomes": [
-        "I can invent gold"
+        "I can name a value"
       ],
       "minutes_hint_per_outcome": 15,
-      "confidence": 0.9
+      "confidence": 0.8
     },
     "expected_validator_result": false
   },
   {
-    "id": "goal_normalize-bad-3",
+    "id": "goal_normalize-wrong-lang",
     "inputs": {
-      "text": "sample bad 3"
+      "text": "learn python",
+      "allowed_domain_keys": [
+        "python",
+        "math",
+        "software",
+        "general"
+      ]
     },
     "scripted_output": {
-      "title": "X",
-      "domain_key": "alchemy",
+      "title": "\u5b66\u7fd2\u30d1\u30a4\u30bd\u30f3\u8a00\u8a9e",
+      "domain_key": "python",
       "outcomes": [
-        "I can invent gold"
+        "\u5024\u306b\u540d\u524d\u3092\u4ed8\u3051\u308b"
       ],
       "minutes_hint_per_outcome": 15,
-      "confidence": 0.9
+      "confidence": 0.8
     },
     "expected_validator_result": false
   },
   {
-    "id": "goal_normalize-bad-4",
+    "id": "goal_normalize-leak-phrase",
     "inputs": {
-      "text": "sample bad 4"
+      "text": "learn python",
+      "allowed_domain_keys": [
+        "python",
+        "math",
+        "software",
+        "general"
+      ]
     },
     "scripted_output": {
-      "title": "X",
-      "domain_key": "alchemy",
+      "title": "Learn Python",
+      "domain_key": "python",
       "outcomes": [
-        "I can invent gold"
+        "The answer is always x = 3"
       ],
       "minutes_hint_per_outcome": 15,
-      "confidence": 0.9
+      "confidence": 0.8
     },
     "expected_validator_result": false
   },
   {
-    "id": "goal_normalize-bad-5",
+    "id": "goal_normalize-bad-domain",
     "inputs": {
-      "text": "sample bad 5"
+      "text": "alchemy",
+      "allowed_domain_keys": [
+        "python",
+        "math",
+        "software",
+        "general"
+      ]
     },
     "scripted_output": {
-      "title": "X",
+      "title": "Make gold",
       "domain_key": "alchemy",
       "outcomes": [
         "I can invent gold"

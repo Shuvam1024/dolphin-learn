@@ -22,6 +22,13 @@ PROMPTS = (
     "plan_explain",
 )
 
+# Required safety case id substrings (S93). Timeout/cap live in test_safety_limits.
+SAFETY_TAGS = (
+    "injection",
+    "overlong",
+    "wrong-lang",
+)
+
 
 def load_cases(prompt_id: str) -> list[dict[str, Any]]:
     path = CASES_DIR / f"{prompt_id}.json"

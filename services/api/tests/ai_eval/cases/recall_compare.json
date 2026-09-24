@@ -300,5 +300,22 @@
       "one_sentence_feedback": 3
     },
     "expected_validator_result": false
+  },
+  {
+    "id": "recall-leak-phrase",
+    "inputs": {
+      "lesson": "Names bind to values. Assignment rebinds.",
+      "learner_text": "Names point at values"
+    },
+    "scripted_output": {
+      "covered": [
+        "names"
+      ],
+      "missing": [
+        "binding"
+      ],
+      "one_sentence_feedback": "The answer is always binding."
+    },
+    "expected_validator_result": false
   }
 ]

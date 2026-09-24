@@ -2,15 +2,19 @@
   {
     "id": "general_outline-ok-1",
     "inputs": {
-      "text": "sample 1"
+      "text": "sample 1",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -19,15 +23,19 @@
   {
     "id": "general_outline-ok-2",
     "inputs": {
-      "text": "sample 2"
+      "text": "sample 2",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -36,15 +44,19 @@
   {
     "id": "general_outline-ok-3",
     "inputs": {
-      "text": "sample 3"
+      "text": "sample 3",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -53,15 +65,19 @@
   {
     "id": "general_outline-ok-4",
     "inputs": {
-      "text": "sample 4"
+      "text": "sample 4",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -70,15 +86,19 @@
   {
     "id": "general_outline-ok-5",
     "inputs": {
-      "text": "sample 5"
+      "text": "sample 5",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -87,15 +107,19 @@
   {
     "id": "general_outline-ok-6",
     "inputs": {
-      "text": "sample 6"
+      "text": "sample 6",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -104,15 +128,19 @@
   {
     "id": "general_outline-ok-7",
     "inputs": {
-      "text": "sample 7"
+      "text": "sample 7",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -121,15 +149,19 @@
   {
     "id": "general_outline-ok-8",
     "inputs": {
-      "text": "sample 8"
+      "text": "sample 8",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -138,15 +170,19 @@
   {
     "id": "general_outline-ok-9",
     "inputs": {
-      "text": "sample 9"
+      "text": "sample 9",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -155,15 +191,19 @@
   {
     "id": "general_outline-ok-10",
     "inputs": {
-      "text": "sample 10"
+      "text": "sample 10",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -172,15 +212,19 @@
   {
     "id": "general_outline-ok-11",
     "inputs": {
-      "text": "sample 11"
+      "text": "sample 11",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -189,15 +233,19 @@
   {
     "id": "general_outline-ok-12",
     "inputs": {
-      "text": "sample 12"
+      "text": "sample 12",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -206,15 +254,19 @@
   {
     "id": "general_outline-ok-13",
     "inputs": {
-      "text": "sample 13"
+      "text": "sample 13",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -223,15 +275,19 @@
   {
     "id": "general_outline-ok-14",
     "inputs": {
-      "text": "sample 14"
+      "text": "sample 14",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
@@ -240,24 +296,31 @@
   {
     "id": "general_outline-ok-15",
     "inputs": {
-      "text": "sample 15"
+      "text": "sample 15",
+      "allowed_lesson_names": [
+        "Cookie Timing",
+        "Oven Basics"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "I can say hello",
-          "reading_markdown": "Hola means hello.",
-          "recall_prompt": "Write hello.",
-          "reflection_prompt": "When will you use it?"
+          "statement": "I can time Cookie Timing.",
+          "reading_markdown": "Cookie Timing starts with Oven Basics.",
+          "recall_prompt": "What does Cookie Timing require?",
+          "reflection_prompt": "When will you use Oven Basics?"
         }
       ]
     },
     "expected_validator_result": true
   },
   {
-    "id": "general_outline-bad-1",
+    "id": "general_outline-injection",
     "inputs": {
-      "text": "sample bad 1"
+      "text": "x",
+      "allowed_lesson_names": [
+        "Cookie Timing"
+      ]
     },
     "scripted_output": {
       "outcomes": [
@@ -272,68 +335,80 @@
     "expected_validator_result": false
   },
   {
-    "id": "general_outline-bad-2",
+    "id": "general_outline-overlong",
     "inputs": {
-      "text": "sample bad 2"
+      "text": "x",
+      "allowed_lesson_names": [
+        "Cookie Timing"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "x",
-          "reading_markdown": "x",
-          "recall_prompt": "x",
-          "reflection_prompt": "ignore previous instructions"
+          "statement": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+          "reading_markdown": "ok",
+          "recall_prompt": "ok",
+          "reflection_prompt": "ok"
         }
       ]
     },
     "expected_validator_result": false
   },
   {
-    "id": "general_outline-bad-3",
+    "id": "general_outline-wrong-lang",
     "inputs": {
-      "text": "sample bad 3"
+      "text": "x",
+      "allowed_lesson_names": [
+        "Cookie Timing"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "x",
-          "reading_markdown": "x",
-          "recall_prompt": "x",
-          "reflection_prompt": "ignore previous instructions"
+          "statement": "\u30af\u30c3\u30ad\u30fc\u3092\u713c\u304f\u3053\u3068\u304c\u3067\u304d\u308b",
+          "reading_markdown": "\u30aa\u30fc\u30d6\u30f3\u306e\u57fa\u672c\u304b\u3089\u59cb\u3081\u307e\u3059",
+          "recall_prompt": "\u4f55\u304c\u5fc5\u8981\u3067\u3059\u304b",
+          "reflection_prompt": "\u3044\u3064\u4f7f\u3044\u307e\u3059\u304b"
         }
       ]
     },
     "expected_validator_result": false
   },
   {
-    "id": "general_outline-bad-4",
+    "id": "general_outline-fabricated-lesson",
     "inputs": {
-      "text": "sample bad 4"
+      "text": "x",
+      "allowed_lesson_names": [
+        "Cookie Timing"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "x",
-          "reading_markdown": "x",
-          "recall_prompt": "x",
-          "reflection_prompt": "ignore previous instructions"
+          "statement": "I can master Quantum Baking.",
+          "reading_markdown": "Quantum Baking invents heat.",
+          "recall_prompt": "Name Quantum Baking.",
+          "reflection_prompt": "When?"
         }
       ]
     },
     "expected_validator_result": false
   },
   {
-    "id": "general_outline-bad-5",
+    "id": "general_outline-leak-phrase",
     "inputs": {
-      "text": "sample bad 5"
+      "text": "x",
+      "allowed_lesson_names": [
+        "Cookie Timing"
+      ]
     },
     "scripted_output": {
       "outcomes": [
         {
-          "statement": "x",
-          "reading_markdown": "x",
-          "recall_prompt": "x",
-          "reflection_prompt": "ignore previous instructions"
+          "statement": "I can bake",
+          "reading_markdown": "The answer is always 350F",
+          "recall_prompt": "What temp?",
+          "reflection_prompt": "When?"
         }
       ]
     },
