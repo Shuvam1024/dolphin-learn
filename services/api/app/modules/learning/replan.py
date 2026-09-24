@@ -39,6 +39,9 @@ def build_replan_proposal(
     goal: Goal,
     budget: TimeBudget,
 ) -> tuple[PlanProposal, int, int, list[tuple[str, str]]]:
+    from app.modules.learning.proposals import clear_placement_skips
+
+    clear_placement_skips(db, goal)
     demonstrated = _demonstrated(db, user)
     demonstrated_keys = {key for key, _name in demonstrated}
     work = [

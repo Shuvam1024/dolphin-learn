@@ -114,8 +114,94 @@ def propose_for_goal(
     domain_key: str | None,
     *,
     priority: str | None = None,
+    skip_competency_keys: list[str] | None = None,
+    persist_skips: bool = True,
 ) -> PlanProposal:
+    from app.modules.goals.models import GoalCompetency
+    from app.modules.learning.planner import DeferredCompetency, REASON_SKIPPED
+
     resolved = resolve_domain_key(db, goal, domain_key)
     work = work_for_domain(db, resolved, goal=goal)
     chosen = priority if priority is not None else getattr(goal, "priority", None) or "understand"
-    return propose_plan(work, usable_minutes(budget), priority=chosen)
+
+    if skip_competency_keys is not None and persist_skips:
+        if skip_competency_keys:
+            _persist_skips(db, goal, list(skip_competency_keys))
+        else:
+            _clear_skips(db, goal)
+
+    if skip_competency_keys is not None:
+        active_skips = set(skip_competency_keys)
+    else:
+        active_skips = {
+            key
+            for (key,) in db.execute(
+                select(Competency.key)
+                .join(GoalCompetency, GoalCompetency.competency_id == Competency.id)
+                .where(
+                    GoalCompetency.goal_id == goal.id,
+                    GoalCompetency.requirement == "skipped",
+                )
+            ).all()
+        }
+
+    remaining = [item for item in work if item.key not in active_skips]
+    skipped_work = [item for item in work if item.key in active_skips]
+    proposal = propose_plan(remaining, usable_minutes(budget), priority=chosen)
+    if not skipped_work:
+        return proposal
+    deferred = list(proposal.deferred) + [
+        DeferredCompetency(
+            item.key, item.name, item.effort_low, item.effort_high, REASON_SKIPPED
+        )
+        for item in skipped_work
+    ]
+    return PlanProposal(
+        usable_minutes=proposal.usable_minutes,
+        estimated_required_low=proposal.estimated_required_low,
+        estimated_required_high=proposal.estimated_required_high,
+        scope_conflict=proposal.scope_conflict,
+        included=proposal.included,
+        deferred=tuple(deferred),
+        priority=proposal.priority,
+        priority_label=proposal.priority_label,
+        priority_effect=proposal.priority_effect,
+        review_reserve_minutes=proposal.review_reserve_minutes,
+        learning_minutes=proposal.learning_minutes,
+    )
+
+
+def _persist_skips(db: Session, goal: Goal, keys: list[str]) -> None:
+    from app.modules.goals.models import GoalCompetency
+
+    _clear_skips(db, goal)
+    for key in keys:
+        competency = db.scalar(select(Competency).where(Competency.key == key))
+        if competency is None:
+            continue
+        db.add(
+            GoalCompetency(
+                goal_id=goal.id,
+                competency_id=competency.id,
+                requirement="skipped",
+            )
+        )
+    db.commit()
+
+
+def _clear_skips(db: Session, goal: Goal) -> None:
+    from app.modules.goals.models import GoalCompetency
+    from sqlalchemy import delete
+
+    db.execute(
+        delete(GoalCompetency).where(
+            GoalCompetency.goal_id == goal.id,
+            GoalCompetency.requirement == "skipped",
+        )
+    )
+    db.commit()
+
+
+def clear_placement_skips(db: Session, goal: Goal) -> None:
+    """Replan starts fresh — learner-confirmed skips do not carry over."""
+    _clear_skips(db, goal)

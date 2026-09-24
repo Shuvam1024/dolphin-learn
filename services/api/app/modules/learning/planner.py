@@ -12,6 +12,7 @@ from app.modules.learning.copy import priority_effect, priority_label
 
 REASON_INSUFFICIENT = "insufficient_minutes"
 REASON_PREREQ = "prerequisite_deferred"
+REASON_SKIPPED = "skipped_by_learner"
 
 Priority = Literal["understand", "apply", "make_it_stick"]
 PRIORITIES = frozenset({"understand", "apply", "make_it_stick"})

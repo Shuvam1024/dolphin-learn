@@ -344,6 +344,7 @@ class DiagnosticOut(BaseModel):
     note: str
     items: list[DiagnosticItemOut]
     attempts: list[DiagnosticAttemptOut]
+    suggested_skip_keys: list[str] = []
 
 
 @router.post("/{goal_id}/diagnostic", response_model=DiagnosticOut)
@@ -355,7 +356,7 @@ def post_diagnostic(
 ) -> DiagnosticOut:
     goal = get_owned_goal(db, user, goal_id)
     if body.action == "start":
-        items = start_diagnostic(db, goal)
+        items = start_diagnostic(db, user, goal)
         return DiagnosticOut(
             status="items",
             mastery_claimed=False,
@@ -364,6 +365,7 @@ def post_diagnostic(
                 DiagnosticItemOut(activity_version_id=item.id, prompt=item.prompt) for item in items
             ],
             attempts=[],
+            suggested_skip_keys=[],
         )
     if body.action == "skip":
         skip_diagnostic(db, user, goal)
@@ -373,9 +375,10 @@ def post_diagnostic(
             note=NOTE,
             items=[],
             attempts=[],
+            suggested_skip_keys=[],
         )
     assert body.answers is not None
-    _run, attempts = submit_diagnostic(
+    _run, attempts, suggestions = submit_diagnostic(
         db,
         user,
         goal,
@@ -390,6 +393,7 @@ def post_diagnostic(
             DiagnosticAttemptOut(id=attempt.id, activity_version_id=attempt.activity_version_id)
             for attempt in attempts
         ],
+        suggested_skip_keys=suggestions,
     )
 
 
@@ -398,6 +402,7 @@ class ProposalIn(BaseModel):
 
     domain_key: str | None = None
     priority: PriorityLiteral | None = None
+    skip_competency_keys: list[str] = []
 
     @field_validator("priority")
     @classmethod
@@ -405,6 +410,16 @@ class ProposalIn(BaseModel):
         if value is None:
             return None
         return normalize_priority(value)
+
+    @field_validator("skip_competency_keys")
+    @classmethod
+    def _skips(cls, value: list[str]) -> list[str]:
+        cleaned: list[str] = []
+        for item in value:
+            key = item.strip()
+            if key and key not in cleaned:
+                cleaned.append(key)
+        return cleaned
 
 
 class ProposalItemOut(BaseModel):
@@ -459,12 +474,14 @@ def post_plan_proposal(
             status_code=422,
         )
     override = None if body is None else body.priority
+    skip_keys = None if body is None else body.skip_competency_keys
     proposal = propose_for_goal(
         db,
         goal,
         budget,
         None if body is None else body.domain_key,
         priority=override,
+        skip_competency_keys=skip_keys,
     )
     digest = proposal_hash(proposal, studied=0, left=proposal.usable_minutes)
     explanation = explain_plan(

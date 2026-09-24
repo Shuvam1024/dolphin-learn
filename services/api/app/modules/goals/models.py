@@ -97,6 +97,12 @@ class DiagnosticRun(Base):
 
 class GoalCompetency(Base):
     __tablename__ = "goal_competencies"
+    __table_args__ = (
+        CheckConstraint(
+            "requirement IN ('required', 'skipped')",
+            name="ck_goal_competencies_requirement",
+        ),
+    )
 
     goal_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("goals.id", ondelete="CASCADE"), primary_key=True
@@ -104,3 +110,4 @@ class GoalCompetency(Base):
     competency_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("competencies.id", ondelete="CASCADE"), primary_key=True
     )
+    requirement: Mapped[str] = mapped_column(String(32), nullable=False, default="required")
