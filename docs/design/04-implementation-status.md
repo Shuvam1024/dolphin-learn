@@ -1,8 +1,10 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S66; sitting sized to target minutes
+- **Milestone completed:** S01–S67; remaining estimate and good stopping point
 - **Schema/API changes:** Alembic through `0013_sessions_target_minutes`
+- **Tests run and exact results (S67):**
+  - `pytest -q` → 107 passed, 6 skipped (`test_stop_point`)
 - **Tests run and exact results (S66):**
   - `alembic upgrade head` → `0013_sessions_target_minutes`
   - `pytest -q` → 106 passed, 6 skipped (`test_session_sizing`)
@@ -68,8 +70,8 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S66**
-- **Next step:** **S67 — Remaining estimate and a good stopping point**
+- **Completed steps:** **S01–S67**
+- **Next step:** **S68 — Session summary v2**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
 
@@ -85,7 +87,7 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | 1C | Physical study time (S43–S46) | Done |
 | 1D | Honest demo content (S47–S50) | Done |
 | 2 | Foundations (S51–S58) | Done |
-| 3 | The learning session (S59–S70) | In progress (next: S66) |
+| 3 | The learning session (S59–S70) | In progress (next: S68) |
 | Later | Phases 4–7 per first-ship plan | Later |
 
 ---
@@ -165,3 +167,5 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S63** | `feat(tutor): explain differently and validated generated hints with seeded fallback` | explain route; hint validator; seeded fallback; panel AI chip |
 | **S64** | `feat(assess): short answer and numeric grading; ai misconception note for typed mistakes` | typed graders; feedback_json; AI note cannot change outcome |
 | **S65** | `feat(assess): free recall with self-rating capped at practicing` | self-rate; practicing ceiling; recall_compare advisory |
+| **S66** | `feat(sessions): target minutes per sitting from the learner` | SittingChooser; target_minutes; remaining sized to target |
+| **S67** | `feat(studio): remaining estimate and good stopping point without a countdown` | stop_point; Keep going; no countdown copy |

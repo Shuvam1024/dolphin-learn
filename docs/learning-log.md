@@ -144,3 +144,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `5f28ddf` is on origin/main
 
+## S67 — Remaining estimate and a good stopping point
+
+**Commit:** `acf9ed7` — feat(studio): remaining estimate and good stopping point without a countdown
+
+**What:** Studio quietly shows how many minutes are left in this sitting. When active minutes reach the target and the current activity is complete, it offers a good place to stop — Finish primary, Keep going secondary. Nothing is forced; there is no countdown.
+
+**How:** `actions.stop_point` when active ≥ target and current complete; header remaining range + stop notice; ActionBar Keep going advances; `DOLPHIN_E2E_FAST_CLOCK=1` for e2e; grep gate bans countdown/timer/time's up copy.
+
+**Why:** Respect the learner's time without guilt or a ticking clock.
+
+**Acceptance:** passed — pytest 107 passed, 6 skipped (`test_stop_point`).
+
+**Push:** `acf9ed7` is on origin/main
+
