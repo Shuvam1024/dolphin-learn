@@ -183,9 +183,21 @@ def complete(
                 latency_ms=result.latency_ms,
                 outcome="ok",
             )
+            from app.observability import record_ai_metric
+
+            record_ai_metric(
+                prompt_id,
+                latency_ms=result.latency_ms,
+                tokens_in=result.tokens_in,
+                tokens_out=result.tokens_out,
+            )
             return parsed
         except GatewayError as exc:
             last_error = exc
+            if exc.code == "schema_error":
+                from app.observability import record_ai_metric
+
+                record_ai_metric(prompt_id, latency_ms=0, validator_reject=True)
             if exc.code != "schema_error":
                 break
         except TimeoutError as exc:

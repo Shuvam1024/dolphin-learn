@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     auth_authorize_url: str = ""
     auth_token_url: str = ""
     retention_days: int = 30
+    metrics_user: str = "metrics"
+    metrics_password: str = "changeme"
 
     # AI gateway — off by default; FakeProvider in CI via AI_PROVIDER=fake
     ai_gateway_enabled: bool = False
