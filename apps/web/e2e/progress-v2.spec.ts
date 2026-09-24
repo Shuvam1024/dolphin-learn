@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-test("progress explains unassessed gaps and shows a real facet", async ({ page }) => {
-  const email = `s34-${Date.now()}@example.com`;
+test("progress v2 groups evidence by goal without percents", async ({ page }) => {
+  const email = `s77-${Date.now()}@example.com`;
   await page.goto("/sign-in");
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Continue" }).click();
@@ -10,7 +10,6 @@ test("progress explains unassessed gaps and shows a real facet", async ({ page }
 
   await page.goto("/app/progress");
   await expect(page.getByRole("heading", { name: "No evidence yet" })).toBeVisible();
-  await expect(page.getByText("stay unassessed")).toBeVisible();
   await expect(page.getByText("% mastered")).toHaveCount(0);
 
   const token = (await page.context().cookies()).find(
@@ -59,7 +58,10 @@ test("progress explains unassessed gaps and shows a real facet", async ({ page }
   });
 
   await page.goto("/app/progress");
+  await expect(page.getByRole("heading", { name: "Evidence by goal" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Learn Python" })).toBeVisible();
   await expect(page.getByText("Names and values: Shown on your own")).toBeVisible();
-  await expect(page.getByText(/Calling a function: Not tried yet|Not tried yet/)).toBeVisible();
+  await expect(page.getByText(/Not tried yet/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Upcoming reviews" })).toBeVisible();
   await expect(page.getByText("% mastered")).toHaveCount(0);
 });
