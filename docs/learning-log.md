@@ -214,3 +214,16 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `349a187` is on origin/main
 
+## S72 — Home v2
+
+**Commit:** `237a6e7` — feat(home): home v2 with one next action, goal cards, reviews, and evidence chips
+
+**What:** Home centers one next action with subtitle and minutes, goal cards with subject and next lesson, due-review count, and evidence chips. Log out moved off Home.
+
+**How:** Expanded `GET /home`; Promise.all for me+home; Retry on load error; e2e home-v2.
+
+**Why:** One clear next step beats a dashboard of equal-weight widgets.
+
+**Acceptance:** passed — pytest 117 passed, 6 skipped.
+
+**Push:** `237a6e7` is on origin/main
