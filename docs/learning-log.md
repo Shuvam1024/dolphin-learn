@@ -381,3 +381,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 137 passed, 6 skipped (`test_goal_normalize`).
 
 **Push:** `35f16d5` is on origin/main
+
+## S84 — Wizard v2
+
+**Commit:** `d50cafe` — feat(web): wizard v2 with ai suggestions, subject chips, presets, focus, placement, and preview
+
+**What:** Five steps — Learn, Time, Focus, Placement, Plan. Presets include 30×14 = 7 hours. Draft survives reload. Something else skips placement.
+
+**How:** sessionStorage draft; subject chips; AI suggest via normalize; placement confirm skips; Accept primary.
+
+**Why:** One guided path from wish to accepted plan without losing the learner's edits.
+
+**Acceptance:** `e2e/wizard-v2.spec.ts` and updated `goal-wizard.spec.ts`.
+
+**Push:** `d50cafe` is on origin/main
