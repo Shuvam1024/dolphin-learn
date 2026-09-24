@@ -196,7 +196,7 @@ def submit_review_attempt(
     db.add(ReviewEvent(review_item_id=item.id, outcome=label))
     was_due = item.due_at <= datetime.now(timezone.utc)
     extended = assistance == "independent" and outcome == "correct"
-    retained = extended and was_due
+    retained = extended and was_due and activity.activity_type != "free_recall"
     if retained:
         award_retained(db, user, item.competency_id, attempt.id)
     if extended:

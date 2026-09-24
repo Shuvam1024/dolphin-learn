@@ -27,7 +27,7 @@ export function ActionBar({
 
   return (
     <div className={styles.actionBar} data-studio-action-bar="">
-      {actions.primary === "submit" ? (
+      {actions.awaiting_self_report ? null : actions.primary === "submit" ? (
         <Button type="submit" variant="primary" form="studio-attempt-form">
           {label}
         </Button>

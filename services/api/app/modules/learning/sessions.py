@@ -22,7 +22,7 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-_GRADED_TYPES = frozenset({"objective", "short_answer", "numeric"})
+_GRADED_TYPES = frozenset({"objective", "short_answer", "numeric", "free_recall"})
 
 
 def _first_activity(db: Session, user: User, goal: Goal) -> PlanActivity:
@@ -244,6 +244,14 @@ def submit_attempt(
         if value is None or not str(value).strip():
             raise ApiError("validation_error", "value is required", status_code=422)
         response_body = {"value": str(value)}
+    elif activity.activity_type == "free_recall":
+        from app.modules.learning.free_recall import submit_free_recall_text
+
+        if text is None or not str(text).strip():
+            raise ApiError("validation_error", "text is required", status_code=422)
+        return submit_free_recall_text(
+            db, user, session_id, idempotency_key=idempotency_key, text=str(text)
+        )
     else:
         raise ApiError("validation_error", "This activity is not a question", status_code=422)
 

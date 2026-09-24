@@ -87,5 +87,15 @@
     other: Assignment is about binding a name, not locking a permanent box.
   difficulty: 2
   effort_minutes:
-    low: 2
-    high: 3
+    low: 1
+    high: 2
+- id: recall-6
+  type: free_recall
+  prompt: From memory, explain what a name is and what assignment does. Do not look back at the note yet.
+  explanation: Self-check against the reading after you write.
+  misconceptions:
+    other: A name is a binding, not a permanent box.
+  difficulty: 2
+  effort_minutes:
+    low: 1
+    high: 2

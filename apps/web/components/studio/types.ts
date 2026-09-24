@@ -6,6 +6,7 @@ export type StudioActions = {
   can_pause: boolean;
   can_explain_differently: boolean;
   stop_point: boolean;
+  awaiting_self_report?: boolean;
 };
 
 export type StudioTutor = {
@@ -26,6 +27,11 @@ export type StudioActivityState = {
   misconception_source: "seed" | "ai";
   alt_explanation: string;
   repeat: boolean;
+  self_rating?: string;
+  awaiting_self_report?: boolean;
+  recall_covered?: string[];
+  recall_missing?: string[];
+  recall_feedback?: string;
 };
 
 export type StudioChoice = { id: string; label: string };

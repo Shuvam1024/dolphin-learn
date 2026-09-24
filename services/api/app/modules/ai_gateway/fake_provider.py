@@ -22,6 +22,11 @@ _DEFAULTS: dict[str, dict[str, Any]] = {
         "note": "That answer mixes up the roles in the idea.",
         "tag": "other",
     },
+    "recall_compare": {
+        "covered": ["names bind to values"],
+        "missing": ["assignment rebinds"],
+        "one_sentence_feedback": "You named binding; say what assignment changes.",
+    },
 }
 
 

@@ -8,6 +8,7 @@ from app.modules.goals.service import get_owned_goal
 from app.modules.identity.deps import current_user
 from app.modules.identity.models import User
 from app.modules.learning.evidence import move_to_unseen_question
+from app.modules.learning.free_recall import submit_self_rating
 from app.modules.learning.grading import eligible_for_independent_evidence
 from app.modules.learning.models import Evaluation, LearningSession
 from app.modules.learning.sessions import (
@@ -340,6 +341,28 @@ def post_explain(
     db: Session = Depends(get_db),
 ) -> ExplainOut:
     return ExplainOut.model_validate(request_explain(db, user, session_id))
+
+
+class SelfRateIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    rating: Literal["got_it", "partly", "not_yet"]
+
+
+class SelfRateOut(BaseModel):
+    rating: str
+    outcome: str
+    facet: str
+
+
+@router.post("/{session_id}/self-rate", response_model=SelfRateOut)
+def post_self_rate(
+    session_id: uuid.UUID,
+    body: SelfRateIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> SelfRateOut:
+    return SelfRateOut.model_validate(submit_self_rating(db, user, session_id, rating=body.rating))
 
 
 @router.post("/{session_id}/solution", response_model=HelpOut)

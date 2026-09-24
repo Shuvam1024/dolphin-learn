@@ -115,6 +115,7 @@ export default async function StudioPage({
 
   const paused = session.status === "paused";
   const needsAttempt = session.actions?.primary === "submit" && !activity.state.recorded;
+  const needsSelfRate = Boolean(activity.state.awaiting_self_report);
 
   return (
     <main className={styles.shell}>
@@ -149,6 +150,23 @@ export default async function StudioPage({
       ) : (
         <AnswerInput activity={activity} sessionId={session.id} disabled />
       )}
+      {needsSelfRate ? (
+        <form action={`/api/sessions/${session.id}/self-rate`} method="post">
+          <fieldset>
+            <legend>How did that go?</legend>
+            <label>
+              <input type="radio" name="rating" value="got_it" required /> Got it
+            </label>
+            <label>
+              <input type="radio" name="rating" value="partly" /> Partly
+            </label>
+            <label>
+              <input type="radio" name="rating" value="not_yet" /> Not yet
+            </label>
+          </fieldset>
+          <button type="submit">Save self-rating</button>
+        </form>
+      ) : null}
       <TutorPanel session={session} activity={activity} />
       <ActionBar session={session} activity={activity} />
     </main>

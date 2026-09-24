@@ -21,6 +21,7 @@ export function FeedbackNotice({ activity }: { activity: StudioActivity }) {
         </p>
       ) : null}
       {assisted ? <Chip tone="neutral">Assisted</Chip> : null}
+      {state.outcome === "self_reported" ? <Chip tone="neutral">Self-reported</Chip> : null}
       {state.revealed_answer ? (
         <p>
           You asked for the solution: {state.revealed_answer}. A later answer is assisted.
@@ -32,6 +33,21 @@ export function FeedbackNotice({ activity }: { activity: StudioActivity }) {
           {state.misconception_source === "ai" ? <Chip tone="ai">AI</Chip> : null}
           {state.misconception_note}
         </p>
+      ) : null}
+      {state.recall_feedback ? (
+        <p>
+          <Chip tone="ai">AI</Chip> {state.recall_feedback}
+        </p>
+      ) : null}
+      {(state.recall_covered?.length || state.recall_missing?.length) ? (
+        <div>
+          {state.recall_covered && state.recall_covered.length > 0 ? (
+            <p>Covered: {state.recall_covered.join("; ")}</p>
+          ) : null}
+          {state.recall_missing && state.recall_missing.length > 0 ? (
+            <p>Missed: {state.recall_missing.join("; ")}</p>
+          ) : null}
+        </div>
       ) : null}
       {state.hint_text ? (
         <p>

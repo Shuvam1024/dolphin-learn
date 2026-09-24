@@ -122,6 +122,51 @@ def record_evidence(
     return facet
 
 
+def record_self_report_evidence(
+    db: Session,
+    user: User,
+    activity: ActivityVersion,
+    attempt: Attempt,
+    facet: str,
+) -> str:
+    """Self-report evidence never rises above practicing."""
+    if facet not in {"exposed", "practicing"}:
+        raise ApiError(
+            "internal_error",
+            "Self-report evidence cannot exceed practicing",
+            status_code=500,
+        )
+    lesson = db.get(Lesson, activity.lesson_id)
+    if lesson is None:
+        raise ApiError("internal_error", "Activity has no lesson", status_code=500)
+    db.add(
+        CompetencyEvidence(
+            user_id=user.id,
+            competency_id=lesson.competency_id,
+            attempt_id=attempt.id,
+            status_facet=facet,
+        )
+    )
+    state = db.get(CompetencyState, (user.id, lesson.competency_id))
+    now = datetime.now(timezone.utc)
+    if state is None:
+        db.add(
+            CompetencyState(
+                user_id=user.id,
+                competency_id=lesson.competency_id,
+                status_facet=facet,
+                updated_at=now,
+            )
+        )
+        return facet
+    if state.status_facet in {"retained", "applied", "independently_demonstrated"}:
+        return facet
+    if _RANK[facet] > _RANK.get(state.status_facet, 0):
+        state.status_facet = facet
+        state.updated_at = now
+    return facet
+
+
 def award_retained(
     db: Session,
     user: User,

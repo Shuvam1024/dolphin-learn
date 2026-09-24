@@ -103,13 +103,16 @@ def compute_actions(
     tutor_enabled: bool,
     challenge: bool,
     is_last: bool,
+    awaiting_self_report: bool = False,
 ) -> dict[str, Any]:
     can_hint = activity_type in {"objective", "short_answer", "numeric"} and not recorded
     can_reveal = can_hint and help_kind == "none"
-    can_fresh = recorded and assistance == "assisted"
+    can_fresh = recorded and assistance == "assisted" and not awaiting_self_report
     can_explain = tutor_enabled
     if activity_type in {"reading", "worked_example", "reflection"}:
         primary = "finish" if is_last else "continue"
+    elif activity_type == "free_recall" and awaiting_self_report:
+        primary = "submit"
     elif not recorded:
         primary = "submit"
     elif can_fresh:
@@ -125,7 +128,8 @@ def compute_actions(
         "can_fresh_check": can_fresh,
         "can_pause": True,
         "can_explain_differently": can_explain,
-        "stop_point": is_last and recorded,
+        "stop_point": is_last and recorded and not awaiting_self_report,
+        "awaiting_self_report": awaiting_self_report,
     }
 
 
@@ -238,15 +242,44 @@ def build_studio(
                         if note:
                             misconception = str(note)
                             misconception_source = str(source or "ai")
-            if not show_feedback:
-                explanation = ""
-                misconception = ""
-                misconception_source = "seed"
+            awaiting_self_report = outcome == "awaiting_self_report"
+            self_rating = ""
+            recall_covered: list[str] = []
+            recall_missing: list[str] = []
+            recall_feedback = ""
+            if recorded and activity.activity_type == "free_recall":
+                from app.modules.learning.models import Attempt, Evaluation
+
+                latest_attempt = db.scalar(
+                    select(Attempt)
+                    .where(
+                        Attempt.session_id == session.id,
+                        Attempt.activity_version_id == activity.id,
+                    )
+                    .order_by(Attempt.submitted_at.desc())
+                )
+                if latest_attempt is not None:
+                    self_rating = str(latest_attempt.response.get("self_rating", ""))
+                    evaluation = db.scalar(
+                        select(Evaluation).where(Evaluation.attempt_id == latest_attempt.id)
+                    )
+                    if evaluation is not None and evaluation.feedback_json:
+                        covered = evaluation.feedback_json.get("covered") or []
+                        missing = evaluation.feedback_json.get("missing") or []
+                        if isinstance(covered, list):
+                            recall_covered = [str(item) for item in covered]
+                        if isinstance(missing, list):
+                            recall_missing = [str(item) for item in missing]
+                        recall_feedback = str(
+                            evaluation.feedback_json.get("one_sentence_feedback", "") or ""
+                        )
             body_markdown = lesson.body_markdown if lesson is not None else ""
             if activity.activity_type == "worked_example":
                 payload_body = payload.get("body_markdown") if isinstance(payload, dict) else None
                 if isinstance(payload_body, str) and payload_body.strip():
                     body_markdown = payload_body
+            if activity.activity_type == "free_recall" and not recorded:
+                body_markdown = ""
             activity_payload = {
                 "activity_type": activity.activity_type,
                 "item_id": activity.item_id,
@@ -269,6 +302,11 @@ def build_studio(
                     "misconception_source": misconception_source,
                     "alt_explanation": help_state["alt_explanation"],
                     "repeat": _repeat_for_activity(db, session, activity.id),
+                    "self_rating": self_rating,
+                    "awaiting_self_report": awaiting_self_report,
+                    "recall_covered": recall_covered,
+                    "recall_missing": recall_missing,
+                    "recall_feedback": recall_feedback,
                 },
             }
             actions = compute_actions(
@@ -280,6 +318,7 @@ def build_studio(
                 tutor_enabled=tutor_on,
                 challenge=challenge,
                 is_last=position >= total,
+                awaiting_self_report=awaiting_self_report,
             )
 
     target = 0
