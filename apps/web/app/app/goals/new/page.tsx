@@ -1,4 +1,4 @@
-import { GoalWizard } from "./wizard";
+import { GoalChat } from "./chat";
 
 export default async function NewGoalPage({
   searchParams,
@@ -6,5 +6,10 @@ export default async function NewGoalPage({
   searchParams: Promise<{ q?: string; tool?: string }>;
 }) {
   const params = await searchParams;
-  return <GoalWizard initialPrompt={params.q ?? ""} tool={params.tool === "quick" ? "quick" : "plan"} />;
+  return (
+    <GoalChat
+      initialPrompt={params.q ?? ""}
+      tool={params.tool === "quick" ? "quick" : "plan"}
+    />
+  );
 }

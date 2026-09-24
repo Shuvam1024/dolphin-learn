@@ -12,18 +12,11 @@ test("two-week math plan counts 30-minute days, not 14 times 24 hours", async ({
   await signIn(page, `s38-${Date.now()}@example.com`);
   await page.goto("/app/goals/new");
   await expect(page.locator("[data-hydrated='true']")).toBeVisible();
-
-  await page.getByLabel("Goal title").fill("Fractions");
-  await page.getByLabel("What do you want to learn?").fill("Add fractions with the same denominator.");
-  await page.getByLabel("Subject").selectOption("math");
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByRole("button", { name: "30 × 14" }).click();
-  await expect(page.getByText(/30 minutes × 14 sittings = 7 hours of study/)).toBeVisible();
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByText("Cover more ground").click();
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByRole("button", { name: "Skip placement" }).click();
-  await expect(page.getByText(/30 minutes/).first()).toBeVisible();
+  await page
+    .getByLabel("Message")
+    .fill("Fractions. Add fractions with the same denominator. 30 minutes a day for 14 days.");
+  await page.getByRole("button", { name: "Send" }).click();
+  await expect(page.getByText(/30 minutes a day for 14 days/)).toBeVisible();
   await expect(
     page.getByRole("listitem").filter({ hasText: "A fraction as parts of a whole" }),
   ).toBeVisible();

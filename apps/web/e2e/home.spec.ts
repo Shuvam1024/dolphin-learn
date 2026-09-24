@@ -6,7 +6,7 @@ test("home shows the live session and feasibility, not a streak", async ({ page 
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("heading", { name: "What do you want to learn?" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Create a goal" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start" })).toBeVisible();
   await expect(page.getByRole("radio", { name: "Quick Learn" })).toBeVisible();
 
   const token = (await page.context().cookies()).find(

@@ -10,34 +10,10 @@ async function signIn(page: import("@playwright/test").Page, email: string) {
 
 test("keyboard-only wizard saves a goal and keeps fields on back", async ({ page }) => {
   await signIn(page, `s22-${Date.now()}@example.com`);
-  await page.getByRole("link", { name: "Create a goal" }).click();
-  await expect(page.getByRole("heading", { name: "Create a goal" })).toBeVisible();
+  await page.goto("/app/goals/new");
   await expect(page.locator("[data-hydrated='true']")).toBeVisible();
-
-  await page.getByLabel("What do you want to learn?").fill("I want to bind names to values in Python.");
-  await page.getByLabel("Goal title").fill("Names and values");
-  await page.getByLabel("Subject").selectOption("python");
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await expect(page.getByText("Step 2 of 5")).toBeVisible();
-
-  await page.getByRole("button", { name: "Back" }).click();
-  await expect(page.getByLabel("Goal title")).toHaveValue("Names and values");
-  await expect(page.getByLabel("What do you want to learn?")).toHaveValue(
-    "I want to bind names to values in Python.",
-  );
-  await expect(page.getByLabel("Subject")).toHaveValue("python");
-
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByLabel("Total minutes").fill("120");
-  await page.getByLabel("Preferred sitting length").fill("30");
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await expect(page.getByText("Step 3 of 5")).toBeVisible();
-
-  await page.getByText("Focus one topic").click();
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByRole("button", { name: "Skip placement" }).click();
-  await expect(page.getByText("Step 5 of 5")).toBeVisible();
-  await expect(page.getByText(/Plan uses \d+ of your minutes/)).toBeVisible();
+  await page.getByLabel("Message").fill("Names and values. I want to bind names to values in Python. 120 minutes.");
+  await page.getByRole("button", { name: "Send" }).click();
   await expect(page.getByText("Not in this plan")).toBeVisible();
   await page.getByRole("button", { name: "Accept", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Plan accepted" })).toBeVisible();
@@ -56,7 +32,7 @@ test("keyboard-only wizard saves a goal and keeps fields on back", async ({ page
     time_budget: { mode: string; one_off_minutes: number | null } | null;
   }>;
   const saved = goals.find((goal) => goal.title === "Names and values");
-  expect(saved?.priority).toBe("apply");
+  expect(saved?.priority).toBe("understand");
   expect(saved?.time_budget?.mode).toBe("one_off");
   expect(saved?.time_budget?.one_off_minutes).toBe(120);
 });

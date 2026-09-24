@@ -10,17 +10,16 @@ async function signIn(page: import("@playwright/test").Page, email: string) {
 
 test("general route outline appears and plan accepts", async ({ page }) => {
   await signIn(page, `s85-e2e-${Date.now()}@example.com`);
-  await page.getByRole("link", { name: "Create a goal" }).click();
+  await page.goto("/app/goals/new");
   await expect(page.locator("[data-hydrated='true']")).toBeVisible();
-  await page.getByLabel("What do you want to learn?").fill("Spanish greetings");
-  await page.getByLabel("Goal title").fill("Spanish greetings");
-  await page.getByRole("button", { name: "Something else" }).click();
-  await page.getByLabel("Outcome 1").fill("I can say hello");
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByRole("button", { name: "60 min" }).click();
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByRole("button", { name: "See plan" }).click();
-  await expect(page.getByText("Step 5 of 5")).toBeVisible();
+  await page.getByLabel("Message").fill("Spanish greetings");
+  await page.getByRole("button", { name: "Send" }).click();
+  await expect(page.getByText("What should you be able to do")).toBeVisible();
+  await page.getByLabel("Message").fill("I can say hello");
+  await page.getByRole("button", { name: "Send" }).click();
+  await expect(page.getByText("How much time do you have?")).toBeVisible();
+  await page.getByLabel("Message").fill("60 minutes");
+  await page.getByRole("button", { name: "Send" }).click();
   await page.getByRole("button", { name: "Accept", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Plan accepted" })).toBeVisible();
 });

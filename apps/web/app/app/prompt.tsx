@@ -1,32 +1,22 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 
 import styles from "./home.module.css";
 
 export function Prompt() {
-  const router = useRouter();
   const [tool, setTool] = useState<"quick" | "plan">("quick");
-  const [text, setText] = useState("");
-
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const q = encodeURIComponent(text.trim());
-    router.push(`/app/goals/new?tool=${tool}&q=${q}`);
-  }
 
   return (
-    <form className={styles.composer} onSubmit={onSubmit}>
+    <form className={styles.composer} action="/app/goals/new" method="get">
       <h1 className={styles.promptTitle} id="home-prompt">
         What do you want to learn?
       </h1>
       <textarea
         id="learn-prompt"
+        name="q"
         className={styles.prompt}
         aria-labelledby="home-prompt"
-        value={text}
-        onChange={(event) => setText(event.target.value)}
         rows={3}
         placeholder="A topic, a skill, or the next thing you want to be able to do."
         required
@@ -58,10 +48,7 @@ export function Prompt() {
           Start
         </button>
       </div>
-      <p className={styles.hint}>
-        Quick Learn fits one sitting. Full plan builds a longer path.{" "}
-        <a href="/app/goals/new">Create a goal</a>
-      </p>
+      <p className={styles.hint}>Quick Learn fits one sitting. Full plan builds a longer path.</p>
     </form>
   );
 }

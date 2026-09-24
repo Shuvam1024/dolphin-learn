@@ -14,16 +14,6 @@ test("120-minute python quick learn proves evidence without an AI key", async ({
   await page.getByRole("radio", { name: "Quick Learn" }).check();
   await page.getByRole("button", { name: "Start" }).click();
   await expect(page.locator("[data-hydrated='true']")).toBeVisible();
-
-  await page.getByLabel("Goal title").fill("Quick Learn Python");
-  await page.getByLabel("What do you want to learn?").fill("Names and calls.");
-  await page.getByLabel("Subject").selectOption("python");
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByRole("button", { name: "120 min" }).click();
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByText("Cover more ground").click();
-  await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByRole("button", { name: "Skip placement" }).click();
   await expect(page.getByRole("listitem").filter({ hasText: "Names and values" })).toBeVisible();
   await expect(page.getByRole("listitem").filter({ hasText: "Calling a function" })).toBeVisible();
   await expect(page.getByText("Not in this plan").first()).toBeVisible();
@@ -37,7 +27,7 @@ test("120-minute python quick learn proves evidence without an AI key", async ({
   const headers = { Authorization: `Bearer ${token}` };
   const listed = await page.request.get("http://127.0.0.1:8000/api/v1/goals", { headers });
   const goals = (await listed.json()) as Array<{ id: string; title: string }>;
-  const goal = goals.find((item) => item.title === "Quick Learn Python");
+  const goal = goals.find((item) => item.title === "Names and calls");
   const plan = await page.request.get(`http://127.0.0.1:8000/api/v1/goals/${goal?.id}/plan`, {
     headers,
   });

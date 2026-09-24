@@ -17,5 +17,5 @@ test("health, blocked shell, then signed-in home", async ({ page, request }) => 
   await expect(page.getByRole("heading", { name: "What do you want to learn?" })).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Learn", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Create a goal" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start" })).toBeVisible();
 });
