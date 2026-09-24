@@ -22,8 +22,11 @@ def current_user(
         raise ApiError("unauthorized", "Authentication required", status_code=401)
     claims = decode_access_token(credentials.credentials, db=db)
     email = claims.get("email")
-    return get_or_create_user(
+    user = get_or_create_user(
         db,
         auth_subject=str(claims["sub"]),
         email=email if isinstance(email, str) else None,
     )
+    if user.deleted_at is not None:
+        raise ApiError("unauthorized", "Account deleted", status_code=401)
+    return user

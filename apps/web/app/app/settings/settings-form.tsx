@@ -159,14 +159,38 @@ export function SettingsForm({ initial }: { initial: SettingsProfile }) {
       <div style={{ marginTop: 28 }}>
         <h2 style={{ fontSize: 20, marginBottom: 8 }}>Privacy</h2>
         <p className={styles.lede} style={{ marginBottom: 8 }}>
-          Download and delete arrive in the next account steps. Until then, see the privacy notice.
+          Download everything Dolphin holds about you, or delete your account. Deleted accounts
+          are purged after 30 days.
         </p>
         <p className={styles.meta}>
           <Link href="/privacy">Privacy</Link>
           {" · "}
-          <span>Download my data (soon)</span>
+          <a href="/api/me/export">Download my data</a>
           {" · "}
-          <span>Delete account (soon)</span>
+          <button
+            type="button"
+            className={styles.button}
+            style={{ display: "inline", padding: "6px 12px", marginLeft: 4 }}
+            onClick={() => {
+              if (
+                window.confirm(
+                  'Delete your account? Type will send confirm DELETE. Data is purged after 30 days.',
+                )
+              ) {
+                void fetch("/api/me/delete", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ confirm: "DELETE" }),
+                }).then((response) => {
+                  if (response.redirected || response.ok) {
+                    window.location.href = "/sign-in";
+                  }
+                });
+              }
+            }}
+          >
+            Delete account
+          </button>
         </p>
       </div>
 

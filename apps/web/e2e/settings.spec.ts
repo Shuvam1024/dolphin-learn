@@ -66,3 +66,19 @@ test("settings: persistence, larger font, tutor off hides panel", async ({ page 
   await page.goto(`/app/learn/${sessionId}`);
   await expect(page.getByText("Tutor help")).toHaveCount(0);
 });
+
+test("settings: export download parses as json", async ({ page }) => {
+  const email = `s98-${Date.now()}@example.com`;
+  await signIn(page, email);
+  await page.goto("/app/settings");
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("link", { name: "Download my data" }).click();
+  const download = await downloadPromise;
+  const path = await download.path();
+  expect(path).toBeTruthy();
+  const fs = await import("node:fs/promises");
+  const raw = await fs.readFile(path!, "utf8");
+  const parsed = JSON.parse(raw) as { user?: { email?: string }; goals?: unknown[] };
+  expect(parsed.user?.email).toContain("@");
+  expect(Array.isArray(parsed.goals)).toBeTruthy();
+});
