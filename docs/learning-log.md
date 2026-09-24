@@ -353,3 +353,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 132 passed, 6 skipped (`test_general_route`).
 
 **Push:** `3f79959` is on origin/main
+
+## S82 — Placement API: confirmed skips
+
+**Commit:** `0a63610` — feat(goals): placement diagnostic proposes skips confirmed by the learner
+
+**What:** Placement suggests competencies to skip; nothing is skipped until the learner sends `skip_competency_keys`. Replan clears skips. General route has no placement.
+
+**How:** Diagnostic starts with 3–5 unseen items; `goal_competencies.requirement=skipped`; plan-proposals accept skip keys; replan clears them.
+
+**Why:** The learner decides what to skip — the sample never claims mastery.
+
+**Acceptance:** passed — pytest 134 passed, 6 skipped (`test_placement_skips`).
+
+**Push:** `0a63610` is on origin/main
