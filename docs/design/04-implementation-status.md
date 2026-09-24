@@ -1,8 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S65; free recall with self-report ceiling
-- **Schema/API changes:** Alembic through `0012_evaluation_feedback_json`
+- **Milestone completed:** S01–S66; sitting sized to target minutes
+- **Schema/API changes:** Alembic through `0013_sessions_target_minutes`
+- **Tests run and exact results (S66):**
+  - `alembic upgrade head` → `0013_sessions_target_minutes`
+  - `pytest -q` → 106 passed, 6 skipped (`test_session_sizing`)
 - **Tests run and exact results (S65):**
   - `pytest -q` → 104 passed, 6 skipped (`test_free_recall_ceiling`)
   - content validate ok
@@ -65,8 +68,8 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S65**
-- **Next step:** **S66 — Size the sitting**
+- **Completed steps:** **S01–S66**
+- **Next step:** **S67 — Remaining estimate and a good stopping point**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
 

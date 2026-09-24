@@ -130,3 +130,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `7e69baa` is on origin/main
 
+## S66 — Size the sitting
+
+**Commit:** `5f28ddf` — feat(sessions): target minutes per sitting from the learner
+
+**What:** Before a new sitting, the learner picks how long they have (10–60 or their usual). The session stores that target and sizes the remaining-minutes estimate to it. Resume never asks again.
+
+**How:** Alembic `0013_sessions_target_minutes`; `POST /sessions` accepts `target_minutes` (default preferred, bounds 5–180); SittingChooser at `/app/goals/[goalId]/start`; `_sized_remaining` stops once cumulative low exceeds the target (≥ 1 activity); header shows "About N minutes".
+
+**Why:** Dolphin should adapt to the time the learner actually has right now.
+
+**Acceptance:** passed — pytest 106 passed, 6 skipped (`test_session_sizing`).
+
+**Push:** `5f28ddf` is on origin/main
+
