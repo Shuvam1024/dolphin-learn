@@ -1,8 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S92; Difficulty-aware item selection
+- **Milestone completed:** S01–S93; AI evaluation harness and safety suite
 - **Schema/API changes:** Alembic through `0019_activity_difficulty`
+- **Tests run and exact results (S93):**
+  - `make ai-eval` → green; `docs/evaluations/ai-eval-2026-09-24.md`
+  - `pytest -q` → 170 passed, 6 skipped (`tests/ai_eval`, import-graph + learner_model)
 - **Tests run and exact results (S92):**
   - `alembic upgrade head` → `0019_activity_difficulty`
   - `pytest -q` → 153 passed, 6 skipped (`test_item_selection`)
@@ -268,3 +271,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S90** | `docs: phase 5 learn anything verified; general route and ai drafting in vision, ux, and architecture` | Gate 5 |
 | **S91** | `feat(learner-model): effort calibration from measured active minutes` | EMA effort factors |
 | **S92** | `feat(learner-model): difficulty and history aware item selection` | pick_next; difficulty; selection_reason |
+| **S93** | `test(ai): evaluation harness and safety suite for all prompts` | safety tags; timeout/cap; import-graph |

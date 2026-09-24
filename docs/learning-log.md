@@ -508,3 +508,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `1d249a0` is on origin/main
 
+## S93 — AI evaluation harness and safety suite
+
+**Commit:** `9e1ae7d` — test(ai): evaluation harness and safety suite for all prompts
+
+**What:** Every prompt (tutor + normalize/outline/draft/plan_explain) has scripted cases for leakage, overlong, wrong-language, and injection. Plan/outline reject fabricated lesson names. Gateway timeout and daily-cap are asserted per prompt. Import-graph keeps `ai_gateway` and `learner_model` apart from the referee.
+
+**How:** Expanded `tests/ai_eval/` fixtures and validators; `test_safety_limits.py`; `test_ai_import_graph` covers `learner_model`; `make ai-eval` rewrote `docs/evaluations/ai-eval-2026-09-24.md`.
+
+**Why:** One safety bar for every model call before adaptivity and release.
+
+**Acceptance:** passed — pytest 170 passed, 6 skipped; make ai-eval green; live/scripted pass rates recorded with no known failures.
+
+**Push:** `9e1ae7d` is on origin/main
+
