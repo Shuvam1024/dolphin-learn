@@ -451,3 +451,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 146 passed, 6 skipped (`test_math_software_path`).
 
 **Push:** `a0fbbb2` is on origin/main
+
+## S89 — Content quality in CI and audit
+
+**Commit:** `f9c4cfc` — test(content): enforce content checklist in ci and publish the audit
+
+**What:** Content CI fails on missing review stamps. The audit lists every competency with types, sources, difficulty, and AI-reviewed items.
+
+**How:** `python -m app.content.audit` → `docs/evaluations/content-audit.md`; CI content job validates and rejects unreviewed fixtures.
+
+**Why:** Depth without drift — every graded item stays reviewable.
+
+**Acceptance:** passed — pytest 148 passed, 6 skipped (`test_content_audit`); audit errors 0.
+
+**Push:** `f9c4cfc` is on origin/main
