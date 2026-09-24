@@ -57,6 +57,8 @@ test("two-week math plan counts 30-minute days, not 14 times 24 hours", async ({
   await page.getByRole("button", { name: "Start a session for Fractions" }).click();
   await expect(page.getByText("three equal parts out of four")).toBeVisible();
   await page.getByRole("button", { name: "Next activity" }).click();
+  await expect(page.getByRole("button", { name: "Now you try" })).toBeVisible();
+  await page.getByRole("button", { name: "Now you try" }).click();
   await expect(page.getByText("In 3/4, what does the 4 name?")).toBeVisible();
   await expect(page.getByRole("radio", { name: /equal parts make the whole/ })).toBeVisible();
 });

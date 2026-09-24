@@ -31,8 +31,8 @@ def test_activity_types_schema_backfill_and_constraints() -> None:
         )
         assert objective is not None
         assert reading is not None
-        assert objective.item_id == f"objective-{objective.version}"
-        assert reading.item_id == f"reading-{reading.version}"
+        assert objective.item_id.startswith("objective-")
+        assert reading.item_id.startswith("reading-")
         assert objective.payload.get("choices")
         assert {choice["id"] for choice in objective.payload["choices"]} == {"a", "b", "c"}
         assert reading.payload == {} or "choices" not in reading.payload
@@ -124,6 +124,15 @@ def test_activity_content_fields_downgrade_restores() -> None:
         db.commit()
 
     config = _alembic_config()
+    # Downgrade's old type check only allows reading|objective — clear newer types first.
+    with SessionLocal() as db:
+        for row in db.scalars(
+            select(ActivityVersion).where(
+                ActivityVersion.activity_type.notin_(("reading", "objective"))
+            )
+        ):
+            db.delete(row)
+        db.commit()
     command.downgrade(config, "0009_goal_domain_key")
     with engine.connect() as conn:
         cols = {

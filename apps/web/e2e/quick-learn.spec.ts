@@ -55,6 +55,8 @@ test("120-minute python quick learn proves evidence without an AI key", async ({
   await expect(page.getByText("No countdown")).toBeVisible();
 
   await page.getByRole("button", { name: "Next activity" }).click();
+  await expect(page.getByRole("button", { name: "Now you try" })).toBeVisible();
+  await page.getByRole("button", { name: "Now you try" }).click();
   await expect(page.getByRole("group", { name: "Choose one answer" })).toBeVisible();
   await page.getByRole("radio", { name: /bound to the value 3/ }).check();
   await page.getByRole("button", { name: "Submit answer" }).click();

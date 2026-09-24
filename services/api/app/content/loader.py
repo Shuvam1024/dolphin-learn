@@ -13,6 +13,7 @@ from app.content.schema import (
     ContentItem,
     DomainContent,
     DomainFile,
+    EffortMinutes,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
@@ -55,10 +56,27 @@ def _load_competency(path: Path, body_line_offset: int = 0) -> CompetencyContent
         raise ValueError(f"Missing items file: {items_path}")
     raw_items = yaml.safe_load(items_path.read_text(encoding="utf-8")) or []
     items = [ContentItem.model_validate(row) for row in raw_items]
+    # Markdown ## Worked example becomes a worked_example activity after reading.
+    if worked and not any(item.type == "worked_example" for item in items):
+        reading_index = next(
+            (index for index, item in enumerate(items) if item.type == "reading"),
+            -1,
+        )
+        insert_at = reading_index + 1 if reading_index >= 0 else 0
+        items.insert(
+            insert_at,
+            ContentItem(
+                id="worked-example",
+                type="worked_example",
+                prompt="Study this worked example, then try one yourself.",
+                effort_minutes=EffortMinutes(low=3, high=5),
+            ),
+        )
     line_map = {
         "domain": 2,
         "requires": 3,
         "reading": fm_line_offset + 1,
+        "worked_example": fm_line_offset + 1,
         "items": 1,
     }
     for index, item in enumerate(items, start=1):
@@ -97,3 +115,7 @@ def validate_all(content_root: Path | None = None) -> list[RuleFailure]:
     for domain in load_all(content_root):
         failures.extend(validate_domain(domain))
     return failures
+
+
+def errors_only(failures: list[RuleFailure]) -> list[RuleFailure]:
+    return [item for item in failures if getattr(item, "severity", "error") == "error"]

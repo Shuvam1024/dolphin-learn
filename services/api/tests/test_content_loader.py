@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from app.content.loader import load_all, load_domain, validate_all
+from app.content.loader import errors_only, load_all, load_domain, validate_all
 from app.content.rules import validate_domain
 from app.db import SessionLocal
 from app.modules.learning.models import ActivityVersion, Lesson
@@ -19,7 +19,7 @@ def test_current_content_loads_and_validates() -> None:
     domains = load_all()
     assert {item.domain.key for item in domains} >= {"python", "math", "software"}
     failures = validate_all()
-    assert failures == []
+    assert errors_only(failures) == []
 
 
 @pytest.mark.parametrize(

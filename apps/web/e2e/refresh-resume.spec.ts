@@ -43,6 +43,9 @@ test("refresh resumes the lesson and a repeated submit stays one attempt", async
   await expect(page.getByText("In progress.")).toBeVisible();
 
   await page.getByRole("button", { name: "Next activity" }).click();
+  await expect(page.getByRole("button", { name: "Now you try" })).toBeVisible();
+  await page.getByRole("button", { name: "Now you try" }).click();
+  await expect(page.getByRole("group", { name: "Choose one answer" })).toBeVisible();
   const first = await page.request.post(
     `http://127.0.0.1:8000/api/v1/sessions/${sessionId}/attempts`,
     { headers, data: { idempotency_key: "once", choice: "b" } },

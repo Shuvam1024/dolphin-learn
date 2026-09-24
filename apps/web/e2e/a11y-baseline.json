@@ -1,5 +1,5 @@
 {
-  "recorded_at": "2026-09-24T00:31:11.877Z",
+  "recorded_at": "2026-09-24T00:49:11.687Z",
   "note": "S58 Gate 2 baseline: serious/critical by route. Later gates require zero.",
   "serious_or_critical": [
     {
@@ -91,7 +91,7 @@
       "nodes": 1
     },
     {
-      "route": "/app/goals/fb40e341-bf3c-4845-a059-69d5456148f6",
+      "route": "/app/goals/cad2ceb1-ff35-46e3-a7f1-4916e0351ad2",
       "fixture": "populated",
       "id": "color-contrast",
       "impact": "serious",
@@ -191,7 +191,7 @@
         "nodes": 1
       }
     ],
-    "/app/goals/fb40e341-bf3c-4845-a059-69d5456148f6": [
+    "/app/goals/cad2ceb1-ff35-46e3-a7f1-4916e0351ad2": [
       {
         "fixture": "populated",
         "id": "color-contrast",

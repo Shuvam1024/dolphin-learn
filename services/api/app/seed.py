@@ -7,11 +7,21 @@ from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.content.loader import load_all, validate_all
+from app.content.loader import errors_only, load_all, validate_all
 from app.content.schema import CompetencyContent, ContentItem
 from app.db import SessionLocal
 from app.modules.curriculum.models import EDGE_REQUIRES, Competency, CompetencyEdge, Domain
 from app.modules.learning.models import ActivityVersion, Lesson
+
+ACTIVITY_ORDER = {
+    "reading": 0,
+    "worked_example": 1,
+    "objective": 2,
+    "short_answer": 3,
+    "numeric": 4,
+    "free_recall": 5,
+    "reflection": 6,
+}
 
 
 def _domain(db: Session, key: str, name: str) -> Domain:
@@ -99,11 +109,31 @@ def _upsert_lesson(
         lesson.source = "seed"
 
     if content.worked_example_markdown:
-        # Worked example activity is added from items when present; body lives on payload.
+        # Body for synthesized worked examples lives on the activity payload.
         pass
 
-    for index, item in enumerate(content.items, start=1):
-        version_number = _version_number(item.id, index)
+    ordered = sorted(
+        enumerate(content.items, start=1),
+        key=lambda pair: (
+            ACTIVITY_ORDER.get(pair[1].type, 9),
+            _version_number(pair[1].id, pair[0]),
+        ),
+    )
+    wanted_ids = {item.id for _index, item in ordered}
+    # Clear room in the (lesson_id, version) unique index, including orphans.
+    existing_rows = list(
+        db.scalars(select(ActivityVersion).where(ActivityVersion.lesson_id == lesson.id))
+    )
+    for offset, row in enumerate(existing_rows, start=1):
+        row.version = 20_000 + offset
+    db.flush()
+    for row in existing_rows:
+        if row.item_id not in wanted_ids:
+            db.delete(row)
+    db.flush()
+
+    staged: list[tuple[ActivityVersion, int]] = []
+    for sequence, (_index, item) in enumerate(ordered, start=1):
         found = db.scalar(
             select(ActivityVersion).where(
                 ActivityVersion.lesson_id == lesson.id,
@@ -115,26 +145,25 @@ def _upsert_lesson(
         if item.type == "worked_example" and content.worked_example_markdown:
             payload = {"body_markdown": content.worked_example_markdown}
         if found is None:
-            db.add(
-                ActivityVersion(
-                    lesson_id=lesson.id,
-                    version=version_number,
-                    item_id=item.id,
-                    activity_type=item.type,
-                    prompt=item.prompt,
-                    answer_key=answer_key,
-                    explanation=item.explanation,
-                    misconceptions=item.misconceptions,  # type: ignore[arg-type]
-                    payload=payload,
-                    provisional=False,
-                    source="seed",
-                    reviewed_at=reviewed_at,
-                    effort_minutes_low=item.effort_minutes.low,
-                    effort_minutes_high=item.effort_minutes.high,
-                )
+            found = ActivityVersion(
+                lesson_id=lesson.id,
+                version=30_000 + sequence,
+                item_id=item.id,
+                activity_type=item.type,
+                prompt=item.prompt,
+                answer_key=answer_key,
+                explanation=item.explanation,
+                misconceptions=item.misconceptions,  # type: ignore[arg-type]
+                payload=payload,
+                provisional=False,
+                source="seed",
+                reviewed_at=reviewed_at,
+                effort_minutes_low=item.effort_minutes.low,
+                effort_minutes_high=item.effort_minutes.high,
             )
+            db.add(found)
+            db.flush()
         else:
-            found.version = version_number
             found.activity_type = item.type
             found.prompt = item.prompt
             found.answer_key = answer_key
@@ -146,11 +175,16 @@ def _upsert_lesson(
             found.reviewed_at = reviewed_at
             found.effort_minutes_low = item.effort_minutes.low
             found.effort_minutes_high = item.effort_minutes.high
+        staged.append((found, sequence))
+    db.flush()
+    for found, sequence in staged:
+        found.version = sequence
+        db.flush()
     return lesson
 
 
 def seed(db: Session) -> None:
-    failures = validate_all()
+    failures = errors_only(validate_all())
     if failures:
         details = "; ".join(f"{item.path}:{item.line} {item.rule}" for item in failures[:5])
         raise RuntimeError(f"content validation failed: {details}")

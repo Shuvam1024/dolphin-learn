@@ -14,3 +14,7 @@ lesson_title: Read a failing test
 ## Reading
 
 A failing test is a precise complaint. It names what it expected and what it observed. Before changing production code, read the assertion: which value was wrong, and in what way? Order mismatches, missing fields, and exceptions are different stories. Naming the mismatch in one plain sentence keeps the fix aimed at the behavior the test actually checked. Skipping that sentence often leads to silencing the test without repairing the product. This short note stays concrete and reviewable. This short note stays concrete and reviewable. This short note stays concrete and reviewable. This short note stays concrete and reviewable. This short note stays concrete and reviewable.
+
+## Worked example
+
+Write the smallest failing check first: call the function with a known input and assert the expected output. Run it and watch it fail for the right reason. Only then change production code. The failing test is the specification you are about to satisfy; a green test written after the fact cannot tell you whether you fixed the real bug.

@@ -75,6 +75,15 @@ def save_accepted_version(
     db.add(version)
     db.flush()
     position = 1
+    activity_order = {
+        "reading": 0,
+        "worked_example": 1,
+        "objective": 2,
+        "short_answer": 3,
+        "numeric": 4,
+        "free_recall": 5,
+        "reflection": 6,
+    }
     for item in proposal.included:
         activities = db.execute(
             select(ActivityVersion, Lesson.title)
@@ -83,6 +92,13 @@ def save_accepted_version(
             .where(Competency.key == item.key)
             .order_by(Lesson.key, ActivityVersion.version)
         ).all()
+        activities = sorted(
+            activities,
+            key=lambda row: (
+                activity_order.get(row[0].activity_type, 9),
+                row[0].version,
+            ),
+        )
         for activity, lesson_title in activities:
             title = f"{lesson_title}: {activity.activity_type}"
             db.add(

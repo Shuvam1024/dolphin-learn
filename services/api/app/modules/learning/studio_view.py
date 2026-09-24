@@ -185,12 +185,17 @@ def build_studio(
             if not show_feedback:
                 explanation = ""
                 misconception = ""
+            body_markdown = lesson.body_markdown if lesson is not None else ""
+            if activity.activity_type == "worked_example":
+                payload_body = payload.get("body_markdown") if isinstance(payload, dict) else None
+                if isinstance(payload_body, str) and payload_body.strip():
+                    body_markdown = payload_body
             activity_payload = {
                 "activity_type": activity.activity_type,
                 "item_id": activity.item_id,
                 "title": lesson_title or (plan.title if plan else ""),
                 "prompt_markdown": activity.prompt,
-                "body_markdown": lesson.body_markdown if lesson is not None else "",
+                "body_markdown": body_markdown,
                 "input_kind": INPUT_KIND.get(activity.activity_type, "none"),
                 "choices": choices,
                 "provisional": activity.provisional,

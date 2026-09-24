@@ -114,10 +114,6 @@ export default async function StudioPage({
   }
 
   const paused = session.status === "paused";
-  const showBody =
-    activity.activity_type === "reading" ||
-    activity.activity_type === "worked_example" ||
-    (activity.activity_type === "free_recall" && activity.state.recorded);
   const needsAttempt = session.actions?.primary === "submit" && !activity.state.recorded;
 
   return (
@@ -135,7 +131,11 @@ export default async function StudioPage({
       <ActivityBody
         bodyMarkdown={activity.body_markdown}
         promptMarkdown={activity.prompt_markdown}
-        showBody={showBody}
+        showBody={
+          activity.activity_type === "reading" ||
+          activity.activity_type === "worked_example" ||
+          (activity.activity_type === "free_recall" && activity.state.recorded)
+        }
       />
       {session.activity?.help === "hint" && !activity.state.recorded ? (
         <p>Hint: compare each choice with the note. The letter stays hidden.</p>

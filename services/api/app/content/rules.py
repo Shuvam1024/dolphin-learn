@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from app.content.schema import ContentItem, DomainContent
 
 GRADED_TYPES = frozenset({"objective", "short_answer", "numeric"})
+CHECKED_SUBJECTS = frozenset({"python", "math", "software"})
 
 
 @dataclass(frozen=True)
@@ -15,6 +16,7 @@ class RuleFailure:
     line: int
     rule: str
     message: str
+    severity: str = "error"
 
 
 def _words(text: str) -> int:
@@ -125,6 +127,21 @@ def validate_domain(bundle: DomainContent) -> list[RuleFailure]:
                     f"Need ≥ 3 graded items (found {len(graded)})",
                 )
             )
+
+        if bundle.domain.key in CHECKED_SUBJECTS:
+            has_worked = bool(competency.worked_example_markdown) or any(
+                item.type == "worked_example" for item in competency.items
+            )
+            if not has_worked:
+                failures.append(
+                    RuleFailure(
+                        path,
+                        competency.line_map.get("worked_example", 1),
+                        "worked_example_missing",
+                        "Checked subject competency should include ## Worked example",
+                        severity="warning",
+                    )
+                )
 
         seen_ids: set[str] = set()
         for item in competency.items:

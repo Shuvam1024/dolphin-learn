@@ -14,7 +14,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## Next incomplete step
 
-**S61 — Worked examples** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
+**S62 — Unseen item pools** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
 
 ---
 
@@ -59,4 +59,18 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 84 passed, 6 skipped; studio-v2 e2e extended; content ok.
 
 **Push:** `be1d702` is on origin/main
+
+## S61 — Worked examples
+
+**Commit:** `a94132e` — feat(content): worked example activity between reading and practice
+
+**What:** Every checked-subject lesson now has a worked example between the reading and the first question. Studio labels the primary "Now you try"; continuing it writes no evidence.
+
+**How:** Loader turns `## Worked example` into a `worked_example` activity (effort 3–5) after reading; seed orders by type; accept keeps that order; validator warns when a checked subject lacks one.
+
+**Why:** Seeing one solved case before the first attempt is basic teaching structure.
+
+**Acceptance:** passed — pytest 88 passed, 6 skipped; smoke 25; content ok.
+
+**Push:** `a94132e` is on origin/main
 

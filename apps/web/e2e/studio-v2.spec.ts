@@ -66,6 +66,8 @@ test("studio v2 renders markdown code, one primary, pause, and hides tutor when 
   await page.getByRole("button", { name: "Resume" }).click();
 
   await page.getByRole("button", { name: "Next activity" }).click();
+  await expect(page.getByRole("button", { name: "Now you try" })).toBeVisible();
+  await page.getByRole("button", { name: "Now you try" }).click();
   await expect(page.getByRole("group", { name: "Choose one answer" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Submit answer" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Next activity" })).toHaveCount(0);
@@ -86,6 +88,20 @@ test("studio v2 renders markdown code, one primary, pause, and hides tutor when 
   expect(serious).toEqual([]);
 
   void primaries;
+});
+
+test("reading then worked example then question with Now you try", async ({ page }) => {
+  await signIn(page, `s61-${Date.now()}@example.com`);
+  const { sessionId } = await startPythonSession(page);
+  await page.goto(`/app/learn/${sessionId}`);
+  await expect(page.getByText(/Activity 1 of /)).toBeVisible();
+  await expect(page.locator("code").filter({ hasText: "n = 3" })).toBeVisible();
+  await page.getByRole("button", { name: "Next activity" }).click();
+  await expect(page.getByRole("button", { name: "Now you try" })).toBeVisible();
+  await expect(page.getByText(/Start with|rebind|binds/i)).toBeVisible();
+  await page.getByRole("button", { name: "Now you try" }).click();
+  await expect(page.getByRole("group", { name: "Choose one answer" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Submit answer" })).toBeVisible();
 });
 
 test("wrong choice shows misconception note; solution then answer offers a fresh question", async ({
