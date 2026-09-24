@@ -28,7 +28,7 @@ dolphin-learn/
 ├── services/api/       # FastAPI modular monolith
 ├── packages/contracts/ # Shared OpenAPI / DTO contracts
 ├── infra/              # Infra helpers
-├── docs/               # Design SoT + build tracker
+├── docs/               # Design SoT (`docs/design/`) + pointers and demo script
 ├── docker-compose.yml  # Local Postgres (S03)
 ├── .env.example        # Named placeholders only — no secrets
 └── AGENTS.md           # Maintainer pointers
