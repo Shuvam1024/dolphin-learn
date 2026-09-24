@@ -1,8 +1,10 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S97; Managed auth for production
-- **Schema/API changes:** Alembic through `0022_auth_revocations`
+- **Milestone completed:** S01–S99; Export and delete account
+- **Schema/API changes:** Alembic through `0023_users_deleted_at`
+- **Tests run and exact results (S98–S99):**
+  - `pytest tests/test_export.py tests/test_delete_account.py` → 4 passed
 - **Tests run and exact results (S97):**
   - `pytest -q` → 181 passed, 6 skipped (`test_auth_production`)
 - **Tests run and exact results (S96):**
@@ -289,3 +291,5 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S95** | `docs: phase 6 learner model verified; adaptivity rules and dataset in architecture` | Gate 6 |
 | **S96** | `feat(settings): preferences page wired to the profile api` | sitting; a11y; tutor toggle |
 | **S97** | `feat(auth): managed provider sign-in for production with dev token gated` | JWKS; revoke; callback |
+| **S98** | `feat(privacy): export my data as json` | GET /me/export; rate limit |
+| **S99** | `feat(privacy): delete account with confirmation and retention disclosure` | deleted_at; purge |

@@ -578,3 +578,31 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `8d7b2d9` is on origin/main
 
+## S98 — Export my data
+
+**Commit:** `78f85f7` — feat(privacy): export my data as json
+
+**What:** Learners can download a JSON export of profile, goals, owned content, AI call metadata (no prompts), effort factors, attempts, and evidence. Rate limit 3/hour.
+
+**How:** GET /me/export; Settings Download; /privacy documents it.
+
+**Why:** People should see and take what Dolphin holds about them.
+
+**Acceptance:** passed — test_export two-user isolation and rate limit.
+
+**Push:** `78f85f7` is on origin/main
+
+## S99 — Delete my account
+
+**Commit:** `4e4872c` — feat(privacy): delete account with confirmation and retention disclosure
+
+**What:** DELETE /me with confirm DELETE tombstones the account, revokes the session, and schedules purge after 30 days. AI audit rows are anonymized on purge.
+
+**How:** users.deleted_at; app.jobs.purge; Settings delete control; /privacy states the window.
+
+**Why:** Leaving must be possible without a support ticket.
+
+**Acceptance:** passed — test_delete_account.
+
+**Push:** `4e4872c` is on origin/main
+
