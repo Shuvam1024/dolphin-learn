@@ -1,8 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S70; Phase 3 Gate 3 (learning session) verified
-- **Schema/API changes:** Alembic through `0013_sessions_target_minutes`
+- **Milestone completed:** S01–S71; priority shapes the plan
+- **Schema/API changes:** Alembic through `0014_goal_priority`
+- **Tests run and exact results (S71):**
+  - `alembic upgrade head` → `0014_goal_priority`
+  - `pytest -q` → 116 passed, 6 skipped (`test_priority_planner`)
 - **Tests run and exact results (S70 Gate 3):**
   - `AI_PROVIDER=` pytest → 112 passed, 6 skipped
   - `AI_PROVIDER=fake` pytest → 112 passed, 6 skipped
@@ -81,8 +84,8 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S70**
-- **Next step:** **S71 — Priority that shapes the plan**
+- **Completed steps:** **S01–S71**
+- **Next step:** **S72 — Home v2**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
 
@@ -99,6 +102,7 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | 1D | Honest demo content (S47–S50) | Done |
 | 2 | Foundations (S51–S58) | Done |
 | 3 | The learning session (S59–S70) | Done (Gate 3) |
+| 4 | Organized / adaptive (S71–S80) | In progress (next: S72) |
 | Later | Phases 4–7 per first-ship plan | Later |
 
 ---
@@ -183,3 +187,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S68** | `feat(sessions): summary v2 with what you showed, what to watch, and what is next` | showed/practiced/self_reported; next_step; no celebration |
 | **S69** | `test(ai): tutor prompt evaluation fixtures and regression suite` | 20+ cases/prompt; make ai-eval; recorded report |
 | **S70** | `docs: phase 3 learning session verified; studio, tutor, and activity types in ux spec` | Gate 3; UX + architecture + demo updated |
+| **S71** | `feat(plan): priority enum shapes breadth, depth, and review reserve` | understand/apply/make_it_stick; 0014; rationale labels |

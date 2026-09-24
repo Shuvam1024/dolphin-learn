@@ -200,3 +200,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `9dabf8f` is on origin/main
 
+## S71 — Priority that shapes the plan
+
+**Commit:** `349a187` — feat(plan): priority enum shapes breadth, depth, and review reserve
+
+**What:** Goals store a focus priority. Understand packs by low effort (breadth). Apply packs by high effort (deeper practice). Make it stick keeps about one fifth of minutes for review.
+
+**How:** Alembic `0014_goal_priority`; `propose_plan(..., priority)`; POST/PATCH and plan-proposals accept priority; rationale uses plain labels, never raw enums.
+
+**Why:** The same minutes should mean different plans when the learner wants breadth, depth, or stickiness.
+
+**Acceptance:** passed — pytest 116 passed, 6 skipped (`test_priority_planner`).
+
+**Push:** `349a187` is on origin/main
+
