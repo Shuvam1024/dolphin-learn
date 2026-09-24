@@ -135,6 +135,7 @@ def test_due_independent_review_sets_retained() -> None:
         {
             "competency_key": "python.names",
             "competency_name": "Names and values",
+            "facet": "retained",
             "status_facet": "retained",
             "facet_label": "Remembered later",
         }

@@ -38,12 +38,12 @@ test("home shows the live session and feasibility, not a streak", async ({ page 
   const sessionId = (await started.json()).id as string;
 
   await page.goto("/app");
-  await expect(page.getByRole("heading", { name: "What now?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Resume your session" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Resume your session" })).toHaveAttribute(
     "href",
     `/app/learn/${sessionId}`,
   );
-  await expect(page.getByText("Usable minutes: 120")).toBeVisible();
+  await expect(page.getByText(/120 minutes left|of 120 minutes/i)).toBeVisible();
   await expect(page.getByText("% mastered")).toHaveCount(0);
   await expect(page.getByText("day streak")).toHaveCount(0);
 });

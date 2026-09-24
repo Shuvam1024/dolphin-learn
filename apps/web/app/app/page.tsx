@@ -11,6 +11,8 @@ import styles from "../auth.module.css";
 type NextAction = {
   kind: string;
   title: string;
+  subtitle?: string;
+  minutes_estimate?: number;
   href: string;
   goal_id: string;
 };
@@ -20,37 +22,47 @@ type HomeSnapshot = {
   goals: {
     id: string;
     title: string;
-    feasibility_note: string;
+    subject_name: string;
+    next_lesson_title: string;
+    remaining_minutes: number;
     usable_minutes: number;
     studied_minutes: number;
+    status: string;
   }[];
-  due_reviews: { competency_key: string; competency_name: string; reason: string }[];
+  due_reviews: {
+    count: number;
+    minutes_estimate: number;
+    first_lesson_title: string;
+  };
   recent_evidence: {
     competency_key: string;
     competency_name: string;
-    status_facet: string;
     facet_label: string;
   }[];
   quick_learn: { href: string; label: string };
 };
 
-async function loadHome(): Promise<HomeSnapshot> {
+async function loadHome(): Promise<HomeSnapshot | { error: true }> {
   const token = (await cookies()).get(ACCESS_COOKIE)?.value;
   if (!token) {
     redirect("/sign-in");
   }
-  const response = await fetch(`${apiBaseUrl()}/api/v1/home`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
-  if (!response.ok) {
-    redirect("/sign-in");
+  try {
+    const response = await fetch(`${apiBaseUrl()}/api/v1/home`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return { error: true };
+    }
+    return (await response.json()) as HomeSnapshot;
+  } catch {
+    return { error: true };
   }
-  return (await response.json()) as HomeSnapshot;
 }
 
 export default async function AppHomePage() {
-  const me = await loadMe();
+  const [me, homeOrError] = await Promise.all([loadMe(), loadHome()]);
   const acknowledged = Boolean(me.profile.adult_acknowledged_at);
 
   if (!acknowledged) {
@@ -77,8 +89,24 @@ export default async function AppHomePage() {
     );
   }
 
-  const home = await loadHome();
+  if ("error" in homeOrError) {
+    return (
+      <main className={styles.shell}>
+        <section className={styles.card}>
+          <p className={styles.kicker}>Home</p>
+          <h1 className={styles.title}>Something went wrong</h1>
+          <p className={styles.lede}>Home could not load. Try again.</p>
+          <p className={styles.meta}>
+            <Link href="/app">Retry</Link>
+          </p>
+        </section>
+      </main>
+    );
+  }
+
+  const home = homeOrError;
   const empty = home.goals.length === 0;
+  const primaryHref = home.next_action.href;
 
   return (
     <main className={styles.shell}>
@@ -97,11 +125,16 @@ export default async function AppHomePage() {
           </>
         ) : (
           <>
-            <h1 className={styles.title}>What now?</h1>
-            <p className={styles.lede}>{home.next_action.title}</p>
-            {home.next_action.href ? (
+            <h1 className={styles.title}>{home.next_action.title}</h1>
+            {home.next_action.subtitle ? (
+              <p className={styles.lede}>{home.next_action.subtitle}</p>
+            ) : null}
+            {home.next_action.minutes_estimate ? (
+              <p className={styles.meta}>About {home.next_action.minutes_estimate} minutes</p>
+            ) : null}
+            {primaryHref ? (
               <p className={styles.meta}>
-                <Link href={home.next_action.href}>{home.next_action.title}</Link>
+                <Link href={primaryHref}>{home.next_action.title}</Link>
               </p>
             ) : (
               <form action="/api/sessions" method="post">
@@ -115,24 +148,30 @@ export default async function AppHomePage() {
             <ul>
               {home.goals.map((goal) => (
                 <li key={goal.id}>
-                  <Link href={`/app/goals/${goal.id}`}>{goal.title}</Link>. Usable minutes:{" "}
-                  {goal.usable_minutes}. Studied: {goal.studied_minutes}. {goal.feasibility_note}
+                  <Link href={`/app/goals/${goal.id}`}>{goal.title}</Link>
+                  {" · "}
+                  {goal.subject_name}
+                  {goal.next_lesson_title ? ` · next: ${goal.next_lesson_title}` : ""}
+                  {` · ${goal.remaining_minutes} of ${goal.usable_minutes} minutes left`}
+                  {` · studied ${goal.studied_minutes}`}
                 </li>
               ))}
             </ul>
             <h2 className={styles.meta}>Due reviews</h2>
-            {home.due_reviews.length === 0 ? (
+            {home.due_reviews.count === 0 ? (
               <p className={styles.meta}>Nothing is due.</p>
             ) : (
-              <ul>
-                {home.due_reviews.map((item) => (
-                  <li key={item.competency_key}>
-                    {item.competency_name}. {item.reason}
-                  </li>
-                ))}
-              </ul>
+              <p className={styles.meta}>
+                {home.due_reviews.count} due
+                {home.due_reviews.first_lesson_title
+                  ? ` · start with ${home.due_reviews.first_lesson_title}`
+                  : ""}
+                {home.due_reviews.minutes_estimate
+                  ? ` (about ${home.due_reviews.minutes_estimate} minutes)`
+                  : ""}
+              </p>
             )}
-            <h2 className={styles.meta}>Independent evidence</h2>
+            <h2 className={styles.meta}>Recent evidence</h2>
             {home.recent_evidence.length === 0 ? (
               <p className={styles.meta}>No independent evidence yet.</p>
             ) : (
@@ -149,11 +188,6 @@ export default async function AppHomePage() {
         <p className={styles.meta}>
           <Link href={home.quick_learn.href}>{home.quick_learn.label}</Link>
         </p>
-        <form action="/api/session/logout" method="post">
-          <button className={styles.button} type="submit">
-            Log out
-          </button>
-        </form>
       </section>
     </main>
   );
