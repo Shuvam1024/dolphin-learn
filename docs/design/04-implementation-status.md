@@ -1,7 +1,10 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S99; Export and delete account
+- **Tests run and exact results (S103):**
+  - `make release-suite` AI off → 21 passed, 1 skipped; AI fake → 22 passed
+  - pytest → 189 passed, 6 skipped
+- **Milestone completed:** S01–S103; Golden release suite
 - **Schema/API changes:** Alembic through `0023_users_deleted_at`
 - **Tests run and exact results (S98–S99):**
   - `pytest tests/test_export.py tests/test_delete_account.py` → 4 passed
@@ -293,3 +296,7 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S97** | `feat(auth): managed provider sign-in for production with dev token gated` | JWKS; revoke; callback |
 | **S98** | `feat(privacy): export my data as json` | GET /me/export; rate limit |
 | **S99** | `feat(privacy): delete account with confirmation and retention disclosure` | deleted_at; purge |
+| **S100** | `feat(security): csp, headers, rate limits, and error pages` | CSP; 429; error pages |
+| **S101** | `chore(deploy): dockerfiles, prod compose, and runbook with migrations on release` | compose.prod; RUNBOOK |
+| **S102** | `feat(observability): structured logs, ai metrics, and readiness` | /metrics; /ready |
+| **S103** | `test(e2e): golden release suite` | release config; CI matrix |

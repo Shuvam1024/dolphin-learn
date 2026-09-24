@@ -606,3 +606,59 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `4e4872c` is on origin/main
 
+## S100 — Edge hardening
+
+**Commit:** `0945acc` — feat(security): csp, headers, rate limits, and error pages
+
+**What:** CSP with nonce, security headers, API rate limits, honest error and not-found pages.
+
+**How:** Next middleware; rate_limit on sensitive routes; error.tsx / not-found.tsx; security-audit note.
+
+**Why:** Strangers need a hardened edge before first ship.
+
+**Acceptance:** passed — test_rate_limits; e2e/security.spec.ts.
+
+**Push:** `0945acc` is on origin/main
+
+## S101 — Containers and runbook
+
+**Commit:** `c3f44e2` — chore(deploy): dockerfiles, prod compose, and runbook with migrations on release
+
+**What:** API and web Dockerfiles, prod compose with migrate one-shot, runbook for env backup rollback and purge.
+
+**How:** infra/compose.prod.yml; infra/RUNBOOK.md; Next standalone output.
+
+**Why:** First ship needs a one-command deploy path.
+
+**Acceptance:** passed — compose and runbook present; /ready used for health after migrate.
+
+**Push:** `c3f44e2` is on origin/main
+
+## S102 — Observability
+
+**Commit:** `6cf2f52` — feat(observability): structured logs, ai metrics, and readiness
+
+**What:** JSON request logs, AI metrics at /metrics, /ready checks DB, AI usage CLI.
+
+**How:** observability middleware; metrics basic auth; test_observability.
+
+**Why:** Operators need cost latency and readiness signals.
+
+**Acceptance:** passed — test_observability.
+
+**Push:** `6cf2f52` is on origin/main
+
+## S103 — Golden release suite
+
+**Commit:** 7832c1f — test(e2e): golden release suite
+
+**What:** Curated Playwright release suite (E2E catalog) runs AI off and FakeProvider; CI job release-suite; wizard and Studio e2e aligned to v2.
+
+**How:** playwright.release.config.ts; make release-suite; e2e/release/; CI matrix off/fake.
+
+**Why:** First ship needs one golden path that stays green in both tutor modes.
+
+**Acceptance:** passed — AI off 21 passed 1 skipped; AI fake 22 passed; flake list empty.
+
+**Push:** 7832c1f is on origin/main
+
