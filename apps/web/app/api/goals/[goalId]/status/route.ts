@@ -1,5 +1,4 @@
-import { NextResponse } from "next/server";
-
+import { redirectToPath } from "@/lib/session";
 import { proxyApi } from "@/lib/upstream";
 
 export async function POST(
@@ -17,5 +16,5 @@ export async function POST(
   if (result.status >= 400) {
     return result;
   }
-  return NextResponse.redirect(new URL("/app/learn", request.url), 303);
+  return redirectToPath("/app/learn");
 }

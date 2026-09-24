@@ -43,7 +43,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     <div className={styles.frame}>
       <PrefsBootstrap largerText={a11y.largerText} reducedMotion={a11y.reducedMotion} />
       <Nav />
-      {children}
+      <div className={styles.main}>{children}</div>
     </div>
   );
 }

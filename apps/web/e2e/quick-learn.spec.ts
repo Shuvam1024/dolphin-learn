@@ -4,14 +4,15 @@ async function signIn(page: Page, email: string) {
   await page.goto("/sign-in");
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("button", { name: "I am 18 or older and I understand" }).click();
-  await expect(page.getByRole("heading", { name: "You are in" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "What do you want to learn?" })).toBeVisible();
 }
 
 test("120-minute python quick learn proves evidence without an AI key", async ({ page }) => {
   expect(process.env.OPENAI_API_KEY ?? "").toBe("");
   await signIn(page, `s37-${Date.now()}@example.com`);
-  await page.getByRole("link", { name: "Quick Learn" }).click();
+  await page.getByLabel("What do you want to learn?").fill("Names and calls.");
+  await page.getByRole("radio", { name: "Quick Learn" }).check();
+  await page.getByRole("button", { name: "Start" }).click();
   await expect(page.locator("[data-hydrated='true']")).toBeVisible();
 
   await page.getByLabel("Goal title").fill("Quick Learn Python");

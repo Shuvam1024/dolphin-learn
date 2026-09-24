@@ -68,7 +68,7 @@ Within Session Studio, use a contextual workspace — do not bounce the learner 
 
 ### Home
 
-A flat desk. The next action is the page heading and the only primary link, with its subtitle and sitting minutes beside it, plus one line for minutes left across goals. Goals are course rows (subject, next lesson, minutes left) separated by hairlines — no meters. Reviews and recent evidence are quiet lines under that. Empty-state heading is “You are in”, then Create a goal and Quick Learn. Log out lives under More. **No** streak counters, leaderboards, mastery percents, or punitive missed-day shame.
+Home is a prompt: “What do you want to learn?”, with Quick Learn and Full plan as tools inside it, then Start. Goals already underway sit below as a pick-up link and course rows (next lesson, minutes left). Reviews and recent evidence are quiet lines. There is no age gate. Log out lives under More. **No** streak counters, leaderboards, mastery percents, or punitive missed-day shame.
 
 ### Goal wizard
 

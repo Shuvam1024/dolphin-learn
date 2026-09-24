@@ -13,7 +13,7 @@ function securityHeaders(response: NextResponse, nonce: string) {
     "connect-src 'self' http://127.0.0.1:8000 http://localhost:8000",
     "frame-ancestors 'none'",
     "base-uri 'self'",
-    "form-action 'self'",
+    "form-action 'self' http://127.0.0.1:3000 http://localhost:3000",
   ].join("; ");
   response.headers.set("Content-Security-Policy", csp);
   response.headers.set("X-Content-Type-Options", "nosniff");

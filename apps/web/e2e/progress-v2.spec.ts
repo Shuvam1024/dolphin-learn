@@ -5,8 +5,7 @@ test("progress v2 groups evidence by goal without percents", async ({ page }) =>
   await page.goto("/sign-in");
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("button", { name: "I am 18 or older and I understand" }).click();
-  await expect(page.getByRole("heading", { name: "You are in" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "What do you want to learn?" })).toBeVisible();
 
   await page.goto("/app/progress");
   await expect(page.getByRole("heading", { name: "No evidence yet" })).toBeVisible();

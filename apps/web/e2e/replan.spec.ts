@@ -7,8 +7,7 @@ test("update plan previews then accepts the next version after a budget change",
   await page.goto("/sign-in");
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("button", { name: "I am 18 or older and I understand" }).click();
-  await expect(page.getByRole("heading", { name: "You are in" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "What do you want to learn?" })).toBeVisible();
 
   const token = (await page.context().cookies()).find(
     (cookie) => cookie.name === "dolphin_access_token",

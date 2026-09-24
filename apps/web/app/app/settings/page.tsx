@@ -1,7 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { loadMe } from "@/lib/me";
 import { ACCESS_COOKIE, apiBaseUrl } from "@/lib/session";
 
 import styles from "../../auth.module.css";
@@ -34,10 +33,6 @@ async function loadProfile(): Promise<SettingsProfile> {
 }
 
 export default async function SettingsPage() {
-  const me = await loadMe();
-  if (!me.profile.adult_acknowledged_at) {
-    redirect("/app");
-  }
   const profile = await loadProfile();
   return (
     <main className={styles.shell}>

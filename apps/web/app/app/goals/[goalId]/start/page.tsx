@@ -1,7 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { loadMe } from "@/lib/me";
 import { ACCESS_COOKIE, apiBaseUrl } from "@/lib/session";
 
 import styles from "../../../../auth.module.css";
@@ -36,10 +35,6 @@ export default async function SittingChooserPage({
 }: {
   params: Promise<{ goalId: string }>;
 }) {
-  const me = await loadMe();
-  if (!me.profile.adult_acknowledged_at) {
-    redirect("/app");
-  }
   const { goalId } = await params;
   const { title, usual } = await loadGoalSitting(goalId);
   const choices = [10, 15, 30, 45, 60];

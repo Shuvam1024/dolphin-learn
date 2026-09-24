@@ -4,8 +4,7 @@ async function signIn(page: Page, email: string) {
   await page.goto("/sign-in");
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("button", { name: "I am 18 or older and I understand" }).click();
-  await expect(page.getByRole("heading", { name: "You are in" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "What do you want to learn?" })).toBeVisible();
 }
 
 test("two-week math plan counts 30-minute days, not 14 times 24 hours", async ({ page }) => {

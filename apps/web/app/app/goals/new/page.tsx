@@ -1,14 +1,10 @@
-import { redirect } from "next/navigation";
-
-import { loadMe } from "@/lib/me";
-
 import { GoalWizard } from "./wizard";
 
-export default async function NewGoalPage() {
-  const me = await loadMe();
-  if (!me.profile.adult_acknowledged_at) {
-    redirect("/app");
-  }
-
-  return <GoalWizard />;
+export default async function NewGoalPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; tool?: string }>;
+}) {
+  const params = await searchParams;
+  return <GoalWizard initialPrompt={params.q ?? ""} tool={params.tool === "quick" ? "quick" : "plan"} />;
 }

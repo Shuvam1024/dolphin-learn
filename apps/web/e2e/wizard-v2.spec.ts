@@ -5,8 +5,7 @@ async function signIn(page: import("@playwright/test").Page, email: string) {
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL(/\/app$/);
-  await page.getByRole("button", { name: "I am 18 or older and I understand" }).click();
-  await expect(page.getByRole("heading", { name: "You are in" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "What do you want to learn?" })).toBeVisible();
 }
 
 test("wizard v2 keyboard python path with 30x14 hours", async ({ page }) => {
@@ -42,6 +41,7 @@ test("wizard v2 keyboard python path with 30x14 hours", async ({ page }) => {
 test("wizard v2 general route to accept", async ({ page }) => {
   await signIn(page, `s84-gen-${Date.now()}@example.com`);
   await page.getByRole("link", { name: "Create a goal" }).click();
+  await expect(page.locator("[data-hydrated='true']")).toBeVisible();
   await page.getByLabel("What do you want to learn?").fill("Spanish greetings for travel.");
   await page.getByLabel("Goal title").fill("Spanish greetings");
   await page.getByRole("button", { name: "Something else" }).click();
@@ -59,6 +59,7 @@ test("wizard v2 general route to accept", async ({ page }) => {
 test("wizard v2 reload keeps draft", async ({ page }) => {
   await signIn(page, `s84-draft-${Date.now()}@example.com`);
   await page.getByRole("link", { name: "Create a goal" }).click();
+  await expect(page.locator("[data-hydrated='true']")).toBeVisible();
   await page.getByLabel("What do you want to learn?").fill("Keep this draft text.");
   await page.getByLabel("Goal title").fill("Draft goal");
   await page.getByLabel("Subject").selectOption("python");

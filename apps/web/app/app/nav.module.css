@@ -5,24 +5,31 @@
 
 @media (min-width: 768px) {
   .frame {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
     padding-bottom: 0;
   }
 }
 
-.bar {
+.main {
+  min-width: 0;
+}
+
+.sidebar {
   display: none;
-  align-items: center;
-  gap: 4px 8px;
-  height: 56px;
-  padding: 0 28px;
-  color: var(--color-ink);
-  background: var(--color-foam);
-  border-bottom: 1px solid rgba(11, 31, 42, 0.08);
 }
 
 @media (min-width: 768px) {
-  .bar {
+  .sidebar {
     display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    padding: 20px 14px 16px;
+    border-right: 1px solid rgba(11, 31, 42, 0.08);
+    background: var(--color-foam);
   }
 }
 
@@ -30,13 +37,14 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 20px;
-  margin-right: 8px;
+  letter-spacing: -0.03em;
+  padding: 6px 10px 14px;
 }
 
 .primary {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px 14px;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .link,
@@ -44,23 +52,21 @@
   color: var(--color-mist);
   font-weight: 600;
   font-size: 14px;
-  min-height: 44px;
-  min-width: 44px;
-  display: inline-flex;
+  min-height: 40px;
+  display: flex;
   align-items: center;
-  padding: 10px 8px;
-  border-bottom: 2px solid transparent;
+  padding: 8px 10px;
+  border-radius: 8px;
 }
 
-.link[aria-current="page"] {
+.link[aria-current="page"],
+.more[aria-current="page"] {
   color: var(--color-ink);
-  border-bottom-color: var(--color-seafoam);
+  background: rgba(11, 31, 42, 0.05);
 }
 
 .more {
-  margin-left: auto;
-  color: var(--color-mist);
-  font-weight: 600;
+  margin-top: auto;
 }
 
 .tabs {
@@ -70,9 +76,8 @@
   bottom: 0;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 0;
   padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
-  background: var(--color-foam-elevated);
+  background: var(--color-foam);
   border-top: 1px solid rgba(11, 31, 42, 0.08);
   z-index: 40;
 }
@@ -90,7 +95,7 @@
   min-height: 44px;
   padding: 8px 4px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-mist);
   text-align: center;
 }

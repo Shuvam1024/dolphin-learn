@@ -21,7 +21,7 @@ test("landing, sign-in, and help have no placeholder and axe clean", async ({ pa
 
   await page.getByLabel("Email").fill(`s74-shell-${Date.now()}@example.com`);
   await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("button", { name: "I am 18 or older and I understand" }).click();
+  await expect(page.getByRole("heading", { name: "What do you want to learn?" })).toBeVisible();
 
   await page.goto("/app/help");
   await expect(page.getByRole("heading", { name: /How Dolphin talks/i })).toBeVisible();

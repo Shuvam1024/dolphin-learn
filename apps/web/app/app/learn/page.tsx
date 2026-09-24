@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { loadMe } from "@/lib/me";
 import { ACCESS_COOKIE, apiBaseUrl } from "@/lib/session";
 
 import styles from "../../auth.module.css";
@@ -32,20 +31,12 @@ async function loadGoals(): Promise<GoalCard[]> {
   return (await response.json()) as GoalCard[];
 }
 
-function Section({
-  title,
-  goals,
-  open,
-}: {
-  title: string;
-  goals: GoalCard[];
-  open?: boolean;
-}) {
+function Section({ title, goals }: { title: string; goals: GoalCard[] }) {
   if (goals.length === 0) {
     return null;
   }
   return (
-    <details open={open}>
+    <details open>
       <summary className={styles.meta}>
         {title} ({goals.length})
       </summary>
@@ -101,10 +92,6 @@ function Section({
 }
 
 export default async function LearnPage() {
-  const me = await loadMe();
-  if (!me.profile.adult_acknowledged_at) {
-    redirect("/app");
-  }
   const goals = await loadGoals();
   const active = goals.filter((goal) => goal.status === "active");
   const paused = goals.filter((goal) => goal.status === "paused");
@@ -126,7 +113,7 @@ export default async function LearnPage() {
           </>
         ) : (
           <>
-            <Section title="Active" goals={active} open />
+            <Section title="Active" goals={active} />
             <Section title="Paused" goals={paused} />
             <Section title="Archived" goals={archived} />
             <p className={styles.meta}>

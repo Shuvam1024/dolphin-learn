@@ -6,12 +6,9 @@
 }
 
 .hero {
-  width: min(880px, 100%);
-  background: var(--color-foam-elevated);
+  width: min(720px, 100%);
   color: var(--color-ink);
-  border-radius: 24px;
-  padding: 48px 36px 40px;
-  box-shadow: 0 18px 50px rgba(11, 31, 42, 0.06);
+  padding: 24px 8px 8px;
 }
 
 .kicker {

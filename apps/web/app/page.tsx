@@ -21,11 +21,9 @@ export default function Home() {
   return (
     <main className={styles.shell}>
       <section className={styles.hero}>
-        <p className={styles.kicker}>Dolphin</p>
-        <h1 className={styles.title}>Your learning home.</h1>
+        <h1 className={styles.title}>Dolphin</h1>
         <p className={styles.lede}>
-          One place to start a sitting, pick it up later, and keep an honest record of what you
-          can do.
+          Learn anything. One prompt to start, then a sitting you can pick up later.
         </p>
         <div className={styles.actions}>
           <ButtonLink href="/sign-in">Sign in</ButtonLink>

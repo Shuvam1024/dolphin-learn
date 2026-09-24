@@ -137,7 +137,13 @@ function loadDraft(): Draft | null {
   }
 }
 
-export function GoalWizard() {
+export function GoalWizard({
+  initialPrompt = "",
+  tool = "plan",
+}: {
+  initialPrompt?: string;
+  tool?: "quick" | "plan";
+}) {
   const [step, setStep] = useState<Step>(1);
   const [learnText, setLearnText] = useState("");
   const [title, setTitle] = useState("");
@@ -164,7 +170,7 @@ export function GoalWizard() {
 
   useEffect(() => {
     const draft = loadDraft();
-    if (draft) {
+    if (draft && !initialPrompt) {
       setStep(draft.step);
       setLearnText(draft.learnText);
       setTitle(draft.title);
@@ -180,9 +186,16 @@ export function GoalWizard() {
       setSkipKeys(draft.skipKeys);
       setSuggestedSkips(draft.suggestedSkips);
       setAiSuggested(draft.aiSuggested);
+    } else if (initialPrompt) {
+      setLearnText(initialPrompt);
+      if (tool === "quick") {
+        setMode("one_off");
+        setOneOffMinutes("120");
+        setPreferred("30");
+      }
     }
     setReady(true);
-  }, []);
+  }, [initialPrompt, tool]);
 
   useEffect(() => {
     if (!ready) {

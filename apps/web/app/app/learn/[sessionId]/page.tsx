@@ -11,7 +11,6 @@ import {
   TutorPanel,
   type StudioSession,
 } from "@/components/studio";
-import { loadMe } from "@/lib/me";
 import { ACCESS_COOKIE, apiBaseUrl } from "@/lib/session";
 
 import styles from "@/components/studio/studio.module.css";
@@ -39,10 +38,6 @@ export default async function StudioPage({
 }: {
   params: Promise<{ sessionId: string }>;
 }) {
-  const me = await loadMe();
-  if (!me.profile.adult_acknowledged_at) {
-    redirect("/app");
-  }
   const { sessionId } = await params;
   const session = await loadSession(sessionId);
   if (!session) {

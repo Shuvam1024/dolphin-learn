@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { loadMe } from "@/lib/me";
 import { ACCESS_COOKIE, apiBaseUrl } from "@/lib/session";
 
 import styles from "../../../auth.module.css";
@@ -66,10 +65,6 @@ export default async function GoalPathPage({
 }: {
   params: Promise<{ goalId: string }>;
 }) {
-  const me = await loadMe();
-  if (!me.profile.adult_acknowledged_at) {
-    redirect("/app");
-  }
   const { goalId } = await params;
   const overview = await loadOverview(goalId);
   if (!overview) {
