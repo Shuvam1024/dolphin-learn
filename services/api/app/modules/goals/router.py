@@ -22,6 +22,7 @@ from app.modules.learning.accept import accept_proposal, activities_for, latest_
 from app.modules.learning.copy import reason_text
 from app.modules.learning.models import PlanVersion
 from app.modules.learning.overview import build_overview
+from app.modules.learning.plan_explain import explain_plan
 from app.modules.learning.planner import PRIORITIES, normalize_priority
 from app.modules.learning.proposals import propose_for_goal
 from app.modules.learning.replan import (
@@ -387,6 +388,13 @@ class ProposalItemOut(BaseModel):
     practice_depth: str | None = None
 
 
+class PlanExplanationOut(BaseModel):
+    summary: str
+    why_order: str
+    what_is_left_out: str
+    source: str
+
+
 class ProposalOut(BaseModel):
     usable_minutes: int
     estimated_required_low: int
@@ -399,6 +407,8 @@ class ProposalOut(BaseModel):
     priority_effect: str
     review_reserve_minutes: int = 0
     learning_minutes: int = 0
+    proposal_hash: str = ""
+    plan_explanation: PlanExplanationOut | None = None
 
 
 @router.post("/{goal_id}/plan-proposals", response_model=ProposalOut)
@@ -424,6 +434,15 @@ def post_plan_proposal(
         budget,
         None if body is None else body.domain_key,
         priority=override,
+    )
+    digest = proposal_hash(proposal, studied=0, left=proposal.usable_minutes)
+    explanation = explain_plan(
+        db,
+        user,
+        proposal,
+        proposal_hash=digest,
+        goal_text=goal.raw_request or goal.title,
+        remaining_minutes=proposal.usable_minutes,
     )
     return ProposalOut(
         usable_minutes=proposal.usable_minutes,
@@ -459,6 +478,8 @@ def post_plan_proposal(
         priority_effect=proposal.priority_effect,
         review_reserve_minutes=proposal.review_reserve_minutes,
         learning_minutes=proposal.learning_minutes,
+        proposal_hash=digest,
+        plan_explanation=PlanExplanationOut.model_validate(explanation),
     )
 
 
@@ -587,6 +608,7 @@ class ReplanProposalOut(BaseModel):
     deferred: list[ProposalItemOut]
     priority_label: str = ""
     priority_effect: str = ""
+    plan_explanation: PlanExplanationOut | None = None
 
 
 class ReplanAcceptIn(BaseModel):
@@ -611,8 +633,17 @@ def post_replan_proposal(
             status_code=422,
         )
     proposal, studied, left, _ = build_replan_proposal(db, user, goal, budget)
+    digest = proposal_hash(proposal, studied=studied, left=left)
+    explanation = explain_plan(
+        db,
+        user,
+        proposal,
+        proposal_hash=digest,
+        goal_text=goal.raw_request or goal.title,
+        remaining_minutes=left,
+    )
     return ReplanProposalOut(
-        proposal_hash=proposal_hash(proposal, studied=studied, left=left),
+        proposal_hash=digest,
         usable_minutes=proposal.usable_minutes,
         remaining_minutes=left,
         studied_minutes=studied,
@@ -643,6 +674,7 @@ def post_replan_proposal(
         ],
         priority_label=proposal.priority_label,
         priority_effect=proposal.priority_effect,
+        plan_explanation=PlanExplanationOut.model_validate(explanation),
     )
 
 

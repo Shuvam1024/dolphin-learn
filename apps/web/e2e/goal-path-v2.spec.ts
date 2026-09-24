@@ -52,6 +52,10 @@ test("goal path v2 shows minutes chips and replan preview then accept", async ({
 
   await page.getByRole("button", { name: "Update plan" }).click();
   await expect(page.getByRole("heading", { name: "Proposed plan" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Why this plan/ })).toBeVisible();
+  if ((process.env.AI_PROVIDER ?? "") === "fake") {
+    await expect(page.getByText("AI", { exact: true })).toBeVisible();
+  }
   await expect(page.getByRole("button", { name: "Accept" })).toBeVisible();
   await page.getByRole("button", { name: "Accept" }).click();
   await expect(page.getByText("Plan version 2")).toBeVisible();

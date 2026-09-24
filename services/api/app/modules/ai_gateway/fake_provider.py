@@ -27,6 +27,11 @@ _DEFAULTS: dict[str, dict[str, Any]] = {
         "missing": ["assignment rebinds"],
         "one_sentence_feedback": "You named binding; say what assignment changes.",
     },
+    "plan_explain": {
+        "summary": "This sitting covers the included lessons within the minutes you set.",
+        "why_order": "Prerequisites come first so later lessons make sense.",
+        "what_is_left_out": "Deferred topics wait until you have more minutes.",
+    },
 }
 
 

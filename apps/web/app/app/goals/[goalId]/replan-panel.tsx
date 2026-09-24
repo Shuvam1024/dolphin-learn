@@ -23,6 +23,12 @@ type Proposal = {
   deferred: ProposalItem[];
   priority_label?: string;
   priority_effect?: string;
+  plan_explanation?: {
+    summary: string;
+    why_order: string;
+    what_is_left_out: string;
+    source: string;
+  } | null;
 };
 
 export function ReplanPanel({ goalId }: { goalId: string }) {
@@ -119,6 +125,21 @@ export function ReplanPanel({ goalId }: { goalId: string }) {
               ))}
             </ul>
           )}
+          {proposal.plan_explanation ? (
+            <div>
+              <h3 className={styles.meta}>
+                Why this plan
+                {proposal.plan_explanation.source === "ai" ? (
+                  <span className={styles.kicker} style={{ marginLeft: 8 }}>
+                    AI
+                  </span>
+                ) : null}
+              </h3>
+              <p className={styles.lede}>{proposal.plan_explanation.summary}</p>
+              <p className={styles.meta}>{proposal.plan_explanation.why_order}</p>
+              <p className={styles.meta}>{proposal.plan_explanation.what_is_left_out}</p>
+            </div>
+          ) : null}
           <button className={styles.button} type="button" disabled={pending} onClick={() => void accept()}>
             {pending ? "Working…" : "Accept"}
           </button>
