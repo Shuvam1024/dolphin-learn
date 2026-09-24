@@ -297,3 +297,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 126 passed, 6 skipped (`test_progress_v2`).
 
 **Push:** `4cee800` is on origin/main
+
+## S78 — Review v2 with fit
+
+**Commit:** `12f839a` — feat(review): review v2 with estimates and what fits
+
+**What:** Due reviews show estimated minutes and what fits this sitting against preferred session length. Snooze presets are 3h / 24h / 72h. Copy avoids overdue, missed, and streak.
+
+**How:** `GET /reviews/due` adds `estimated_minutes`, `fits{count,minutes}`, `preferred_session_minutes`; review page fit line + presets; `test_review_fit`.
+
+**Why:** A sitting should start with what fits, not a guilt list.
+
+**Acceptance:** passed — pytest 129 passed, 6 skipped (`test_review_fit`).
+
+**Push:** `12f839a` is on origin/main
