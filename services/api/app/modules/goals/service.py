@@ -106,6 +106,8 @@ def update_goal(
     time_budget: TimeBudgetSpec | None,
     priority: str | None = None,
     set_priority: bool = False,
+    status: str | None = None,
+    set_status: bool = False,
 ) -> Goal:
     goal = get_owned_goal(db, user, goal_id)
     if title is not None:
@@ -130,6 +132,14 @@ def update_goal(
                 status_code=422,
             )
         goal.priority = priority
+    if set_status:
+        if status not in {"active", "paused", "archived"}:
+            raise ApiError(
+                "validation_error",
+                "Status must be active, paused, or archived",
+                status_code=422,
+            )
+        goal.status = status
     if time_budget is not None:
         upsert_budget(db, goal, time_budget)
     db.commit()

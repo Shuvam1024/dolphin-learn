@@ -32,6 +32,8 @@ from sqlalchemy.orm import Session
 router = APIRouter(prefix="/goals", tags=["goals"])
 
 PriorityLiteral = Literal["understand", "apply", "make_it_stick"]
+StatusLiteral = Literal["active", "paused", "archived"]
+STATUSES = frozenset({"active", "paused", "archived"})
 
 
 def _clean_required(value: str) -> str:
@@ -85,6 +87,7 @@ class GoalUpdate(BaseModel):
     domain_key: str | None = None
     normalized_objective: str | None = None
     priority: PriorityLiteral | None = None
+    status: StatusLiteral | None = None
     time_budget: TimeBudgetSpec | None = None
 
     @field_validator("title", "raw_request", "domain_key")
@@ -116,6 +119,16 @@ class GoalUpdate(BaseModel):
             return None
         return normalize_priority(value)
 
+    @field_validator("status")
+    @classmethod
+    def _status(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        cleaned = value.strip()
+        if cleaned not in STATUSES:
+            raise ValueError("status must be active, paused, or archived")
+        return cleaned
+
 
 class TimeBudgetOut(BaseModel):
     mode: Literal["one_off", "weekly"]
@@ -132,9 +145,14 @@ class GoalOut(BaseModel):
     domain_key: str
     normalized_objective: str | None
     priority: PriorityLiteral
-    status: str
+    status: StatusLiteral
     created_at: datetime
     time_budget: TimeBudgetOut | None
+    subject_name: str = ""
+    next_lesson_title: str = ""
+    remaining_minutes: int = 0
+    usable_minutes: int = 0
+    studied_minutes: int = 0
 
 
 def _budget_out(row: TimeBudget | None) -> TimeBudgetOut | None:
@@ -150,8 +168,10 @@ def _budget_out(row: TimeBudget | None) -> TimeBudgetOut | None:
     )
 
 
-def _out(goal: Goal, budget: TimeBudget | None) -> GoalOut:
+def _out(goal: Goal, budget: TimeBudget | None, *, card: dict[str, object] | None = None) -> GoalOut:
     priority = goal.priority if goal.priority in PRIORITIES else "understand"
+    status = goal.status if goal.status in STATUSES else "active"
+    extra = card or {}
     return GoalOut(
         id=goal.id,
         title=goal.title,
@@ -159,9 +179,14 @@ def _out(goal: Goal, budget: TimeBudget | None) -> GoalOut:
         domain_key=goal.domain_key,
         normalized_objective=goal.normalized_objective,
         priority=priority,  # type: ignore[arg-type]
-        status=goal.status,
+        status=status,  # type: ignore[arg-type]
         created_at=goal.created_at,
         time_budget=_budget_out(budget),
+        subject_name=str(extra.get("subject_name", "")),
+        next_lesson_title=str(extra.get("next_lesson_title", "")),
+        remaining_minutes=int(extra.get("remaining_minutes", 0) or 0),
+        usable_minutes=int(extra.get("usable_minutes", 0) or 0),
+        studied_minutes=int(extra.get("studied_minutes", 0) or 0),
     )
 
 
@@ -189,7 +214,24 @@ def get_goals(
     user: User = Depends(current_user),
     db: Session = Depends(get_db),
 ) -> list[GoalOut]:
-    return [_out(goal, budget_for(db, goal)) for goal in list_goals(db, user)]
+    from app.modules.learning.home import _domain_name, _next_lesson_title
+    from app.modules.learning.accept import latest_accepted
+    from app.modules.learning.study_time import remaining_minutes, studied_minutes_for_goal
+
+    rows: list[GoalOut] = []
+    for goal in list_goals(db, user):
+        version = latest_accepted(db, user, goal)
+        usable = int(version.usable_minutes or 0) if version is not None else 0
+        studied = studied_minutes_for_goal(db, user, goal)
+        card = {
+            "subject_name": _domain_name(db, goal.domain_key),
+            "next_lesson_title": _next_lesson_title(db, user, goal) if version else "",
+            "usable_minutes": usable,
+            "studied_minutes": studied,
+            "remaining_minutes": remaining_minutes(usable, studied),
+        }
+        rows.append(_out(goal, budget_for(db, goal), card=card))
+    return rows
 
 
 @router.patch("/{goal_id}", response_model=GoalOut)
@@ -215,6 +257,8 @@ def patch_goal(
         time_budget=body.time_budget,
         priority=body.priority,
         set_priority="priority" in sent,
+        status=body.status,
+        set_status="status" in sent,
     )
     return _out(goal, budget_for(db, goal))
 
