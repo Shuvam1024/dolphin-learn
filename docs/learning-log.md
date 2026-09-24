@@ -269,3 +269,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 121 passed, 6 skipped (`test_replan_preview`).
 
 **Push:** `6a2d945` is on origin/main
+
+## S76 — AI plan explainer
+
+**Commit:** `070adf1` — feat(plan): ai plan explainer over deterministic planner output
+
+**What:** Plan and replan previews explain the plan in plain words. When AI is on, a validated explanation appears with an AI chip. Invented lesson names or numbers fall back to the deterministic rationale. Results cache on the proposal hash.
+
+**How:** `prompts/plan_explain.v1`; `plan_explain.py` validator + cache; wired into plan-proposals and replan-proposals; ReplanPanel shows Why this plan.
+
+**Why:** The planner stays deterministic; the explainer only narrates what was already decided.
+
+**Acceptance:** passed — pytest 125 passed, 6 skipped (`test_plan_explain`).
+
+**Push:** `070adf1` is on origin/main
