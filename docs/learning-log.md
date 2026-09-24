@@ -423,3 +423,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 142 passed, 6 skipped (`test_item_drafts`).
 
 **Push:** `c1c646b` is on origin/main
+
+## S87 — Deep Python path
+
+**Commit:** `5f9c09a` — feat(content): python fundamentals with eight competencies
+
+**What:** Python now has eight competencies (names through errors) deep enough for about two weeks.
+
+**How:** New lessons and items; DAG edges; validator green; plan at 420 minutes covers ≥ 6.
+
+**Why:** Checked subjects need enough depth that a real plan feels usable.
+
+**Acceptance:** passed — pytest 144 passed, 6 skipped (`test_python_path`).
+
+**Push:** `5f9c09a` is on origin/main

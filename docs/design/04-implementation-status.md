@@ -1,8 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S86; Item drafting
+- **Milestone completed:** S01–S87; Python path depth
 - **Schema/API changes:** Alembic through `0015_goal_status`
+- **Tests run and exact results (S87):**
+  - `python -m app.content.validate` → content ok
+  - `pytest -q` → 144 passed, 6 skipped (`test_python_path`)
 - **Tests run and exact results (S86):**
   - `pytest -q` → 142 passed, 6 skipped (`test_item_drafts`)
 - **Tests run and exact results (S85):**
@@ -124,7 +127,7 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S86**
+- **Completed steps:** **S01–S87**
 - **Next step:** **S75 — Goal path v2 with replan preview → accept**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
@@ -243,3 +246,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S84** | `feat(web): wizard v2 with ai suggestions, subject chips, presets, focus, placement, and preview` | 5-step wizard |
 | **S85** | `feat(general): ai provisional outlines, readings, and recall prompts` | provisional; never graded |
 | **S86** | `feat(content): ai item drafting with reviewer approval before graded use` | drafts.yaml; checklist |
+| **S87** | `feat(content): python fundamentals with eight competencies` | 8 competencies |
