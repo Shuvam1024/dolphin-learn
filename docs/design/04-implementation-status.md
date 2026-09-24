@@ -1,10 +1,14 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S58; Phase 2 foundations gate
+- **Milestone completed:** S01–S59; Studio v2 renderer
 - **Verified working user journey:** Learner-facing payloads and screens show competency names and plain reason/facet labels; keys stay in the API for machines. Content loads from files; AI gateway works off and with FakeProvider; Session Studio payload carries actions and tutor slots.
 - **Implemented modules/features:** Prior surface plus verification harness, Clear Depth UI kit, `learning/copy.py`, activity content fields, `content/` loader, `ai_gateway` + FakeProvider, `studio_view` session payload. Vault/RAG/sandbox still later.
 - **Schema/API changes:** Alembic through `0011_ai_calls`
+- **Tests run and exact results (S59):**
+  - `tsc` / eslint clean; vitest 7 passed
+  - `playwright` smoke 23 passed (incl. `e2e/studio-v2.spec.ts`: markdown `<code>`, one primary, Next absent before answer, pause survives reload, 390px action bar, tutor absent with AI off, axe zero on Studio)
+  - `pytest -q` → 81 passed, 6 skipped
 - **Tests run and exact results (S58 Gate 2):**
   - `AI_PROVIDER=` pytest → 81 passed, 6 skipped; ruff/mypy clean; `python -m app.content.validate` → content ok
   - `AI_PROVIDER=fake` pytest → 81 passed, 6 skipped
@@ -41,8 +45,8 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S58**
-- **Next step:** **S59 — Studio v2 renderer**
+- **Completed steps:** **S01–S59**
+- **Next step:** **S60 — Feedback with explanation and misconception note**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
 
@@ -58,7 +62,7 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | 1C | Physical study time (S43–S46) | Done |
 | 1D | Honest demo content (S47–S50) | Done |
 | 2 | Foundations (S51–S58) | Done |
-| 3 | The learning session (S59–S70) | Next (S59) |
+| 3 | The learning session (S59–S70) | In progress (next: S60) |
 | Later | Phases 4–7 per first-ship plan | Later |
 
 ---
@@ -131,3 +135,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S56** | `feat(ai): provider-agnostic gateway with typed outputs, limits, audit, and fake provider` | Gateway+FakeProvider; ai_calls; ai_enabled on /me; CI ai-fake |
 | **S57** | `feat(sessions): studio payload with position, estimate, state, actions, and tutor slots` | studio_view actions; explanation hidden pre-attempt; contracts |
 | **S58** | `docs: phase 2 foundations verified; content model, ai gateway, and studio contract in architecture` | Gate 2 green; architecture + brand updated |
+| **S59** | `feat(studio): studio v2 renderer for every activity type with tutor panel` | StudioHeader/Body/AnswerInput/FeedbackNotice/TutorPanel/ActionBar; studio-v2 e2e green |

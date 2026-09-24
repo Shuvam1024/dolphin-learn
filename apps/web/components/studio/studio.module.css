@@ -1,0 +1,140 @@
+.shell {
+  padding: 24px 20px 96px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.crumb {
+  color: var(--color-mist);
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+
+.title {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(28px, 4vw, 36px);
+  line-height: 1.1;
+  color: var(--color-ink);
+  margin: 0 0 8px;
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  color: var(--color-mist);
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.body {
+  margin: 16px 0 20px;
+}
+
+.prompt {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0 0 16px;
+  color: var(--color-ink);
+}
+
+.choices {
+  border: 0;
+  margin: 0 0 16px;
+  padding: 0;
+}
+
+.choice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 10px 0;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.textInput,
+.numberInput,
+.recallInput {
+  width: 100%;
+  font: inherit;
+  font-size: 16px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+  border-radius: 10px;
+  background: var(--color-foam);
+  color: var(--color-ink);
+  margin-bottom: 12px;
+}
+
+.recallInput {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.tutor {
+  margin: 20px 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 10%, transparent);
+  padding-top: 12px;
+}
+
+.tutorSummary {
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-ink);
+  font-weight: 600;
+  list-style: none;
+}
+
+.tutorSummary::-webkit-details-marker {
+  display: none;
+}
+
+.tutorBody {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tutorText {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--color-ink);
+}
+
+.actionBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.actionBarSecondary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 767px) {
+  .shell {
+    padding-bottom: 120px;
+  }
+
+  .actionBar {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    margin: 24px -20px -24px;
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--color-foam) 92%, transparent);
+    border-top: 1px solid color-mix(in srgb, var(--color-ink) 10%, transparent);
+    backdrop-filter: blur(8px);
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "recorded_at": "2026-09-24T00:24:01.900Z",
+  "recorded_at": "2026-09-24T00:31:11.877Z",
   "note": "S58 Gate 2 baseline: serious/critical by route. Later gates require zero.",
   "serious_or_critical": [
     {
@@ -91,15 +91,7 @@
       "nodes": 1
     },
     {
-      "route": "/app/goals/c084cb9e-69df-466e-9a51-ae922de2d343",
-      "fixture": "populated",
-      "id": "color-contrast",
-      "impact": "serious",
-      "help": "Elements must meet minimum color contrast ratio thresholds",
-      "nodes": 1
-    },
-    {
-      "route": "/app/learn/4480a22b-f043-4a42-9e6a-b49edcd1bc06",
+      "route": "/app/goals/fb40e341-bf3c-4845-a059-69d5456148f6",
       "fixture": "populated",
       "id": "color-contrast",
       "impact": "serious",
@@ -199,16 +191,7 @@
         "nodes": 1
       }
     ],
-    "/app/goals/c084cb9e-69df-466e-9a51-ae922de2d343": [
-      {
-        "fixture": "populated",
-        "id": "color-contrast",
-        "impact": "serious",
-        "help": "Elements must meet minimum color contrast ratio thresholds",
-        "nodes": 1
-      }
-    ],
-    "/app/learn/4480a22b-f043-4a42-9e6a-b49edcd1bc06": [
+    "/app/goals/fb40e341-bf3c-4845-a059-69d5456148f6": [
       {
         "fixture": "populated",
         "id": "color-contrast",
@@ -219,7 +202,7 @@
     ]
   },
   "totals": {
-    "serious_or_critical": 13,
-    "routes_with_findings": 9
+    "serious_or_critical": 12,
+    "routes_with_findings": 8
   }
 }

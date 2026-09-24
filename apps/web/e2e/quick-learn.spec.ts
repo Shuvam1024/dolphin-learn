@@ -62,9 +62,9 @@ test("120-minute python quick learn proves evidence without an AI key", async ({
   await expect(page.getByText("Marked independent")).toBeVisible();
 
   await page.getByRole("button", { name: "Check a different question" }).click();
-  await expect(page.getByText("What does `n = n + 1` do")).toBeVisible();
+  await expect(page.getByText(/What does/)).toBeVisible();
   await expect(page.getByText("Answer recorded")).toHaveCount(0);
-  await page.getByRole("radio", { name: /rebinds `n` to 4/ }).check();
+  await page.getByRole("radio", { name: /rebinds/ }).check();
   await page.getByRole("button", { name: "Submit answer" }).click();
   await expect(page.getByText("Answer recorded: a")).toBeVisible();
 
