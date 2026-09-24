@@ -14,7 +14,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## Next incomplete step
 
-**S63 — Tutor: explain differently and validated hints** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
+**S64 — Typed grading and AI misconception notes** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
 
 ---
 
@@ -76,7 +76,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## S62 — Unseen item pools
 
-**Commit:** `924b98d` — feat(assess): unseen item selection; provisional items never graded
+**Commit:** `b2599e3` — feat(assess): unseen item selection; provisional items never graded
 
 **What:** Fresh checks and reviews serve items the learner has not seen yet. Provisional graded items are never selected for grading. Exhausted pools mark `repeat`; a correct answer on an item whose solution was revealed stays practicing.
 
@@ -86,5 +86,19 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Acceptance:** passed — pytest 93 passed, 6 skipped (`test_item_pools.py`: avoid seen, repeat, provisional excluded, reviews rotate, ownership 404).
 
-**Push:** `924b98d` is on origin/main
+**Push:** `b2599e3` is on origin/main
+
+## S63 — Tutor: explain differently and validated hints
+
+**Commit:** `PENDING` — feat(tutor): explain differently and validated generated hints with seeded fallback
+
+**What:** The tutor can explain a lesson differently and give a hint. Generated hints are checked against the key; a leak falls back to the seeded hint. Explain and hints count as help for the current item. With AI off, explain is 404 and the panel stays hidden.
+
+**How:** Added `tutor.py` with `hint_validator`, `request_hint`, and `request_explain`; prompts `hint.v1` and `explain_differently.v1`; `POST /sessions/{id}/explain`; studio fills `hint_text`/`alt_explanation` from session events; FakeProvider defaults for those prompts; web help route forwards explain; `e2e/tutor.spec.ts`.
+
+**Why:** A second explanation and a safe hint are real teaching work — the validator keeps the referee honest.
+
+**Acceptance:** passed — pytest 98 passed, 6 skipped (`test_tutor.py`: leak→seeded, clean AI hint, explain assistance, AI-off 404).
+
+**Push:** `PENDING` is on origin/main
 

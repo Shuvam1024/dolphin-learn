@@ -23,6 +23,8 @@ export default defineConfig({
           process.env.DATABASE_URL ??
           "postgresql+psycopg://dolphin:dolphin@127.0.0.1:5432/dolphin",
         ENVIRONMENT: "development",
+        AI_PROVIDER: process.env.AI_PROVIDER ?? "",
+        AI_GATEWAY_ENABLED: process.env.AI_GATEWAY_ENABLED ?? "",
       },
     },
     {

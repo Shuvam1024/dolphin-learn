@@ -75,14 +75,14 @@ def _help_kind(db: Session, row: LearningSession, activity_id: uuid.UUID) -> str
         db.scalars(
             select(SessionEvent.event_type).where(
                 SessionEvent.session_id == row.id,
-                SessionEvent.event_type.in_(("hint", "solution")),
+                SessionEvent.event_type.in_(("hint", "solution", "explain_requested")),
                 SessionEvent.payload["activity_version_id"].astext == str(activity_id),
             )
         )
     )
     if "solution" in kinds:
         return "solution"
-    if "hint" in kinds:
+    if "hint" in kinds or "explain_requested" in kinds:
         return "hint"
     return "none"
 
@@ -107,6 +107,10 @@ def record_help(
     kind: str,
     mode: str,
 ) -> dict[str, str]:
+    if kind == "hint":
+        from app.modules.learning.tutor import request_hint
+
+        return request_hint(db, user, session_id, mode=mode)
     if mode == "challenge":
         raise ApiError(
             "forbidden",

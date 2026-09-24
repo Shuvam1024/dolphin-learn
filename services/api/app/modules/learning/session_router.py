@@ -22,6 +22,7 @@ from app.modules.learning.sessions import (
 )
 from app.modules.learning.study_time import session_active_minutes
 from app.modules.learning.summary import build_summary, finish_session
+from app.modules.learning.tutor import request_explain
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator
 from sqlalchemy import select
@@ -263,6 +264,13 @@ class HelpOut(BaseModel):
     kind: str
     message: str
     revealed_choice: str
+    hint_source: str = "seed"
+
+
+class ExplainOut(BaseModel):
+    explanation_markdown: str
+    analogy_used: bool = False
+    hint_count: int = 0
 
 
 @router.post("/{session_id}/finish", response_model=SessionOut)
@@ -304,6 +312,15 @@ def post_hint(
 ) -> HelpOut:
     mode = "guided" if body is None else body.mode
     return HelpOut.model_validate(record_help(db, user, session_id, kind="hint", mode=mode))
+
+
+@router.post("/{session_id}/explain", response_model=ExplainOut)
+def post_explain(
+    session_id: uuid.UUID,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> ExplainOut:
+    return ExplainOut.model_validate(request_explain(db, user, session_id))
 
 
 @router.post("/{session_id}/solution", response_model=HelpOut)

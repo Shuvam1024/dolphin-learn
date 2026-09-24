@@ -197,6 +197,9 @@ def build_studio(
             revealed = ""
             if not challenge and snap:
                 revealed = str(snap.get("revealed_choice") or "")
+            from app.modules.learning.tutor import tutor_state
+
+            help_state = tutor_state(db, session, activity.id)
             explanation = ""
             misconception = ""
             show_feedback = recorded or bool(revealed)
@@ -235,13 +238,13 @@ def build_studio(
                     "response": str(snap.get("recorded_choice") if snap else ""),
                     "outcome": outcome,
                     "assistance": assistance,
-                    "hint_text": "",
-                    "hint_source": "seed",
+                    "hint_text": help_state["hint_text"],
+                    "hint_source": help_state["hint_source"],
                     "revealed_answer": revealed,
                     "explanation": explanation,
                     "misconception_note": misconception,
                     "misconception_source": "seed",
-                    "alt_explanation": "",
+                    "alt_explanation": help_state["alt_explanation"],
                     "repeat": _repeat_for_activity(db, session, activity.id),
                 },
             }
