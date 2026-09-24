@@ -1,10 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S64; typed grading and AI misconception notes
-- **Verified working user journey:** Learner-facing payloads and screens show competency names and plain reason/facet labels; keys stay in the API for machines. Content loads from files; AI gateway works off and with FakeProvider; Session Studio payload carries actions and tutor slots; fresh checks and reviews rotate unseen items; tutor explain/hints work with FakeProvider and degrade when AI is off; short-answer/numeric grade deterministically with optional AI notes.
-- **Implemented modules/features:** Prior surface plus verification harness, Clear Depth UI kit, `learning/copy.py`, activity content fields, `content/` loader, `ai_gateway` + FakeProvider, `studio_view` session payload, `item_pool.pick_unseen`, `learning/tutor`, typed graders + misconception notes. Vault/RAG/sandbox still later.
+- **Milestone completed:** S01–S65; free recall with self-report ceiling
 - **Schema/API changes:** Alembic through `0012_evaluation_feedback_json`
+- **Tests run and exact results (S65):**
+  - `pytest -q` → 104 passed, 6 skipped (`test_free_recall_ceiling`)
+  - content validate ok
 - **Tests run and exact results (S64):**
   - `alembic upgrade head` → `0012_evaluation_feedback_json`
   - `pytest -q` → 102 passed, 6 skipped (`test_grading_types`, `test_ai_misconception`)
@@ -64,8 +65,8 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S64**
-- **Next step:** **S65 — Free recall with a self-report ceiling**
+- **Completed steps:** **S01–S65**
+- **Next step:** **S66 — Size the sitting**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
 
@@ -81,7 +82,7 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | 1C | Physical study time (S43–S46) | Done |
 | 1D | Honest demo content (S47–S50) | Done |
 | 2 | Foundations (S51–S58) | Done |
-| 3 | The learning session (S59–S70) | In progress (next: S65) |
+| 3 | The learning session (S59–S70) | In progress (next: S66) |
 | Later | Phases 4–7 per first-ship plan | Later |
 
 ---
@@ -160,3 +161,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S62** | `feat(assess): unseen item selection; provisional items never graded` | pick_unseen; provisional excluded; repeat flag; reviews rotate |
 | **S63** | `feat(tutor): explain differently and validated generated hints with seeded fallback` | explain route; hint validator; seeded fallback; panel AI chip |
 | **S64** | `feat(assess): short answer and numeric grading; ai misconception note for typed mistakes` | typed graders; feedback_json; AI note cannot change outcome |
+| **S65** | `feat(assess): free recall with self-rating capped at practicing` | self-rate; practicing ceiling; recall_compare advisory |

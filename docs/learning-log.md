@@ -14,7 +14,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## Next incomplete step
 
-**S65 — Free recall with a self-report ceiling** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
+**S66 — Size the sitting** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
 
 ---
 
@@ -115,4 +115,18 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 102 passed, 6 skipped (`test_grading_types`, `test_ai_misconception`).
 
 **Push:** `c09e19f` is on origin/main
+
+## S65 — Free recall with a self-report ceiling
+
+**Commit:** `7e69baa` — feat(assess): free recall with self-rating capped at practicing
+
+**What:** Free recall: write from memory (lesson hidden), then see the lesson and self-rate. Evidence never exceeds practicing. AI recall comparison is advisory only.
+
+**How:** `free_recall.py` + `POST /sessions/{id}/self-rate`; `recall_compare.v1`; studio hides body until text submit; Self-reported chip; reviews skip retained for free-recall items.
+
+**Why:** Honest engine for any subject — self-check with a hard ceiling.
+
+**Acceptance:** passed — pytest 104 passed, 6 skipped (`test_free_recall_ceiling`).
+
+**Push:** `7e69baa` is on origin/main
 
