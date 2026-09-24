@@ -161,6 +161,7 @@ def _upsert_lesson(
                 reviewed_at=reviewed_at,
                 effort_minutes_low=item.effort_minutes.low,
                 effort_minutes_high=item.effort_minutes.high,
+                difficulty=item.difficulty,
             )
             db.add(found)
             db.flush()
@@ -176,6 +177,7 @@ def _upsert_lesson(
             found.reviewed_at = reviewed_at
             found.effort_minutes_low = item.effort_minutes.low
             found.effort_minutes_high = item.effort_minutes.high
+            found.difficulty = item.difficulty
         staged.append((found, sequence))
     db.flush()
     for found, sequence in staged:

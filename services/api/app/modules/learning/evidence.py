@@ -5,7 +5,6 @@ from datetime import datetime, timezone
 
 from app.errors import ApiError
 from app.modules.identity.models import User
-from app.modules.learning.item_pool import pick_unseen
 from app.modules.learning.models import (
     ActivityVersion,
     Attempt,
@@ -217,13 +216,14 @@ def move_to_unseen_question(db: Session, user: User, session_id: uuid.UUID) -> L
     lesson = db.get(Lesson, current_activity.lesson_id)
     if lesson is None:
         raise ApiError("validation_error", "Session has no activity", status_code=422)
-    picked = pick_unseen(
+    from app.modules.learning.item_pool import pick_next
+
+    picked = pick_next(
         db,
         user,
         lesson.competency_id,
-        {current_activity.id},
-        graded=True,
-        activity_types=(current_activity.activity_type,),
+        purpose="fresh_check",
+        exclude_ids={current_activity.id},
     )
     if picked is None:
         raise ApiError("validation_error", "No other question is available", status_code=422)
@@ -245,6 +245,7 @@ def move_to_unseen_question(db: Session, user: User, session_id: uuid.UUID) -> L
             payload={
                 "activity_version_id": str(picked.activity.id),
                 "repeat": "true" if picked.repeat else "false",
+                "selection_reason": picked.selection_reason,
             },
         )
     )

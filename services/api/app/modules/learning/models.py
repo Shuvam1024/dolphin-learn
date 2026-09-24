@@ -131,6 +131,7 @@ class ActivityVersion(Base):
     reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     effort_minutes_low: Mapped[int] = mapped_column(Integer, nullable=False)
     effort_minutes_high: Mapped[int] = mapped_column(Integer, nullable=False)
+    difficulty: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
 
 class PlanActivity(Base):
