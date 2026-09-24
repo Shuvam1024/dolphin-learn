@@ -479,3 +479,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** Gate 5 met.
 
 **Push:** `80e789f` is on origin/main
+
+## S91 — Effort calibration from active minutes
+
+**Commit:** `f1e9e74` — feat(learner-model): effort calibration from measured active minutes
+
+**What:** Per learner and activity type, an EMA of observed/declared minutes scales plan estimates after three observations. Clamped 0.5–2.0. The path can show one sentence that estimates were adjusted.
+
+**How:** Alembic `0018_learner_effort_factors`; `learner_model.effort`; session progress/finish records observations; proposals scale effort.
+
+**Why:** Plans should fit how long this learner actually takes — without inventing competence.
+
+**Acceptance:** passed — pytest 151 passed, 6 skipped (`test_effort_calibration`).
+
+**Push:** `f1e9e74` is on origin/main

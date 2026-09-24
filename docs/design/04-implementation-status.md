@@ -1,8 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S90; Gate 5 learn anything
+- **Milestone completed:** S01–S91; Effort calibration
 - **Schema/API changes:** Alembic through `0015_goal_status`
+- **Tests run and exact results (S91):**
+  - `alembic upgrade head` → `0018_learner_effort_factors`
+  - `pytest -q` → 151 passed, 6 skipped (`test_effort_calibration`)
 - **Tests run and exact results (S90 Gate 5):**
   - `AI_GATEWAY_ENABLED=false` pytest → 148 passed, 6 skipped
   - `AI_PROVIDER=fake` pytest → 148 passed, 6 skipped
@@ -137,7 +140,7 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S90**
+- **Completed steps:** **S01–S91**
 - **Next step:** **S75 — Goal path v2 with replan preview → accept**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
@@ -260,3 +263,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S88** | `feat(content): deeper fractions and software practice paths` | four each |
 | **S89** | `test(content): enforce content checklist in ci and publish the audit` | audit + CI |
 | **S90** | `docs: phase 5 learn anything verified; general route and ai drafting in vision, ux, and architecture` | Gate 5 |
+| **S91** | `feat(learner-model): effort calibration from measured active minutes` | EMA effort factors |
