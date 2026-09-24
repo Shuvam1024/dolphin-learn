@@ -437,3 +437,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 144 passed, 6 skipped (`test_python_path`).
 
 **Push:** `5f9c09a` is on origin/main
+
+## S88 — Deeper math and software
+
+**Commit:** `a0fbbb2` — feat(content): deeper fractions and software practice paths
+
+**What:** Fractions gain equivalent and compare; software gains smallest fix and describe a test.
+
+**How:** Four competencies each; numeric items in math; validator green.
+
+**Why:** Every checked subject needs a path that can fill a real sitting budget.
+
+**Acceptance:** passed — pytest 146 passed, 6 skipped (`test_math_software_path`).
+
+**Push:** `a0fbbb2` is on origin/main

@@ -1,8 +1,10 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S87; Python path depth
+- **Milestone completed:** S01–S88; Math/software depth
 - **Schema/API changes:** Alembic through `0015_goal_status`
+- **Tests run and exact results (S88):**
+  - `pytest -q` → 146 passed, 6 skipped (`test_math_software_path`)
 - **Tests run and exact results (S87):**
   - `python -m app.content.validate` → content ok
   - `pytest -q` → 144 passed, 6 skipped (`test_python_path`)
@@ -127,7 +129,7 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S87**
+- **Completed steps:** **S01–S88**
 - **Next step:** **S75 — Goal path v2 with replan preview → accept**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
@@ -247,3 +249,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S85** | `feat(general): ai provisional outlines, readings, and recall prompts` | provisional; never graded |
 | **S86** | `feat(content): ai item drafting with reviewer approval before graded use` | drafts.yaml; checklist |
 | **S87** | `feat(content): python fundamentals with eight competencies` | 8 competencies |
+| **S88** | `feat(content): deeper fractions and software practice paths` | four each |
