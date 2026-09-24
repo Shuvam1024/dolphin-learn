@@ -30,11 +30,14 @@ dolphin-learn/
 ├── docker-compose.yml
 ├── AGENTS.md
 ├── docs/
-│   ├── design/                 # ← this package (SoT)
+│   ├── design/                   # ← this package (SoT)
 │   ├── dolphin-master-design.md  # slim pointer into design/
-│   ├── architecture-decisions/
-│   ├── api/
-│   └── evaluations/
+│   ├── implementation-status.md  # slim pointer into design/04
+│   ├── learning-log.md           # teach notes from S58 onward
+│   ├── prove-loop-demo.md
+│   ├── architecture-decisions/   # reserved (empty)
+│   ├── api/                      # reserved (empty)
+│   └── evaluations/              # reserved until later first-ship steps
 ├── apps/web/
 ├── services/api/
 │   └── app/modules/{identity,goals,curriculum,sessions,assessment,review,vault,labs,ai_gateway}/

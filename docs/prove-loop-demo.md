@@ -1,6 +1,8 @@
 # Prove Loop demo (Phase 1A)
 
-This is the click path that shows Dolphin’s Prove Loop with seeded lessons and no AI key. Vault, retrieval, and the code sandbox are not part of this demo.
+**Scope:** Historical Phase 1A click path. S01–S57 are on `main`; the next incomplete first-ship step is **S58 (Gate 2)** in `docs/design/06-first-ship-plan.md`. Do not treat “next phase is 1B” at the bottom as current build status.
+
+This is the click path that shows Dolphin’s Prove Loop with seeded lessons and no AI key. Vault, retrieval, and the code sandbox are not part of this demo. Learner-facing screens now show competency **names**; machine keys such as `python.names` remain in the API.
 
 ## Before you start
 

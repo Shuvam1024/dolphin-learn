@@ -2,7 +2,7 @@
 
 FastAPI modular monolith — authenticated brain for goals, sessions, assessment, review, and later adapters.
 
-Domain modules live under `app/modules/` and are created when implemented (identity, goals, curriculum, sessions, assessment, review, vault, labs, ai_gateway).
+Domain modules live under `app/modules/` as they are implemented. Present today: `identity`, `goals`, `curriculum`, `learning` (sessions, evidence, review, planner), and `ai_gateway`. Content files load through `app/content/`. Vault and labs are later first-ship / post-ship work, not folders yet.
 
 ## Run locally (S04+)
 

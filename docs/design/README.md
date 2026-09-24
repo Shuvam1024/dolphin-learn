@@ -25,8 +25,8 @@ This folder is the **source of truth** for product vision, UX, architecture, seq
 ## How to use (maintainers)
 
 1. Read `project-context.md` locks first.
-2. Implement one step at a time: `03-build-plan.md` for S01–S50 (done), then `06-first-ship-plan.md` from **S51**.
-3. Update `04-implementation-status.md` after every completed step.
+2. Implement one step at a time: `03-build-plan.md` for S01–S50 (done), then `06-first-ship-plan.md`. **S51–S57 are done.** Next incomplete step is **S58 (Gate 2: foundations)**.
+3. Update `04-implementation-status.md` after every completed step. Append teach notes to `docs/learning-log.md`.
 4. Explain **what / how / why** from each step’s teach note while building.
 5. The current build is Phase 2 (S51–S58, foundations incl. the model gateway). Read `05-direction.md` first: the final vision is the center of every decision. Each phase ends at a verification gate (suite, a11y, perf budget, design review, docs). No Vault, RAG, or sandbox before v0.1. The tutor is integrated from S56 through the gateway; it explains and drafts, never grades.
 

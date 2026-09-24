@@ -1,3 +1,5 @@
-# Architecture decisions
+# Architecture decisions (reserved)
 
-Lightweight ADRs for non-obvious choices. Prefer updating the master design when a decision is product-wide.
+No ADRs have been written here yet.
+
+Product-wide decisions belong in `docs/design/` (`02-architecture.md`, `project-context.md`). Add a short ADR in this folder only when a choice is non-obvious and is not already covered by the design package.

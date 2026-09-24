@@ -1,6 +1,6 @@
 # apps/web
 
-Next.js TypeScript client for Dolphin (Session Studio, Home, goal wizard, Progress).
+Next.js TypeScript client for Dolphin (Session Studio, Home, goal wizard, Progress, Review).
 
 ```bash
 npm install
@@ -9,4 +9,4 @@ npm run dev
 
 From the repo root: `npm run dev:web`.
 
-Clear Depth tokens land in S06. This step is only the shell and a placeholder route.
+Clear Depth tokens and the shared UI kit live in `app/globals.css` and `components/ui/`. Sign-in and `/app` routes are real product surfaces, not placeholders.

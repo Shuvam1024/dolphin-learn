@@ -1,3 +1,5 @@
 # infra
 
-Local and deployment infrastructure helpers (Compose overlays, migration notes, future IaC). Local Postgres Compose lives at the repo root for Phase 0 (S03).
+Reserved for Compose overlays, migration notes, and later IaC. Nothing extra lives here yet.
+
+Local Postgres for development is `docker-compose.yml` at the **repo root** (not this folder).
