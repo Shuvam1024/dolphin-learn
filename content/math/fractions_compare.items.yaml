@@ -1,0 +1,123 @@
+- id: reading-1
+  type: reading
+  prompt: Read the short note. You are not scored for reading.
+  effort_minutes:
+    low: 6
+    high: 10
+- id: objective-2
+  type: objective
+  prompt: 'With the same denominator, what decides which fraction is larger?
+
+
+    a) the larger denominator
+
+
+    b) the larger numerator
+
+
+    c) the smaller numerator'
+  choices:
+  - the larger denominator
+  - the larger numerator
+  - the smaller numerator
+  answer: b
+  explanation: 'The reading supports: the larger numerator.'
+  misconceptions:
+    a: That does not match the reading.
+    c: That does not match the reading.
+  difficulty: 3
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-3
+  type: objective
+  prompt: 'What should you do before comparing different denominators?
+
+
+    a) ignore denominators
+
+
+    b) rewrite with a shared denominator
+
+
+    c) add them first'
+  choices:
+  - ignore denominators
+  - rewrite with a shared denominator
+  - add them first
+  answer: b
+  explanation: 'The reading supports: rewrite with a shared denominator.'
+  misconceptions:
+    a: That does not match the reading.
+    c: That does not match the reading.
+  difficulty: 1
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-4
+  type: objective
+  prompt: 'Does a larger denominator always mean a larger fraction?
+
+
+    a) Always — larger denominator means larger amount
+
+
+    b) Never — denominators alone do not decide size
+
+
+    c) Only when both fractions are odd'
+  choices:
+  - Always — larger denominator means larger amount
+  - Never — denominators alone do not decide size
+  - Only when both fractions are odd
+  answer: b
+  explanation: A larger denominator alone does not make a larger fraction.
+  misconceptions:
+    a: Denominator size alone does not decide amount.
+    c: Oddness is irrelevant here.
+  difficulty: 2
+  effort_minutes:
+    low: 3
+    high: 5
+- id: objective-5
+  type: objective
+  prompt: 'For positive a/b and c/d, what do you compare in cross products?
+
+
+    a) a+b and c+d
+
+
+    b) a*d and c*b
+
+
+    c) only a and c'
+  choices:
+  - a+b and c+d
+  - a*d and c*b
+  - only a and c
+  answer: b
+  explanation: 'The reading supports: a*d and c*b.'
+  misconceptions:
+    a: That does not match the reading.
+    c: That does not match the reading.
+  difficulty: 3
+  effort_minutes:
+    low: 3
+    high: 5
+- id: numeric-6
+  type: numeric
+  prompt: If one half is larger than one third, enter the product of four and twenty.
+    Otherwise enter zero.
+  answer: '80'
+  tolerance: 0
+  explanation: One half is larger than one third.
+  difficulty: 2
+  effort_minutes:
+    low: 3
+    high: 5
+- id: free-recall-7
+  type: free_recall
+  prompt: From memory, write what you can about this topic.
+  effort_minutes:
+    low: 4
+    high: 7
