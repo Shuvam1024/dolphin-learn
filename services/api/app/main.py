@@ -12,16 +12,30 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.v1.router import router as v1_router
 from app.errors import ApiError, error_payload, request_id_middleware, status_code_name
+from app.observability import StructuredLogMiddleware, ready_check, router as metrics_router
+from app.rate_limit import RateLimitMiddleware
 
 app = FastAPI(title="Dolphin API", version="0.1.0")
+app.add_middleware(StructuredLogMiddleware)
+app.add_middleware(RateLimitMiddleware)
 app.middleware("http")(request_id_middleware)
 app.include_router(v1_router, prefix="/api/v1")
+app.include_router(metrics_router)
 
 
 @app.get("/health")
 def health() -> dict[str, str]:
     """Liveness check. Intentionally outside /api/v1."""
     return {"status": "ok"}
+
+
+@app.get("/ready")
+def ready() -> dict[str, str]:
+    """Readiness: database must answer."""
+    try:
+        return ready_check()
+    except Exception as exc:  # noqa: BLE001
+        raise ApiError("unavailable", "Database not ready", status_code=503) from exc
 
 
 @app.exception_handler(ApiError)
