@@ -522,3 +522,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `9e1ae7d` is on origin/main
 
+## S94 — Learning dataset and honest funnel events
+
+**Commit:** `4f72e00` — feat(analytics): learning dataset views and product events
+
+**What:** Product events record funnel steps with opaque ids only. SQL views `v_attempt_features` and `v_review_outcomes` expose the columns a future estimator would need. Docs describe the funnel and why calibrated models stay post-ship.
+
+**How:** Alembic `0020_product_events_views`; `app/analytics/events.py` wired into goal/plan/session/tutor/review paths; `docs/evaluations/funnel.md` and `learner-model-roadmap.md`.
+
+**Why:** Adaptivity now stays transparent; tomorrow's estimators need a clean dataset without PII or raw answers.
+
+**Acceptance:** passed — pytest 173 passed, 6 skipped (`test_events`); views queryable; no raw answers/notes/emails in props.
+
+**Push:** `4f72e00` is on origin/main
+
