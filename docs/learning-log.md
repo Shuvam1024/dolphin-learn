@@ -679,7 +679,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## S105 — Ship v0.1.0
 
-**Commit:** PLACEHOLDER_S105 — release: v0.1.0 first ship
+**Commit:** `d128805` — release: v0.1.0 first ship
 
 **What:** Tag v0.1.0 with CHANGELOG, README limits, design status, and learning log through S105.
 
@@ -689,4 +689,4 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Acceptance:** passed — tag on main; learning log S51–S105 present; pytest 189 passed 6 skipped; golden suite green both modes.
 
-**Push:** PLACEHOLDER_S105 is on origin/main
+**Push:** `d128805` is on origin/main
