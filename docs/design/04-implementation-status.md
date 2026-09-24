@@ -4,8 +4,8 @@
 - **Milestone completed:** S01–S90; Gate 5 learn anything
 - **Schema/API changes:** Alembic through `0015_goal_status`
 - **Tests run and exact results (S90 Gate 5):**
-  - `AI_GATEWAY_ENABLED=false` pytest → green
-  - `AI_PROVIDER=fake` pytest → green
+  - `AI_GATEWAY_ENABLED=false` pytest → 148 passed, 6 skipped
+  - `AI_PROVIDER=fake` pytest → 148 passed, 6 skipped
   - ai-eval extended: goal_normalize, general_outline, item_draft, plan_explain
   - content audit Errors: 0
 - **Tests run and exact results (S89):**

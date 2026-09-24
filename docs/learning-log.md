@@ -465,3 +465,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 148 passed, 6 skipped (`test_content_audit`); audit errors 0.
 
 **Push:** `f9c4cfc` is on origin/main
+
+## S90 — Gate 5: learn anything
+
+**Commit:** `80e789f` — docs: phase 5 learn anything verified; general route and ai drafting in vision, ux, and architecture
+
+**What:** Phase 5 is gated. General route, placement skips, normalizer, wizard v2, provisional outlines, item drafting, deep content, and content audit are verified with AI off and fake.
+
+**How:** Pytest green both modes (148 passed, 6 skipped); ai-eval extended to goal_normalize, general_outline, item_draft, plan_explain; vision/UX/architecture/direction and prove-loop demo updated.
+
+**Why:** Learning anything must be real before the learner model starts adapting estimates.
+
+**Acceptance:** Gate 5 met.
+
+**Push:** `80e789f` is on origin/main
