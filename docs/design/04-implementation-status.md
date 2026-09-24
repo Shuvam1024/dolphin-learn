@@ -1,8 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S80; Gate 4 organized and adaptive
+- **Milestone completed:** S01–S81; General route
 - **Schema/API changes:** Alembic through `0015_goal_status`
+- **Tests run and exact results (S81):**
+  - `alembic upgrade head` → `0016_owned_competencies`
+  - `pytest -q` → 132 passed, 6 skipped (`test_general_route`)
 - **Tests run and exact results (S80 Gate 4):**
   - `AI_PROVIDER=` pytest → 129 passed, 6 skipped
   - `AI_PROVIDER=fake` pytest → 129 passed, 6 skipped
@@ -110,7 +113,7 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S80**
+- **Completed steps:** **S01–S81**
 - **Next step:** **S75 — Goal path v2 with replan preview → accept**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
@@ -223,3 +226,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S78** | `feat(review): review v2 with estimates and what fits` | fits; snooze 3/24/72h |
 | **S79** | `feat(web): wizard preview with lesson names, minutes, live priority, and plan explanation` | live priority; minutes; explanation |
 | **S80** | `docs: phase 4 organized and adaptive verified; every screen in ux spec` | Gate 4; UX + direction; E2E-03 |
+| **S81** | `feat(goals): general route with goal-scoped competencies from the learner` | owned competencies; general domain |

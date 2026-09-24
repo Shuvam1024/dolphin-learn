@@ -339,3 +339,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 129 passed, 6 skipped (off + fake); axe zero; E2E-03 green; no-raw-keys green; API p95 under 250ms.
 
 **Push:** `521352b` is on origin/main
+
+## S81 — General route: goal-scoped competencies
+
+**Commit:** `3f79959` — feat(goals): general route with goal-scoped competencies from the learner
+
+**What:** Something else accepts any topic with learner outcomes. Each outcome becomes an owned competency with reading, free recall, and reflection. Notes are sanitized. Evidence from free recall stays at practicing; a got_it schedules a later recall review.
+
+**How:** Alembic `0016_owned_competencies`; `general` payload on POST /goals; owner filters in proposals/progress/home/reviews; domain `general`.
+
+**Why:** Checked subjects are not the ceiling — any subject can start from the learner's own outcomes.
+
+**Acceptance:** passed — pytest 132 passed, 6 skipped (`test_general_route`).
+
+**Push:** `3f79959` is on origin/main
