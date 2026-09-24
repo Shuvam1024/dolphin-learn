@@ -32,6 +32,16 @@ _DEFAULTS: dict[str, dict[str, Any]] = {
         "why_order": "Prerequisites come first so later lessons make sense.",
         "what_is_left_out": "Deferred topics wait until you have more minutes.",
     },
+    "goal_normalize": {
+        "title": "Learn Python names",
+        "domain_key": "python",
+        "outcomes": [
+            "I can name a value",
+            "I can rebind a name",
+        ],
+        "minutes_hint_per_outcome": 15,
+        "confidence": 0.8,
+    },
 }
 
 

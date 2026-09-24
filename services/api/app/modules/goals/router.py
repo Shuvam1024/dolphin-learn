@@ -42,6 +42,37 @@ StatusLiteral = Literal["active", "paused", "archived"]
 STATUSES = frozenset({"active", "paused", "archived"})
 
 
+class NormalizeIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    text: str
+
+    @field_validator("text")
+    @classmethod
+    def _text(cls, value: str) -> str:
+        return _clean_required(value)
+
+
+class NormalizeOut(BaseModel):
+    title: str
+    domain_key: str
+    outcomes: list[str]
+    minutes_hint_per_outcome: int
+    confidence: float
+    source: str
+
+
+@router.post("/normalize", response_model=NormalizeOut)
+def post_normalize(
+    body: NormalizeIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> NormalizeOut:
+    from app.modules.goals.normalize import normalize_goal
+
+    return NormalizeOut.model_validate(normalize_goal(db, user, body.text))
+
+
 def _clean_required(value: str) -> str:
     cleaned = value.strip()
     if not cleaned:
