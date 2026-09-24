@@ -58,6 +58,7 @@ class ContentItem(BaseModel):
     misconceptions: dict[str, str] | list[Any] | None = None
     difficulty: int | None = Field(default=None, ge=1, le=3)
     effort_minutes: EffortMinutes
+    source: Literal["seed", "learner", "ai"] | None = None
 
 
 class CompetencyContent(BaseModel):

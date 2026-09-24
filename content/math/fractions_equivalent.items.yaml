@@ -121,3 +121,29 @@
   effort_minutes:
     low: 4
     high: 7
+- id: objective-ai-1
+  type: objective
+  prompt: 'Which idea matches equivalent fractions?
+
+
+    a) Same amount, different writings
+
+
+    b) Only identical digits match
+
+
+    c) Changing one part keeps the amount'
+  choices:
+  - Same amount, different writings
+  - Only identical digits match
+  - Changing one part keeps the amount
+  answer: a
+  explanation: Equivalent fractions name the same amount.
+  misconceptions:
+    b: Writings can differ.
+    c: Both parts must scale together.
+  difficulty: 1
+  effort_minutes:
+    low: 2
+    high: 4
+  source: ai

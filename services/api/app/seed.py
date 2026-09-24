@@ -144,6 +144,7 @@ def _upsert_lesson(
         payload = _payload_for(item)
         if item.type == "worked_example" and content.worked_example_markdown:
             payload = {"body_markdown": content.worked_example_markdown}
+        item_source = item.source or "seed"
         if found is None:
             found = ActivityVersion(
                 lesson_id=lesson.id,
@@ -156,7 +157,7 @@ def _upsert_lesson(
                 misconceptions=item.misconceptions,  # type: ignore[arg-type]
                 payload=payload,
                 provisional=False,
-                source="seed",
+                source=item_source,
                 reviewed_at=reviewed_at,
                 effort_minutes_low=item.effort_minutes.low,
                 effort_minutes_high=item.effort_minutes.high,
@@ -171,7 +172,7 @@ def _upsert_lesson(
             found.misconceptions = item.misconceptions  # type: ignore[assignment]
             found.payload = payload
             found.provisional = False
-            found.source = "seed"
+            found.source = item_source
             found.reviewed_at = reviewed_at
             found.effort_minutes_low = item.effort_minutes.low
             found.effort_minutes_high = item.effort_minutes.high

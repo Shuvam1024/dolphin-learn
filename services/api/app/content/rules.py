@@ -117,6 +117,30 @@ def validate_domain(bundle: DomainContent) -> list[RuleFailure]:
                 )
             )
 
+        if not fm.reviewed_by.strip() or not str(fm.reviewed_on).strip():
+            failures.append(
+                RuleFailure(
+                    path,
+                    1,
+                    "review_stamp_required",
+                    "Frontmatter needs reviewed_by and reviewed_on",
+                )
+            )
+
+        # Sentence-length warning for very long sentences in the reading.
+        for sentence in competency.reading_markdown.replace("!", ".").replace("?", ".").split("."):
+            if _words(sentence) > 60:
+                failures.append(
+                    RuleFailure(
+                        path,
+                        competency.line_map.get("reading", 1),
+                        "sentence_length",
+                        "Reading sentence exceeds 60 words",
+                        severity="warning",
+                    )
+                )
+                break
+
         graded = [item for item in competency.items if item.type in GRADED_TYPES]
         if len(graded) < 3:
             failures.append(
@@ -125,6 +149,15 @@ def validate_domain(bundle: DomainContent) -> list[RuleFailure]:
                     competency.line_map.get("items", 1),
                     "graded_count",
                     f"Need ≥ 3 graded items (found {len(graded)})",
+                )
+            )
+        if not any(item.type in {"objective", "short_answer", "numeric"} for item in competency.items):
+            failures.append(
+                RuleFailure(
+                    path,
+                    competency.line_map.get("items", 1),
+                    "typed_item_required",
+                    "Need at least one typed graded item",
                 )
             )
 

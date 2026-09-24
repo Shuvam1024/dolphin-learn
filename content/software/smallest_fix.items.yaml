@@ -121,3 +121,29 @@
   effort_minutes:
     low: 4
     high: 7
+- id: objective-ai-1
+  type: objective
+  prompt: 'Which idea matches a smallest fix?
+
+
+    a) The least change that removes the failing behavior
+
+
+    b) Rewrite the whole program first
+
+
+    c) Delete the failing test'
+  choices:
+  - The least change that removes the failing behavior
+  - Rewrite the whole program first
+  - Delete the failing test
+  answer: a
+  explanation: Prefer the least change tied to the failing test.
+  misconceptions:
+    b: Large rewrites hide understanding.
+    c: Keep the failing test.
+  difficulty: 1
+  effort_minutes:
+    low: 2
+    high: 4
+  source: ai

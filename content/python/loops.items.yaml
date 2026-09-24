@@ -121,3 +121,29 @@
   effort_minutes:
     low: 5
     high: 8
+- id: objective-ai-1
+  type: objective
+  prompt: 'Which idea matches the loops reading?
+
+
+    a) A for walk visits each element once
+
+
+    b) While loops never need an update
+
+
+    c) Loops delete every name'
+  choices:
+  - A for walk visits each element once
+  - While loops never need an update
+  - Loops delete every name
+  answer: a
+  explanation: A for loop visits each element once.
+  misconceptions:
+    b: While loops need an update.
+    c: Loops rebind, they do not delete every name.
+  difficulty: 1
+  effort_minutes:
+    low: 2
+    high: 4
+  source: ai

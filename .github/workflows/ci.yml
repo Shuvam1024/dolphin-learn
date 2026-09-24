@@ -156,7 +156,32 @@ jobs:
       - name: Install and validate content
         run: |
           python -m pip install -r services/api/requirements.txt
-          cd services/api && python -m app.content.validate
+          cd services/api
+          python -m app.content.validate
+          python -m app.content.audit
+          test -f ../docs/evaluations/content-audit.md
+      - name: Fail on unreviewed fixture
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import tempfile, shutil, subprocess, sys
+          src = Path("content/python/names.md")
+          with tempfile.TemporaryDirectory() as tmp:
+              root = Path(tmp) / "content"
+              shutil.copytree("content", root)
+              text = (root / "python" / "names.md").read_text()
+              text = text.replace("reviewed_by: curriculum", "reviewed_by: ''")
+              (root / "python" / "names.md").write_text(text)
+              proc = subprocess.run(
+                  [sys.executable, "-m", "app.content.validate", str(root)],
+                  cwd="services/api",
+                  capture_output=True,
+                  text=True,
+              )
+              assert proc.returncode != 0, proc.stdout + proc.stderr
+              assert "review_stamp_required" in proc.stdout or "review_stamp_required" in proc.stderr
+          print("unreviewed fixture rejected")
+          PY
 
   ai-fake:
     runs-on: ubuntu-latest

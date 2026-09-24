@@ -60,5 +60,5 @@ def test_seed_twice_is_idempotent() -> None:
         ).all()
         assert explained
         assert all(item.explanation for item in explained)
-        assert all(item.source == "seed" for item in explained)
+        assert all(item.source in {"seed", "ai"} for item in explained)
         assert all(item.reviewed_at is not None for item in explained)

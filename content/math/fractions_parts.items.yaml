@@ -52,7 +52,8 @@
     high: 3
 - id: numeric-4
   type: numeric
-  prompt: A pizza is cut into equal slices. The denominator on the label is eight. How many slices make one whole pizza?
+  prompt: A pizza is cut into equal slices. The denominator on the label is eight.
+    How many slices make one whole pizza?
   answer: '8'
   tolerance: 0
   explanation: The denominator names how many equal parts make the whole.
