@@ -328,7 +328,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## S80 — Gate 4: organized and adaptive
 
-**Commit:** `68f922b` — docs: phase 4 organized and adaptive verified; every screen in ux spec
+**Commit:** `521352b` — docs: phase 4 organized and adaptive verified; every screen in ux spec
 
 **What:** Phase 4 is verified: priority plans, Home v2, Learn shelf, shell/Help, path + replan preview, plan explainer, Progress by goal, review fit, wizard preview. UX docs name every screen as built.
 
@@ -338,4 +338,4 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Acceptance:** passed — pytest 129 passed, 6 skipped (off + fake); axe zero; E2E-03 green; no-raw-keys green; API p95 under 250ms.
 
-**Push:** `68f922b` is on origin/main
+**Push:** `521352b` is on origin/main
