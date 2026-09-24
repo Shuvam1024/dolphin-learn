@@ -90,7 +90,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## S63 — Tutor: explain differently and validated hints
 
-**Commit:** `PENDING` — feat(tutor): explain differently and validated generated hints with seeded fallback
+**Commit:** `c4c7819` — feat(tutor): explain differently and validated generated hints with seeded fallback
 
 **What:** The tutor can explain a lesson differently and give a hint. Generated hints are checked against the key; a leak falls back to the seeded hint. Explain and hints count as help for the current item. With AI off, explain is 404 and the panel stays hidden.
 
@@ -100,5 +100,5 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Acceptance:** passed — pytest 98 passed, 6 skipped (`test_tutor.py`: leak→seeded, clean AI hint, explain assistance, AI-off 404).
 
-**Push:** `PENDING` is on origin/main
+**Push:** `c4c7819` is on origin/main
 
