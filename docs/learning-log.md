@@ -493,3 +493,18 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 151 passed, 6 skipped (`test_effort_calibration`).
 
 **Push:** `f1e9e74` is on origin/main
+
+## S92 — Difficulty- and history-aware item selection
+
+**Commit:** `1d249a0` — feat(learner-model): difficulty and history aware item selection
+
+**What:** Next graded item is chosen by purpose and history: first attempts stay easy (1–2); after an independent correct, the fresh check steps up one level; after assisted or incorrect, same or lower with a different item. Reviews alternate difficulty. Solution-revealed items never return. Each pick logs a `selection_reason`.
+
+**How:** Alembic `0019_activity_difficulty`; `item_pool.pick_next`; evidence fresh-check uses it; seed writes difficulty 1–3.
+
+**Why:** Practice should match what the learner just showed — without recycling revealed solutions.
+
+**Acceptance:** passed — pytest 153 passed, 6 skipped (`test_item_selection`).
+
+**Push:** `1d249a0` is on origin/main
+
