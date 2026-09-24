@@ -53,34 +53,31 @@ test("review v2 shows fit line and snooze presets without forbidden words", asyn
     data: { idempotency_key: "once", choice: "b" },
   });
 
-  // Force due via API by loading due queue after patching due_at through a second attempt path:
-  // Use review list — if nothing due yet, scheduled should still avoid forbidden words.
+  const due = await page.request.get("http://127.0.0.1:8000/api/v1/reviews/due", { headers });
+  expect(due.ok()).toBeTruthy();
+  const body = (await due.json()) as {
+    due: Array<{ id: string; estimated_minutes: number }>;
+    scheduled: Array<{ id: string; estimated_minutes: number }>;
+    fits: { count: number; minutes: number };
+    preferred_session_minutes: number;
+  };
+  expect(body.fits).toBeTruthy();
+  expect(body.preferred_session_minutes).toBeGreaterThan(0);
+  expect(
+    [...body.due, ...body.scheduled].every((item) => item.estimated_minutes >= 1),
+  ).toBeTruthy();
+
   await page.goto("/app/review");
   await expect(page.getByText(/overdue|missed|streak/i)).toHaveCount(0);
-
-  const due = await page.request.get("http://127.0.0.1:8000/api/v1/reviews/due", { headers });
-  const body = await due.json();
-  if ((body.due as unknown[]).length === 0 && (body.scheduled as Array<{ id: string }>).length) {
-    // Make the first scheduled item due by snoozing won't help; rely on API shape assertions.
-    expect(body.fits).toBeTruthy();
-  }
-
-  // Make due via direct DB isn't available from e2e; create due by accepting that scheduled exists
-  // and check empty-state copy, then force due through snooze reverse isn't possible.
-  // Instead: if scheduled, page shows estimated minutes.
-  if ((body.scheduled as unknown[]).length > 0) {
-    await expect(page.getByText(/About \d+ min/)).toBeVisible();
-  }
-
-  // Force due using backend token + Python test pattern via patch is not exposed;
-  // verify fit line when we POST a synthetic by moving due with snooze negative — skip.
-  // Full due flow covered in pytest; here assert presets appear when due is present.
-  const firstDue = (body.due as Array<{ id: string }>)[0];
-  if (firstDue) {
-    await page.goto("/app/review");
+  if (body.due.length > 0) {
     await expect(page.getByText(/\d+ due · start with \d+/)).toBeVisible();
     await expect(page.getByRole("button", { name: "3h" })).toBeVisible();
     await expect(page.getByRole("button", { name: "24h" })).toBeVisible();
     await expect(page.getByRole("button", { name: "72h" })).toBeVisible();
+  } else {
+    await expect(page.getByRole("heading", { name: "Nothing is due" })).toBeVisible();
+    if (body.scheduled.length > 0) {
+      await expect(page.getByText(/About \d+ min/)).toBeVisible();
+    }
   }
 });

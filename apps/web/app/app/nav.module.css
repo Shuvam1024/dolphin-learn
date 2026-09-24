@@ -42,7 +42,11 @@
   color: var(--color-ink);
   font-weight: 700;
   font-size: 15px;
-  padding: 6px 2px;
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 8px;
   border-bottom: 2px solid transparent;
 }
 

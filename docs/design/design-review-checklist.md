@@ -42,3 +42,21 @@ A screen passes only when every item below is true. Sign the screen in the gate 
 - [ ] Page meets TTFB ≤ 800 ms, DCL ≤ 1.5 s, LCP ≤ 2.5 s against `next start` on the harness machine
 - [ ] First-load JS for the route ≤ 130 kB (Next build output)
 - [ ] Deterministic API calls behind the screen stay within p95 ≤ 250 ms on the heavy fixture
+
+
+## Gate 4 signed screens (S80)
+
+Signed for Phase 4 — organized and adaptive. Tokens, no raw keys, one primary, Help for definitions, no streak/percent/guilt, AI labeled when shown.
+
+| Screen | Route | Notes |
+|---|---|---|
+| Landing | `/` | Product in five lines; Sign in primary |
+| Home v2 | `/app` | One next action; goal cards; due count |
+| Learn shelf | `/app/learn` | Active / Paused / Archived |
+| Goal path v2 | `/app/goals/:id` | Minutes left; chips; replan preview → accept |
+| Wizard preview | `/app/goals/new` | Live priority; minutes; explanation |
+| Progress v2 | `/app/progress` | By goal; legend → Help; upcoming reviews |
+| Review v2 | `/app/review` | Fit line; snooze 3/24/72h |
+| Help / More / Settings | `/app/help`, `/app/more`, `/app/settings` | Honest Help; More links |
+
+API p95 recorded under Gate 4 in `04-implementation-status.md`. Axe baseline deleted; zero serious/critical on `/app` routes.

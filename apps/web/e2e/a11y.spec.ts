@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
-import { writeFileSync } from "node:fs";
+import { existsSync, unlinkSync } from "node:fs";
 import path from "node:path";
 
 const APP_ROUTES = [
@@ -10,6 +10,7 @@ const APP_ROUTES = [
   "/app/library",
   "/app/progress",
   "/app/more",
+  "/app/help",
   "/app/goals/new",
 ] as const;
 
@@ -76,6 +77,7 @@ async function scan(
 ): Promise<Violation[]> {
   await page.goto(route);
   await page.waitForLoadState("domcontentloaded");
+  await page.waitForFunction(() => Boolean(document.title && document.title.trim()));
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
     .analyze();
@@ -91,8 +93,11 @@ async function scan(
     }));
 }
 
-test("axe baseline over empty and populated /app routes", async ({ page, request }) => {
-  const email = `s51-a11y-${Date.now()}@example.com`;
+test("Gate 4: zero serious/critical axe findings; baseline deleted", async ({
+  page,
+  request,
+}) => {
+  const email = `s80-a11y-${Date.now()}@example.com`;
   await signIn(page, email);
   const token = await tokenFrom(page);
 
@@ -107,6 +112,7 @@ test("axe baseline over empty and populated /app routes", async ({ page, request
     "/app/learn",
     "/app/review",
     "/app/progress",
+    "/app/help",
     `/app/goals/${goalId}`,
     `/app/learn/${sessionId}`,
   ];
@@ -114,32 +120,13 @@ test("axe baseline over empty and populated /app routes", async ({ page, request
     found.push(...(await scan(page, route, "populated")));
   }
 
-  const byRoute: Record<string, Omit<Violation, "route">[]> = {};
-  for (const item of found) {
-    const { route, ...rest } = item;
-    (byRoute[route] ??= []).push(rest);
-  }
-
   const baselinePath = path.join(__dirname, "a11y-baseline.json");
-  writeFileSync(
-    baselinePath,
-    JSON.stringify(
-      {
-        recorded_at: new Date().toISOString(),
-        note: "S58 Gate 2 baseline: serious/critical by route. Later gates require zero.",
-        serious_or_critical: found,
-        by_route: byRoute,
-        totals: {
-          serious_or_critical: found.length,
-          routes_with_findings: Object.keys(byRoute).length,
-        },
-      },
-      null,
-      2,
-    ),
-  );
-
-  // S51 records current violations; it does not fail the suite on them.
-  expect(baselinePath).toContain("a11y-baseline.json");
-  console.log(`a11y baseline: ${found.length} serious/critical finding(s)`);
+  if (existsSync(baselinePath)) {
+    unlinkSync(baselinePath);
+  }
+  expect(existsSync(baselinePath)).toBe(false);
+  expect(
+    found,
+    found.map((item) => `${item.route} ${item.id}: ${item.help}`).join("\n"),
+  ).toEqual([]);
 });

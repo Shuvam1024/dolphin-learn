@@ -325,3 +325,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 129 passed, 6 skipped; e2e goal-wizard updated.
 
 **Push:** `b506ed6` is on origin/main
+
+## S80 — Gate 4: organized and adaptive
+
+**Commit:** `68f922b` — docs: phase 4 organized and adaptive verified; every screen in ux spec
+
+**What:** Phase 4 is verified: priority plans, Home v2, Learn shelf, shell/Help, path + replan preview, plan explainer, Progress by goal, review fit, wizard preview. UX docs name every screen as built.
+
+**How:** Pytest AI off and fake; API perf recorded; axe zero and baseline deleted; no-raw-keys; E2E-03; checklist signed for Phase 4 screens; updates to `01-product-and-ux`, `05-direction`, `04-implementation-status`, `prove-loop-demo`.
+
+**Why:** Organization and time adaptivity must be true before General-route learning expands the subject set.
+
+**Acceptance:** passed — pytest 129 passed, 6 skipped (off + fake); axe zero; E2E-03 green; no-raw-keys green; API p95 under 250ms.
+
+**Push:** `68f922b` is on origin/main

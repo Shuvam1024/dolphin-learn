@@ -61,7 +61,7 @@ test("progress v2 groups evidence by goal without percents", async ({ page }) =>
   await expect(page.getByRole("heading", { name: "Evidence by goal" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Learn Python" })).toBeVisible();
   await expect(page.getByText("Names and values: Shown on your own")).toBeVisible();
-  await expect(page.getByText(/Not tried yet/)).toBeVisible();
+  await expect(page.getByText(/Not tried yet/).first()).toBeVisible();
   await expect(page.getByRole("heading", { name: "Upcoming reviews" })).toBeVisible();
   await expect(page.getByText("% mastered")).toHaveCount(0);
 });

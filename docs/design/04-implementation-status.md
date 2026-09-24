@@ -1,8 +1,14 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S79; wizard preview with live priority
+- **Milestone completed:** S01–S80; Gate 4 organized and adaptive
 - **Schema/API changes:** Alembic through `0015_goal_status`
+- **Tests run and exact results (S80 Gate 4):**
+  - `AI_PROVIDER=` pytest → 129 passed, 6 skipped
+  - `AI_PROVIDER=fake` pytest → 129 passed, 6 skipped
+  - API perf p95 (ms): home 123, progress 134, reviews/due 74, overview 38, session 28, plan-proposals 10 (budget 250)
+  - axe: zero serious/critical; `a11y-baseline.json` deleted
+  - no-raw-keys green; E2E-03 green; gate e2e 7 passed
 - **Tests run and exact results (S79):**
   - wizard preview + live priority; e2e/goal-wizard.spec.ts
   - `pytest -q` → 129 passed, 6 skipped
@@ -104,7 +110,7 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S79**
+- **Completed steps:** **S01–S80**
 - **Next step:** **S75 — Goal path v2 with replan preview → accept**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
@@ -122,7 +128,7 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | 1D | Honest demo content (S47–S50) | Done |
 | 2 | Foundations (S51–S58) | Done |
 | 3 | The learning session (S59–S70) | Done (Gate 3) |
-| 4 | Organized / adaptive (S71–S80) | In progress (next: S75) |
+| 4 | Organized / adaptive (S71–S80) | Done (Gate 4) |
 | Later | Phases 4–7 per first-ship plan | Later |
 
 ---
@@ -216,3 +222,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S77** | `feat(progress): progress v2 grouped by goal with legend and upcoming reviews` | goals[]; upcoming_reviews |
 | **S78** | `feat(review): review v2 with estimates and what fits` | fits; snooze 3/24/72h |
 | **S79** | `feat(web): wizard preview with lesson names, minutes, live priority, and plan explanation` | live priority; minutes; explanation |
+| **S80** | `docs: phase 4 organized and adaptive verified; every screen in ux spec` | Gate 4; UX + direction; E2E-03 |

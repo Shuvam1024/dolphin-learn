@@ -59,5 +59,5 @@ test("goal path v2 shows minutes chips and replan preview then accept", async ({
   await expect(page.getByRole("button", { name: "Accept" })).toBeVisible();
   await page.getByRole("button", { name: "Accept" }).click();
   await expect(page.getByText("Plan version 2")).toBeVisible();
-  await expect(page.getByText(/Not enough minutes this time/)).toBeVisible();
+  await expect(page.getByText(/Not enough minutes this time/).first()).toBeVisible();
 });

@@ -28,34 +28,38 @@ Detailed first-launch steps:
 
 ## Global navigation (P0 lock)
 
-Primary: **Learn / Review / Library / Progress** + **More** (Settings, Projects when present, account).
+Primary: **Learn / Review / Library / Progress** + **More** (Settings, Help, Privacy, Sign out).
+
+Under 768px the shell uses **bottom tabs** for Learn / Review / Library / Progress / More. From 768px up it uses a top bar with the same destinations. Landing (`/`) states what Dolphin is in five lines; Help explains evidence words, minutes, reviews, and that the tutor never grades.
 
 | Surface | Role |
 |---|---|
-| **Home** (`/app`) | Product hub — next action, goals, feasibility, due reviews, evidence snapshot, Quick Learn |
-| **Learn** | Goals, path overview, Session Studio entry |
-| **Review** | Due queue |
-| **Library** | Knowledge Vault (honest empty/coming-later until Phase 2A) |
-| **Progress** | Evidence Ledger–oriented view |
-| **More** | Settings, privacy, help |
+| **Home** (`/app`) | One next action with subtitle and minutes; goal cards; due-review count; evidence chips |
+| **Learn** | Every goal organized: Active / Paused / Archived with Continue, Pause, Resume, Archive |
+| **Review** | Due queue with estimates and what fits this sitting; snooze 3h / 24h / 72h |
+| **Library** | Knowledge Vault (honest empty/coming-later until later phase) |
+| **Progress** | Evidence by goal with facet chips, collapsed legend → Help, upcoming reviews |
+| **More** | Settings, Help, Privacy, Sign out |
 
 Within Session Studio, use a contextual workspace — do not bounce the learner across many top-level pages.
 
 ### Routes
 
 ```text
-/                       marketing or auth redirect
+/                       landing (what Dolphin is)
 /sign-in                managed authentication
-/onboarding             optional preferences + first goal
-/app                    Home (learning dashboard hub)
-/app/goals/new          goal + study-minute budget wizard
-/app/goals/:goalId      objectives, plan, feasibility
-/app/goals/:goalId/edit timeframe, scope, preferences
+/app                    Home
+/app/goals/new          goal wizard (text → minutes → priority → preview → accept)
+/app/goals/:goalId      path v2: minutes left, lesson chips, Not in this plan, replan preview → accept
+/app/goals/:goalId/start sitting chooser
+/app/learn              goal shelf (active / paused / archived)
 /app/learn/:sessionId   Session Studio
-/app/review             due items + history
+/app/review             due items + fit + snooze presets
 /app/library            files and linked sources (later)
-/app/progress           Evidence Ledger analytics
-/app/settings           profile, access, privacy, export/delete
+/app/progress           Evidence by goal + upcoming reviews
+/app/help               evidence, minutes, reviews, tutor limits
+/app/settings           stub → privacy / export later
+/app/more               Settings, Help, Privacy, Sign out
 ```
 
 ---
@@ -64,15 +68,15 @@ Within Session Studio, use a contextual workspace — do not bounce the learner 
 
 ### Home
 
-One primary next action (“Continue: solving equations — 20 min”); due reviews; active goals with feasibility note; Quick Learn; recent independent evidence; empty-state → create first goal. **No** streak counters, leaderboards, or punitive missed-day shame.
+One primary next action with subtitle and minutes; goal cards with subject and next lesson; due-review count; recent evidence chips. Empty-state → create first goal. Log out lives under More. **No** streak counters, leaderboards, or punitive missed-day shame.
 
 ### Goal wizard
 
-1. Goal text → 2. Study minutes (one sitting, or minutes per sitting × number of sittings) → 3. Priority/preferences → 4. Optional diagnostic → 5. Plan preview + disposition rationale. Always allow back/edit. Keyboard-friendly; mobile usable. There is no deadline date.
+1. Goal text + subject → 2. Study minutes → 3. Priority (Cover more ground / Focus one topic / Leave room for review) → preview with lesson names and minutes, total vs budget, Not in this plan, plan explanation (AI chip when on) → Accept. Live priority re-fetches the proposal. Keyboard-friendly; mobile usable. There is no deadline date.
 
 ### Learning path
 
-Accessible ordered list; labels: prereq / needs-practice / demonstrated / deferred; session cards with minutes + evidence objectives; “Why this next?”; usable minutes and measured study minutes.
+Header “About N of M minutes left”; lessons with facet chips and `~low–high min`; why-next; Not in this plan with plain reasons; Update plan → preview → Accept (stale hash rejected); Plan history disclosure. Priority shapes breadth, depth, and review reserve.
 
 ### Session Studio
 
@@ -94,15 +98,15 @@ End-of-session summary lists what you showed on your own, practiced with help, a
 
 ### Review
 
-Due by competency, why due, estimated minutes, snooze, independent question, schedule update.
+“N due · start with M (about K minutes)” against preferred session length; one item at a time; estimated minutes per item; snooze presets 3h / 24h / 72h. Copy never says overdue, missed, or streak.
 
 ### Progress (Evidence Ledger)
 
-Facets: exposed / practicing / independently_demonstrated / retained / applied / unassessed. Distinguish assisted vs independent. **Never** a single global “% mastered.”
+Grouped by goal: competency name, facet chip, last independent time, self-reported flag, unassessed count. Collapsed legend links to Help. Upcoming reviews listed. **Never** a single global “% mastered.”
 
-### Settings
+### Settings / Help / More
 
-Language, density, reduced motion, default session length, optional non-punitive notifications, privacy/export/delete.
+Help owns evidence words, how minutes are counted, reviews, and tutor limits (never grades). More links Settings, Help, Privacy, Sign out.
 
 ---
 

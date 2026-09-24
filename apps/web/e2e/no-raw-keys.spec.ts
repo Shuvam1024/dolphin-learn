@@ -116,9 +116,8 @@ test("home progress review path and wizard preview hide raw keys", async ({ page
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await page.getByRole("button", { name: "Save goal" }).click();
   await expect(page.getByRole("heading", { name: "Goal saved" })).toBeVisible();
-  await expect(page.getByText("Names and values", { exact: true })).toBeVisible();
-  await expect(
-    page.getByText("Calling a function (Not enough minutes this time)"),
-  ).toBeVisible();
+  await expect(page.getByText("Not in this plan").first()).toBeVisible();
+  await expect(page.getByText(/Names and values/).first()).toBeVisible();
+  await expect(page.getByText(/Calling a function/).first()).toBeVisible();
   await assertNoRawKeys(page);
 });

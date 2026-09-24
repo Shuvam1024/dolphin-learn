@@ -1,4 +1,4 @@
-# Prove Loop demo (through Gate 3)
+# Prove Loop demo (through Gate 4)
 
 **Scope:** Click path for the seeded Prove Loop plus Phase 3 learning-session features on `main`. Next incomplete first-ship step is **S71** in `docs/design/06-first-ship-plan.md`.
 
@@ -58,4 +58,4 @@ npx playwright test \
 
 Recorded on September 24, 2026: pytest **112 passed, 6 skipped** (AI off and fake); `make ai-eval` green; gate Playwright **13 passed, 1 skipped**.
 
-Phase 3 (Gate 3) stops here. Next is **Phase 4 — S71**.
+Phase 4 (Gate 4) is verified. Next is **Phase 5 — S81** (General route).
