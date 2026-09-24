@@ -104,7 +104,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## S64 — Typed grading and AI misconception notes
 
-**Commit:** `PENDING` — feat(assess): short answer and numeric grading; ai misconception note for typed mistakes
+**Commit:** `c09e19f` — feat(assess): short answer and numeric grading; ai misconception note for typed mistakes
 
 **What:** Short-answer and numeric items grade deterministically (normalize text; parse decimals/fractions with tolerance). A wrong typed answer can get an AI misconception note labeled AI — the grade is decided first and never changed by the model.
 
@@ -114,5 +114,5 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Acceptance:** passed — pytest 102 passed, 6 skipped (`test_grading_types`, `test_ai_misconception`).
 
-**Push:** `PENDING` is on origin/main
+**Push:** `c09e19f` is on origin/main
 
