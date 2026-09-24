@@ -58,7 +58,7 @@ npx playwright test \
 
 Recorded on September 24, 2026: pytest **112 passed, 6 skipped** (AI off and fake); `make ai-eval` green; gate Playwright **13 passed, 1 skipped**.
 
-Phase 6 (Gate 6) is verified. Next is **Phase 7 — S96** (settings).
+Phase 6 (Gate 6) is verified. Phase 7 RC is recorded in `docs/evaluations/v0.1-rc.md`. First ship is **S105 — v0.1.0**.
 
 ### Demo v2 — General route with outline
 

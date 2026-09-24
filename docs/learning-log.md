@@ -14,7 +14,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## Next incomplete step
 
-**S66 — Size the sitting** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
+**S105 — Ship v0.1.0** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md) (after S104 RC).
 
 ---
 
@@ -662,3 +662,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** 7832c1f is on origin/main
 
+
+## S104 — Release-candidate review
+
+**Commit:** 99a9264 — docs: v0.1 release candidate verification, ai evaluation, and design review record
+
+**What:** RC record covers golden suite both modes, API p95 under budget, axe zero serious/critical, design-review screens, known limitations, no P0s.
+
+**How:** docs/evaluations/v0.1-rc.md; checklist Gate 7 screens; direction and prove-loop demo updated.
+
+**Why:** First ship needs an honest verification gate before the tag.
+
+**Acceptance:** passed — gate met with AI off and fake; no P0 findings.
+
+**Push:** 99a9264 is on origin/main

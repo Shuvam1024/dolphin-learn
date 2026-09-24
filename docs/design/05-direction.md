@@ -22,11 +22,15 @@ The gaps, in order: (1) “learn anything” stops at a dropdown, (2) content is
 
 ---
 
+## Where we stand after Gate 7 / v0.1 RC (September 24, 2026)
+
+Phase 7 is verified through the golden release suite and RC record. Settings, managed auth, export/delete, edge hardening, containers, observability, and the release suite are on `main`. Next is **S105 — tag v0.1.0**.
+
 ## Where we stand after Gate 6 (September 24, 2026)
 
 Phase 6 is verified. Effort estimates calibrate from measured active minutes; item selection uses difficulty and history with logged reasons; every prompt has a safety eval suite; product events and dataset views record what future estimators would need — without storing answers or emails.
 
-Next is **Phase 7 — Account, trust, release** (S96).
+Next is **Phase 7 — Account, trust, release** (S96) — complete through S104 RC; ship with S105.
 
 ## Where we stand after Gate 5 (September 24, 2026)
 

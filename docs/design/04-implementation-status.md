@@ -4,7 +4,7 @@
 - **Tests run and exact results (S103):**
   - `make release-suite` AI off → 21 passed, 1 skipped; AI fake → 22 passed
   - pytest → 189 passed, 6 skipped
-- **Milestone completed:** S01–S103; Golden release suite
+- **Milestone completed:** S01–S104; v0.1 release candidate recorded
 - **Schema/API changes:** Alembic through `0023_users_deleted_at`
 - **Tests run and exact results (S98–S99):**
   - `pytest tests/test_export.py tests/test_delete_account.py` → 4 passed
@@ -300,3 +300,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S101** | `chore(deploy): dockerfiles, prod compose, and runbook with migrations on release` | compose.prod; RUNBOOK |
 | **S102** | `feat(observability): structured logs, ai metrics, and readiness` | /metrics; /ready |
 | **S103** | `test(e2e): golden release suite` | release config; CI matrix |
+| **S104** | `docs: v0.1 release candidate verification, ai evaluation, and design review record` | v0.1-rc.md |

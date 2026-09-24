@@ -60,3 +60,15 @@ Signed for Phase 4 — organized and adaptive. Tokens, no raw keys, one primary,
 | Help / More / Settings | `/app/help`, `/app/more`, `/app/settings` | Honest Help; More links |
 
 API p95 recorded under Gate 4 in `04-implementation-status.md`. Axe baseline deleted; zero serious/critical on `/app` routes.
+
+## Gate 7 / RC signed screens (S104)
+
+Signed for Phase 7 — account, trust, release. Same checklist; Settings privacy and export/delete added.
+
+| Screen | Route | Notes |
+|---|---|---|
+| Settings | `/app/settings` | Prefs; tutor toggle; export; delete |
+| Privacy | `/privacy` | Export rate limit; 30-day retention |
+| Sign-in | `/sign-in` | Dev form only in development |
+
+RC record: `docs/evaluations/v0.1-rc.md`.
