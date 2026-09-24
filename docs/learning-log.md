@@ -34,7 +34,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## S59 — Studio v2 renderer
 
-**Commit:** `78d352d` — feat(studio): studio v2 renderer for every activity type with tutor panel
+**Commit:** `010f1ba` — feat(studio): studio v2 renderer for every activity type with tutor panel
 
 **What:** Session Studio is rebuilt from kit pieces: header with goal › lesson and activity position, markdown body with real `<code>`, answer inputs by kind, a tutor panel that stays hidden when AI is off, and one sticky primary action.
 
@@ -44,5 +44,5 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Acceptance:** passed — smoke 23 passed; studio-v2 green; pytest 81 passed, 6 skipped; tsc/eslint/vitest clean.
 
-**Push:** `78d352d` is on origin/main
+**Push:** `010f1ba` is on origin/main
 
