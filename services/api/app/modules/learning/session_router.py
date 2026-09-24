@@ -100,6 +100,15 @@ class SessionOut(BaseModel):
     applied: bool
     activity: ActivityOut | None = None
     summary: SummaryOut | None = None
+    target_minutes: int = 0
+    goal: dict[str, str] | None = None
+    lesson: dict[str, str] | None = None
+    position: int = 0
+    total: int = 0
+    remaining_estimate: dict[str, int] | None = None
+    studio_activity: dict[str, object] | None = None
+    actions: dict[str, object] | None = None
+    tutor: dict[str, object] | None = None
 
 
 def _out(
@@ -108,11 +117,18 @@ def _out(
     *,
     applied: bool,
     goal_id: uuid.UUID | None = None,
+    user: User | None = None,
 ) -> SessionOut:
+    from app.modules.learning.studio_view import build_studio
+
+    studio = build_studio(db, user, row) if user is not None else None
+    resolved_goal = goal_id
+    if resolved_goal is None and studio and studio["goal"]["id"]:
+        resolved_goal = uuid.UUID(str(studio["goal"]["id"]))
     return SessionOut(
         id=row.id,
         status=row.status,
-        goal_id=goal_id,
+        goal_id=resolved_goal,
         plan_activity_id=row.plan_activity_id,
         event_count=event_count(db, row.id),
         active_minutes=session_active_minutes(db, row),
@@ -121,6 +137,15 @@ def _out(
         summary=(
             SummaryOut.model_validate(build_summary(db, row)) if row.status == "finished" else None
         ),
+        target_minutes=int(studio["target_minutes"]) if studio else 0,
+        goal=studio["goal"] if studio else None,
+        lesson=studio["lesson"] if studio else None,
+        position=int(studio["position"]) if studio else 0,
+        total=int(studio["total"]) if studio else 0,
+        remaining_estimate=studio["remaining_estimate"] if studio else None,
+        studio_activity=studio["activity"] if studio else None,
+        actions=studio["actions"] if studio else None,
+        tutor=studio["tutor"] if studio else None,
     )
 
 
@@ -132,7 +157,7 @@ def post_session(
 ) -> SessionOut:
     goal = get_owned_goal(db, user, body.goal_id)
     row = start_session(db, user, goal)
-    return _out(row, db, applied=True, goal_id=goal.id)
+    return _out(row, db, applied=True, goal_id=goal.id, user=user)
 
 
 @router.get("/{session_id}", response_model=SessionOut)
@@ -142,7 +167,7 @@ def get_session(
     db: Session = Depends(get_db),
 ) -> SessionOut:
     row = get_owned_session(db, user, session_id)
-    return _out(row, db, applied=True)
+    return _out(row, db, applied=True, user=user)
 
 
 @router.patch("/{session_id}", response_model=SessionOut)
@@ -160,7 +185,7 @@ def patch_session(
         event_type=body.event.event_type,
         payload=body.event.payload,
     )
-    return _out(row, db, applied=applied)
+    return _out(row, db, applied=applied, user=user)
 
 
 class AttemptIn(BaseModel):
@@ -245,7 +270,7 @@ def post_finish(
     db: Session = Depends(get_db),
 ) -> SessionOut:
     row, _summary = finish_session(db, user, session_id)
-    return _out(row, db, applied=True)
+    return _out(row, db, applied=True, user=user)
 
 
 @router.post("/{session_id}/advance", response_model=SessionOut)
@@ -255,7 +280,7 @@ def post_advance(
     db: Session = Depends(get_db),
 ) -> SessionOut:
     row = advance_session(db, user, session_id)
-    return _out(row, db, applied=True)
+    return _out(row, db, applied=True, user=user)
 
 
 @router.post("/{session_id}/independent-check", response_model=SessionOut)
@@ -265,7 +290,7 @@ def post_independent_check(
     db: Session = Depends(get_db),
 ) -> SessionOut:
     row = move_to_unseen_question(db, user, session_id)
-    return _out(row, db, applied=True)
+    return _out(row, db, applied=True, user=user)
 
 
 @router.post("/{session_id}/hint", response_model=HelpOut)
