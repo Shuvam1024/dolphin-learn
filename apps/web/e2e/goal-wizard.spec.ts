@@ -52,6 +52,11 @@ test("keyboard-only wizard saves a goal and keeps fields on back", async ({ page
   await expect(page.getByText("Names and values", { exact: true })).toBeVisible();
   await expect(page.getByText("120 minutes in one sitting")).toBeVisible();
   await expect(page.getByText("Priority: Focus one topic")).toBeVisible();
+  await expect(page.getByText(/Plan uses \d+ of your minutes/)).toBeVisible();
+  await expect(page.getByText("Not in this plan")).toBeVisible();
+  await expect(page.getByText(/~\d+–\d+ min/).first()).toBeVisible();
+  await expect(page.getByText("Why this plan")).toBeVisible();
+  await expect(page.getByText(/python\./)).toHaveCount(0);
 
   const token = (await page.context().cookies()).find(
     (cookie) => cookie.name === "dolphin_access_token",
@@ -64,10 +69,12 @@ test("keyboard-only wizard saves a goal and keeps fields on back", async ({ page
     id: string;
     title: string;
     normalized_objective: string | null;
+    priority?: string;
     time_budget: { mode: string; one_off_minutes: number | null } | null;
   }>;
   const saved = goals.find((goal) => goal.title === "Names and values");
   expect(saved?.normalized_objective).toBe("Priority: Focus one topic");
+  expect(saved?.priority).toBe("apply");
   expect(saved?.time_budget?.mode).toBe("one_off");
   expect(saved?.time_budget?.one_off_minutes).toBe(120);
 

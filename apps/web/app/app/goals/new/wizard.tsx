@@ -12,15 +12,30 @@ type SavedGoal = {
   summary: string;
 };
 
+type ProposalItem = {
+  competency_key: string;
+  name: string;
+  competency_name?: string;
+  effort_low: number;
+  effort_high: number;
+  reason_code?: string;
+  reason_text?: string;
+};
+
 type Proposal = {
-  included: { competency_key: string; name: string; competency_name?: string }[];
-  deferred: {
-    competency_key: string;
-    name: string;
-    competency_name?: string;
-    reason_code: string;
-    reason_text?: string;
-  }[];
+  usable_minutes: number;
+  estimated_required_low: number;
+  estimated_required_high: number;
+  included: ProposalItem[];
+  deferred: ProposalItem[];
+  priority_label?: string;
+  priority_effect?: string;
+  plan_explanation?: {
+    summary: string;
+    why_order: string;
+    what_is_left_out: string;
+    source: string;
+  } | null;
 };
 
 type DomainOption = {
@@ -28,13 +43,23 @@ type DomainOption = {
   name: string;
 };
 
-const PRIORITIES = ["Focus one topic", "Cover more ground", "Leave room for review"] as const;
+const PRIORITY_OPTIONS = [
+  { label: "Cover more ground", value: "understand" },
+  { label: "Focus one topic", value: "apply" },
+  { label: "Leave room for review", value: "make_it_stick" },
+] as const;
+
+type PriorityValue = (typeof PRIORITY_OPTIONS)[number]["value"];
 
 function wholeNumber(value: string): number | null {
   if (!/^\d+$/.test(value.trim())) {
     return null;
   }
   return Number(value);
+}
+
+function labelFor(value: PriorityValue): string {
+  return PRIORITY_OPTIONS.find((item) => item.value === value)?.label ?? value;
 }
 
 export function GoalWizard() {
@@ -48,7 +73,7 @@ export function GoalWizard() {
   const [weeklyMinutes, setWeeklyMinutes] = useState("30");
   const [horizonDays, setHorizonDays] = useState("14");
   const [preferred, setPreferred] = useState("30");
-  const [priority, setPriority] = useState<(typeof PRIORITIES)[number]>("Focus one topic");
+  const [priority, setPriority] = useState<PriorityValue>("apply");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [saved, setSaved] = useState<SavedGoal | null>(null);
@@ -79,7 +104,7 @@ export function GoalWizard() {
   }, []);
 
   useEffect(() => {
-    if (!saved) {
+    if (!saved || accepted) {
       return;
     }
     let cancelled = false;
@@ -87,7 +112,7 @@ export function GoalWizard() {
       const response = await fetch(`/api/goals/${saved.id}/plan-proposals`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: "{}",
+        body: JSON.stringify({ priority }),
       });
       if (!response.ok || cancelled) {
         return;
@@ -100,7 +125,7 @@ export function GoalWizard() {
     return () => {
       cancelled = true;
     };
-  }, [saved]);
+  }, [saved, priority, accepted]);
 
   async function acceptPlan() {
     if (!saved) {
@@ -194,7 +219,8 @@ export function GoalWizard() {
         title: title.trim(),
         raw_request: rawRequest.trim(),
         domain_key: domainKey,
-        normalized_objective: `Priority: ${priority}`,
+        priority,
+        normalized_objective: `Priority: ${labelFor(priority)}`,
         time_budget: timeBudget,
       }),
     });
@@ -212,37 +238,72 @@ export function GoalWizard() {
   }
 
   if (saved) {
+    const domainName = domains.find((item) => item.key === domainKey)?.name ?? domainKey;
     return (
       <main className={styles.shell}>
         <section className={styles.card}>
           <p className={styles.kicker}>Goal</p>
           <h1 className={styles.title}>{accepted ? "Plan accepted" : "Goal saved"}</h1>
           <p className={styles.step}>
-            {saved.title}. Subject: {domainKey}. {saved.summary}. Priority: {priority}.
+            {saved.title}. Subject: {domainName}. {saved.summary}. Priority: {labelFor(priority)}.
           </p>
+          {!accepted ? (
+            <label className={styles.label} htmlFor="live-priority">
+              Priority
+            </label>
+          ) : null}
+          {!accepted ? (
+            <select
+              id="live-priority"
+              className={styles.select}
+              value={priority}
+              onChange={(event) => setPriority(event.target.value as PriorityValue)}
+            >
+              {PRIORITY_OPTIONS.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          ) : null}
           {proposal ? (
             <>
+              <p className={styles.label}>
+                Plan uses {proposal.usable_minutes} of your minutes (estimate{" "}
+                {proposal.estimated_required_low}–{proposal.estimated_required_high})
+              </p>
               <p className={styles.label}>Included</p>
               <ul>
                 {proposal.included.map((item) => (
                   <li key={item.competency_key}>
-                    {item.competency_name ?? item.name}
+                    {item.competency_name ?? item.name}. ~{item.effort_low}–{item.effort_high} min
                   </li>
                 ))}
               </ul>
-              <p className={styles.label}>Deferred</p>
+              <p className={styles.label}>Not in this plan</p>
               {proposal.deferred.length === 0 ? (
                 <p className={styles.step}>Nothing is deferred.</p>
               ) : (
                 <ul>
                   {proposal.deferred.map((item) => (
                     <li key={item.competency_key}>
-                      {item.competency_name ?? item.name} (
-                      {item.reason_text ?? item.reason_code})
+                      {item.competency_name ?? item.name}.{" "}
+                      {item.reason_text ?? item.reason_code}
                     </li>
                   ))}
                 </ul>
               )}
+              {proposal.plan_explanation ? (
+                <div>
+                  <p className={styles.label}>
+                    Why this plan
+                    {proposal.plan_explanation.source === "ai" ? " · AI" : ""}
+                  </p>
+                  <p className={styles.step}>{proposal.plan_explanation.summary}</p>
+                  <p className={styles.meta}>{proposal.plan_explanation.why_order}</p>
+                  <p className={styles.meta}>{proposal.plan_explanation.what_is_left_out}</p>
+                </div>
+              ) : null}
             </>
           ) : (
             <p className={styles.step}>This preview is not an active plan yet.</p>
@@ -438,13 +499,11 @@ export function GoalWizard() {
               id="priority"
               className={styles.select}
               value={priority}
-              onChange={(event) =>
-                setPriority(event.target.value as (typeof PRIORITIES)[number])
-              }
+              onChange={(event) => setPriority(event.target.value as PriorityValue)}
             >
-              {PRIORITIES.map((item) => (
-                <option key={item} value={item}>
-                  {item}
+              {PRIORITY_OPTIONS.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
                 </option>
               ))}
             </select>
@@ -462,4 +521,3 @@ export function GoalWizard() {
     </main>
   );
 }
-
