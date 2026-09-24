@@ -1,8 +1,12 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S94; Learning dataset and funnel events
+- **Milestone completed:** S01–S95; Gate 6 learner model verified
 - **Schema/API changes:** Alembic through `0020_product_events_views`
+- **Tests run and exact results (S95 Gate 6):**
+  - `AI_GATEWAY_ENABLED=false` pytest → 174 passed, 6 skipped
+  - `AI_PROVIDER=fake` pytest → 174 passed, 6 skipped
+  - `make ai-eval` → green; E2E-07 delayed check with test clock
 - **Tests run and exact results (S94):**
   - `alembic upgrade head` → `0020_product_events_views`
   - `pytest -q` → 173 passed, 6 skipped (`test_events`)
@@ -276,3 +280,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S92** | `feat(learner-model): difficulty and history aware item selection` | pick_next; difficulty; selection_reason |
 | **S93** | `test(ai): evaluation harness and safety suite for all prompts` | safety tags; timeout/cap; import-graph |
 | **S94** | `feat(analytics): learning dataset views and product events` | product_events; views; funnel docs |
+| **S95** | `docs: phase 6 learner model verified; adaptivity rules and dataset in architecture` | Gate 6 |

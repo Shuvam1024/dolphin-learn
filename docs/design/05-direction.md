@@ -22,11 +22,15 @@ The gaps, in order: (1) “learn anything” stops at a dropdown, (2) content is
 
 ---
 
+## Where we stand after Gate 6 (September 24, 2026)
+
+Phase 6 is verified. Effort estimates calibrate from measured active minutes; item selection uses difficulty and history with logged reasons; every prompt has a safety eval suite; product events and dataset views record what future estimators would need — without storing answers or emails.
+
+Next is **Phase 7 — Account, trust, release** (S96).
+
 ## Where we stand after Gate 5 (September 24, 2026)
 
 Phase 5 is verified. The General route accepts any subject with learner-owned outcomes; placement proposes skips the learner confirms; the goal normalizer and wizard v2 guide creation; provisional outlines and item drafts stay under review; checked subjects are deep enough for real sittings; content CI publishes an audit with zero errors.
-
-Next is **Phase 6 — Learner model and adaptivity** (S91).
 
 ## The product
 
@@ -130,8 +134,8 @@ Phases 0–1D (S01–S50) are finished.
 | 2 — Foundations | S51–S58 | Done — harness, UI kit, names not keys, activity-type model, content files, model gateway, Studio payload contract |
 | 3 — The learning session | S59–S70 | **Done (Gate 3)** — Studio for every activity type; feedback; worked examples; unseen pools; typed answers; free recall ceiling; tutor explain/hints; misconception notes and recall compare; sitting size; stop point; summary v2; ai-eval |
 | 4 — Organized in one place, adaptive to time | S71–S80 | **Done (Gate 4)** — priority shapes plans; Home v2; Learn shelf; mobile tabs; path + replan preview; plan explainer; Progress by goal; reviews with what fits; wizard preview |
-| 5 — Learn anything | S81–S90 | The **General route** for any subject (goal-owned outcomes, the learner's material, free recall); placement with learner-confirmed skips; the **goal normalizer**; wizard v2; **provisional outlines and recall prompts**; **item drafting with reviewer approval before graded use**; a two-week-deep Python path; deeper math and software; content CI and audit |
-| 6 — Learner model and adaptivity | S91–S95 | Effort estimates calibrated from measured active minutes; item selection by difficulty and history; one evaluation and safety suite for every prompt; the learning dataset future estimators will train on |
+| 5 — Learn anything | S81–S90 | **Done (Gate 5)** — General route; placement; goal normalizer; wizard v2; provisional outlines; item drafts; deep Python/math/software; content audit |
+| 6 — Learner model and adaptivity | S91–S95 | **Done (Gate 6)** — effort EMA; difficulty/history item selection; ai-eval safety suite; product events + dataset views |
 | 7 — Account, trust, release | S96–S105 | Settings (incl. tutor on/off); managed sign-in for production; export and delete; security headers and rate limits; containers and a runbook; logs and gateway metrics; a golden release suite run with the tutor off and fake; a release-candidate review with a live tutor evaluation; **v0.1.0** |
 
 The earlier working labels “1E scope,” “1F tutor,” “2A lab,” “2B Vault,” “2C transfer” are superseded by this numbering. Scope-by-priority is S71; the tutor that cannot grade begins at S63 inside the learning session, not in a separate phase.

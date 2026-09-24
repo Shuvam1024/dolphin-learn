@@ -75,7 +75,8 @@ Authenticated API ──► Goals & Time Planner ──► PostgreSQL
 | `assessment` | attempts, evaluator provenance, evidence derivation | LLM direct SQL writes |
 | `review` | due schedule, outcomes | erasing missed history |
 | `vault` | file ownership, extraction, index, retrieval permissions | sharing without authorization |
-| `ai_gateway` | providers, limits, validated structured responses | raw ownership decisions |
+| `ai_gateway` | providers, limits, validated structured responses | raw ownership decisions; learner_model imports |
+| `learner_model` | effort calibration factors | grading, evidence writes, AI calls |
 | `labs` | activity renderers/evaluators | in-process code execution |
 | `analytics` | privacy-respecting metrics | causal claims from engagement alone |
 
@@ -97,6 +98,8 @@ Ownership enforced **server-side** on every nested id.
 | Sessions | `sessions`, `session_events` | Resumable; idempotent client event ids |
 | Evidence | `attempts`, `evaluations`, `competency_evidence`, `competency_state` | Append-only attempts; state recomputable |
 | Review | `review_items`, `review_events` | Transparent intervals; append-only history |
+| Learner model | `learner_effort_factors` | EMA factors clamped; not applied under 3 observations |
+| Analytics | `product_events`; views `v_attempt_features`, `v_review_outcomes` | Opaque props only; no answers/emails/notes |
 
 **Status facets (not a fake mastery %):** `not_started | exposed | practicing | independently_demonstrated | retained | applied`.
 
@@ -154,6 +157,13 @@ Never award `retained` / `applied` from same-session success alone.
 - `sessions.target_minutes` (Alembic `0013`, bounds 5–180; default preferred session minutes).
 - `remaining_estimate` sums remaining activities until cumulative `low` exceeds the target (≥ 1 activity).
 - `actions.stop_point` when active minutes ≥ target and the current activity is complete; `can_keep_going` offers advance without forcing finish.
+
+### Learner model and adaptivity (Phase 6)
+
+- Module `learner_model`: per-learner, per-activity-type EMA of `observed_minutes / declared_low` (α=0.3, clamp 0.5–2.0, min 3 observations). Planner and remaining estimates multiply declared ranges by the factor; the path may show one sentence that estimates were adjusted.
+- **Item selection** (`item_pool.pick_next`): purpose `first` → difficulty 1–2; after independent correct → step up one level for the fresh check; after assisted/incorrect → same or lower, different item; reviews alternate difficulty; ties by least-recent; solution-revealed items never return; each pick logs `selection_reason`. `provisional` items still never grade.
+- **AI eval / safety:** `tests/ai_eval/` covers every prompt (tutor + normalize/outline/draft/plan_explain) for leakage, overlong, wrong-language, injection, fabricated lesson names; gateway timeout and daily-cap per prompt; import-graph keeps `ai_gateway` apart from referee modules **and** `learner_model`.
+- **Dataset / funnel:** `product_events` (opaque ids only); SQL views `v_attempt_features` and `v_review_outcomes` for post-ship estimators. Funnel counts are not competence. See `docs/evaluations/funnel.md` and `learner-model-roadmap.md`.
 
 ---
 

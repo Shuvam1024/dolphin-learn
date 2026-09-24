@@ -58,7 +58,7 @@ npx playwright test \
 
 Recorded on September 24, 2026: pytest **112 passed, 6 skipped** (AI off and fake); `make ai-eval` green; gate Playwright **13 passed, 1 skipped**.
 
-Phase 5 (Gate 5) is verified. Next is **Phase 6 — S91** (effort calibration).
+Phase 6 (Gate 6) is verified. Next is **Phase 7 — S96** (settings).
 
 ### Demo v2 — General route with outline
 
