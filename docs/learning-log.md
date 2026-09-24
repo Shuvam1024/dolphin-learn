@@ -227,3 +227,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 117 passed, 6 skipped.
 
 **Push:** `237a6e7` is on origin/main
+
+## S73 — Learn: every goal, organized
+
+**Commit:** `a14d13b` — feat(learn): goal list with continue, pause, and archive
+
+**What:** Learn lists Active / Paused / Archived goals with Continue, Pause, Resume, and Archive. Home next action skips paused and archived goals.
+
+**How:** Alembic `0015_goal_status`; PATCH status; GET /goals card fields; `/app/learn` sections.
+
+**Why:** Learners need one shelf for every goal, not only the current sitting.
+
+**Acceptance:** passed — pytest 118 passed, 6 skipped.
+
+**Push:** `a14d13b` is on origin/main

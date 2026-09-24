@@ -1,8 +1,11 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S72; Home v2
-- **Schema/API changes:** Alembic through `0014_goal_priority`
+- **Milestone completed:** S01–S73; Learn goal list with pause/archive
+- **Schema/API changes:** Alembic through `0015_goal_status`
+- **Tests run and exact results (S73):**
+  - `alembic upgrade head` → `0015_goal_status`
+  - `pytest -q` → 118 passed, 6 skipped (`test_goal_status`)
 - **Tests run and exact results (S72):**
   - `pytest -q` → 117 passed, 6 skipped (`test_home_v2`)
 - **Tests run and exact results (S71):**
@@ -86,8 +89,8 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S72**
-- **Next step:** **S73 — Learn: every goal, organized**
+- **Completed steps:** **S01–S73**
+- **Next step:** **S74 — Shell, landing, sign-in, Help**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
 
@@ -104,7 +107,7 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | 1D | Honest demo content (S47–S50) | Done |
 | 2 | Foundations (S51–S58) | Done |
 | 3 | The learning session (S59–S70) | Done (Gate 3) |
-| 4 | Organized / adaptive (S71–S80) | In progress (next: S73) |
+| 4 | Organized / adaptive (S71–S80) | In progress (next: S74) |
 | Later | Phases 4–7 per first-ship plan | Later |
 
 ---
@@ -191,3 +194,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S70** | `docs: phase 3 learning session verified; studio, tutor, and activity types in ux spec` | Gate 3; UX + architecture + demo updated |
 | **S71** | `feat(plan): priority enum shapes breadth, depth, and review reserve` | understand/apply/make_it_stick; 0014; rationale labels |
 | **S72** | `feat(home): home v2 with one next action, goal cards, reviews, and evidence chips` | next_action shape; cards; due_reviews object; no Log out |
+| **S73** | `feat(learn): goal list with continue, pause, and archive` | status active/paused/archived; Learn sections |
