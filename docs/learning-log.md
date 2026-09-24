@@ -311,3 +311,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 129 passed, 6 skipped (`test_review_fit`).
 
 **Push:** `12f839a` is on origin/main
+
+## S79 — Wizard preview on the kit (interim)
+
+**Commit:** `b506ed6` — feat(web): wizard preview with lesson names, minutes, live priority, and plan explanation
+
+**What:** Goal wizard preview lists lesson names with minutes, total vs budget, Not in this plan, and the plan explanation. Priority uses three plain labels and live-refetches the proposal.
+
+**How:** Priority maps to understand/apply/make_it_stick; PATCH + plan-proposals on change; e2e goal-wizard updated for minutes and no raw keys.
+
+**Why:** Accept should follow a clear preview, not a surprise plan.
+
+**Acceptance:** passed — pytest 129 passed, 6 skipped; e2e goal-wizard updated.
+
+**Push:** `b506ed6` is on origin/main
