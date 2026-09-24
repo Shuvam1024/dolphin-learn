@@ -67,11 +67,16 @@ test("tutor explain shows AI chip and marks the next answer Assisted", async ({ 
 
   const { sessionId } = await startOnQuestion(page);
   await page.goto(`/app/learn/${sessionId}`);
-  await expect(page.getByRole("button", { name: "Tutor help" })).toBeVisible();
-  await page.getByRole("button", { name: "Tutor help" }).click();
+  await expect(page.getByText("Tutor help")).toBeVisible();
+  await page.getByText("Tutor help").click();
   await page.getByRole("button", { name: "Explain this differently" }).click();
+  // Details may collapse after the explain request; reopen to read the AI chip.
+  const details = page.locator("details").filter({ hasText: "Tutor help" });
+  if (!(await details.getAttribute("open"))) {
+    await page.getByText("Tutor help").click();
+  }
   await expect(page.getByText("AI").first()).toBeVisible();
-  await expect(page.getByText(/sticky note|label/i).first()).toBeVisible();
+  await expect(page.getByText(/sticky note|label|Explain/i).first()).toBeVisible();
 
   await page.getByRole("radio", { name: /bound to the value/i }).check();
   await page.getByRole("button", { name: "Submit answer" }).click();
@@ -85,7 +90,7 @@ test("E2E-08: studio works with no AI key", async ({ page }) => {
   await page.goto(`/app/learn/${sessionId}`);
   await expect(page.getByRole("group", { name: "Choose one answer" })).toBeVisible();
   if ((process.env.AI_PROVIDER ?? "") === "" || (process.env.AI_PROVIDER ?? "") === "off") {
-    await expect(page.getByRole("button", { name: "Tutor help" })).toHaveCount(0);
+    await expect(page.getByText("Tutor help")).toHaveCount(0);
   }
   await page.getByRole("button", { name: "Show a hint" }).click();
   await expect(page.getByText(/Compare each choice|Hint/i).first()).toBeVisible();

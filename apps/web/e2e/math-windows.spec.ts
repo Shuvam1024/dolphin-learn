@@ -18,16 +18,18 @@ test("two-week math plan counts 30-minute days, not 14 times 24 hours", async ({
   await page.getByLabel("What do you want to learn?").fill("Add fractions with the same denominator.");
   await page.getByLabel("Subject").selectOption("math");
   await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByLabel("Minutes each day for a set number of days").check();
-  await page.getByLabel("Minutes per day").fill("30");
-  await page.getByRole("textbox", { name: "Number of days", exact: true }).fill("14");
-  await page.getByLabel("Preferred session length (minutes)").fill("30");
+  await page.getByRole("button", { name: "30 × 14" }).click();
+  await expect(page.getByText(/30 minutes × 14 sittings = 7 hours of study/)).toBeVisible();
   await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByRole("button", { name: "Save goal" }).click();
-  await expect(page.getByText("30 minutes a day for 14 days")).toBeVisible();
-  await expect(page.getByText("A fraction as parts of a whole")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Accept plan" })).toBeEnabled();
-  await page.getByRole("button", { name: "Accept plan" }).click();
+  await page.getByText("Cover more ground").click();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await page.getByRole("button", { name: "Skip placement" }).click();
+  await expect(page.getByText(/30 minutes/).first()).toBeVisible();
+  await expect(
+    page.getByRole("listitem").filter({ hasText: "A fraction as parts of a whole" }),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Accept", exact: true })).toBeEnabled();
+  await page.getByRole("button", { name: "Accept", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Plan accepted" })).toBeVisible();
 
   const token = (await page.context().cookies()).find(
@@ -54,7 +56,9 @@ test("two-week math plan counts 30-minute days, not 14 times 24 hours", async ({
   expect(checkpoint).toBeTruthy();
 
   await page.getByRole("link", { name: "Back to home" }).click();
-  await page.getByRole("button", { name: "Start a session for Fractions" }).click();
+  await page.goto(`/app/goals/${goal?.id}/start`);
+  await page.getByLabel("30 minutes").check();
+  await page.getByRole("button", { name: "Start sitting" }).click();
   await expect(page.getByText("three equal parts out of four")).toBeVisible();
   await page.getByRole("button", { name: "Next activity" }).click();
   await expect(page.getByRole("button", { name: "Now you try" })).toBeVisible();

@@ -213,3 +213,51 @@ jobs:
       - name: AI fake provider suite
         run: |
           cd services/api && python -m alembic upgrade head && python -m pytest tests/test_ai_gateway.py tests/test_ai_import_graph.py -q
+
+  release-suite:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [off, fake]
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: dolphin
+          POSTGRES_PASSWORD: dolphin
+          POSTGRES_DB: dolphin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dolphin -d dolphin"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://dolphin:dolphin@127.0.0.1:5432/dolphin
+      CI: "true"
+      DOLPHIN_E2E_FAST_CLOCK: "1"
+      AI_PROVIDER: ${{ matrix.mode == 'fake' && 'fake' || '' }}
+      AI_GATEWAY_ENABLED: ${{ matrix.mode == 'fake' && 'true' || '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install API and web
+        run: |
+          python -m pip install -r services/api/requirements.txt
+          cd services/api && python -m alembic upgrade head && python -m app.seed
+          npm --prefix apps/web ci
+      - name: Install Chromium
+        working-directory: apps/web
+        run: npx playwright install --with-deps chromium
+      - name: Golden release suite (${{ matrix.mode }})
+        working-directory: apps/web
+        run: npx playwright test -c playwright.release.config.ts --reporter=line
+        env:
+          API_PYTHON: python

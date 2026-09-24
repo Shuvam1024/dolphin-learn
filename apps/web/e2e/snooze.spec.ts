@@ -88,11 +88,12 @@ test("not now delays a due review without claiming retention", async ({ page }) 
 
   await page.goto("/app/review");
   await expect(page.getByRole("heading", { name: "Due now" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Not now" })).toBeVisible();
+  await expect(page.getByText("Not now")).toBeVisible();
+  await expect(page.getByRole("button", { name: "3h" })).toBeVisible();
   await expect(
     page.getByText("Skipping is not study and does not count as remembering"),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Not now" }).click();
+  await page.getByRole("button", { name: "3h" }).click();
   await expect(page.getByRole("heading", { name: "Nothing is due" })).toBeVisible();
   await expect(page.getByText("Not retention")).toBeVisible();
 });

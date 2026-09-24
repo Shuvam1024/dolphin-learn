@@ -55,8 +55,11 @@ test("studio v2 renders markdown code, one primary, pause, and hides tutor when 
   // Action bar primary plus quiet Finish session — count buttons with primary styling via name list
   await expect(page.getByRole("button", { name: "Next activity" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Submit answer" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Tutor help" })).toHaveCount(0);
-  await expect(page.getByText("Explain this differently")).toHaveCount(0);
+  const aiOff = (process.env.AI_PROVIDER ?? "") === "" || (process.env.AI_PROVIDER ?? "") === "off";
+  if (aiOff) {
+    await expect(page.getByText("Tutor help")).toHaveCount(0);
+    await expect(page.getByText("Explain this differently")).toHaveCount(0);
+  }
 
   await page.getByRole("button", { name: "Pause" }).click();
   await expect(page.getByText("Paused.")).toBeVisible();

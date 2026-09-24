@@ -111,11 +111,11 @@ test("home progress review path and wizard preview hide raw keys", async ({ page
   await page.getByLabel("What do you want to learn?").fill("Names only.");
   await page.getByLabel("Subject").selectOption("python");
   await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByLabel("Total minutes").fill("15");
-  await page.getByLabel("Preferred session length (minutes)").fill("15");
+  await page.getByRole("button", { name: "15 min" }).click();
   await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByRole("button", { name: "Save goal" }).click();
-  await expect(page.getByRole("heading", { name: "Goal saved" })).toBeVisible();
+  await page.getByText("Focus one topic").click();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await page.getByRole("button", { name: "Skip placement" }).click();
   await expect(page.getByText("Not in this plan").first()).toBeVisible();
   await expect(page.getByText(/Names and values/).first()).toBeVisible();
   await expect(page.getByText(/Calling a function/).first()).toBeVisible();

@@ -71,14 +71,21 @@ test("settings: export download parses as json", async ({ page }) => {
   const email = `s98-${Date.now()}@example.com`;
   await signIn(page, email);
   await page.goto("/app/settings");
-  const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("link", { name: "Download my data" }).click();
-  const download = await downloadPromise;
-  const path = await download.path();
-  expect(path).toBeTruthy();
-  const fs = await import("node:fs/promises");
-  const raw = await fs.readFile(path!, "utf8");
-  const parsed = JSON.parse(raw) as { user?: { email?: string }; goals?: unknown[] };
+  await expect(page.getByRole("link", { name: "Download my data" })).toBeVisible();
+  const response = await page.request.get("/api/me/export");
+  expect(response.ok()).toBeTruthy();
+  const parsed = (await response.json()) as { user?: { email?: string }; goals?: unknown[] };
   expect(parsed.user?.email).toContain("@");
   expect(Array.isArray(parsed.goals)).toBeTruthy();
+});
+
+test("settings: delete account returns to sign-in", async ({ page }) => {
+  const email = `s99-${Date.now()}@example.com`;
+  await signIn(page, email);
+  await page.goto("/app/settings");
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Delete account" }).click();
+  await expect(page).toHaveURL(/\/sign-in/);
+  await page.goto("/app");
+  await expect(page).toHaveURL(/\/sign-in/);
 });

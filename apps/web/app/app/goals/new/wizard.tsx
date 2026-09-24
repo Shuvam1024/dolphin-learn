@@ -636,7 +636,7 @@ export function GoalWizard() {
               required
             />
             <p className={styles.label}>Subject</p>
-            <div className={styles.chips} role="group" aria-label="Subject">
+            <div className={styles.chips} role="group" aria-label="Topic chips">
               {SUBJECT_CHIPS.map((chip) => (
                 <button
                   key={chip.key}
