@@ -14,7 +14,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## Next incomplete step
 
-**S105 — Ship v0.1.0** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md) (after S104 RC).
+**None in the first-ship plan.** S51–S105 complete; tag **v0.1.0**. Post-v0.1 work is outside `06-first-ship-plan.md` (see `05-direction.md`).
 
 ---
 

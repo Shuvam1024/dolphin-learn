@@ -22,6 +22,10 @@ The gaps, in order: (1) “learn anything” stops at a dropdown, (2) content is
 
 ---
 
+## Where we stand after v0.1.0 (September 24, 2026)
+
+**v0.1.0 is tagged.** First ship includes the Prove Loop, time-fit plans, optional tutor, settings, privacy export/delete, managed auth, containers, and the golden release suite. Known limits stay honest: no Vault, no sandbox, no `applied`, provisional AI content until reviewed.
+
 ## Where we stand after Gate 7 / v0.1 RC (September 24, 2026)
 
 Phase 7 is verified through the golden release suite and RC record. Settings, managed auth, export/delete, edge hardening, containers, observability, and the release suite are on `main`. Next is **S105 — tag v0.1.0**.

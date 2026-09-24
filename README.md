@@ -2,12 +2,26 @@
 
 **Learn anything. Fit the time you have. Prove you can do it.**
 
-Dolphin is an adaptive learning platform for adults (18+): a Home hub, time-adaptive plans from real available minutes, Session Studio lessons, and an honest Evidence Ledger. V1 wedge: Python + foundational math on an accessible web client.
+Dolphin is an adaptive learning platform for adults (18+): a Home hub, time-adaptive plans from real available minutes, Session Studio lessons, and an honest Evidence Ledger. **v0.1** ships checked subjects (Python, foundational math, software practice), a General route for any subject you name, an optional adaptive tutor, settings, export/delete, and a deployable container path.
 
 Design source of truth: [`docs/design/`](docs/design/)  
 Build sequence: [`docs/design/03-build-plan.md`](docs/design/03-build-plan.md) (S01–S50) then [`docs/design/06-first-ship-plan.md`](docs/design/06-first-ship-plan.md) (S51–S105)  
 Status: [`docs/design/04-implementation-status.md`](docs/design/04-implementation-status.md)  
+Release notes: [`CHANGELOG.md`](CHANGELOG.md) · RC record: [`docs/evaluations/v0.1-rc.md`](docs/evaluations/v0.1-rc.md)  
 Prove Loop demo: [`docs/prove-loop-demo.md`](docs/prove-loop-demo.md)
+
+## What v0.1 does
+
+- Sign in (dev email locally; managed OIDC in production — no passwords)
+- Create a goal that fits the minutes you have; accept a plan; sit and study
+- Deterministic grading and evidence; tutor explains when enabled, never grades
+- Review due items; snooze 3h / 24h / 72h without claiming retention
+- Settings for comfort and tutor on/off; download or delete your data
+
+## What v0.1 does not do
+
+- Vault / RAG, code sandbox, `applied` facet, mastery percentages, or streaks
+- Ship AI-drafted graded items without human review (`provisional` until then)
 
 ## Stack
 
@@ -102,7 +116,10 @@ From the repo root, after web `npm install` and `pip install -r services/api/req
 ```bash
 make web-lint web-type web-test
 make api-lint api-type api-test
+make release-suite   # golden e2e, AI off then fake (API must be restartable on :8000)
 ```
+
+Production-style bring-up: see [`infra/RUNBOOK.md`](infra/RUNBOOK.md) and `infra/compose.prod.yml`.
 
 ## Product locks (short)
 
