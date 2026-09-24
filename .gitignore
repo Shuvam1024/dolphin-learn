@@ -48,6 +48,26 @@ test-results/
 # Docker / local data
 postgres-data/
 
+# Archives / generated dumps (never commit)
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.bundle
+*.sqlite
+*.sqlite3
+coverage.xml
+.hypothesis/
+*.orig
+*.rej
+
+# Secrets (belt and suspenders; real values stay in ignored .env)
+*.pem
+id_rsa
+id_ed25519
+*.p12
+secrets/
+
 # Misc
 *.log
 .direnv/
