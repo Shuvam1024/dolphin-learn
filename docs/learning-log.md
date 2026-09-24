@@ -283,3 +283,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 125 passed, 6 skipped (`test_plan_explain`).
 
 **Push:** `070adf1` is on origin/main
+
+## S77 — Progress v2
+
+**Commit:** `4cee800` — feat(progress): progress v2 grouped by goal with legend and upcoming reviews
+
+**What:** Progress groups evidence by goal with facet chips, unassessed counts, a collapsed legend linking to Help, and upcoming reviews. Still no percent.
+
+**How:** Expanded `GET /progress` with `goals[]` and `upcoming_reviews[]`; progress page redesigned; e2e progress-v2.
+
+**Why:** Evidence belongs to a goal shelf, not a flat global list.
+
+**Acceptance:** passed — pytest 126 passed, 6 skipped (`test_progress_v2`).
+
+**Push:** `4cee800` is on origin/main

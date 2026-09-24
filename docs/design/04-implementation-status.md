@@ -1,8 +1,10 @@
 # Dolphin Implementation Status
 
 - **Last updated:** September 24, 2026
-- **Milestone completed:** S01–S76; AI plan explainer
+- **Milestone completed:** S01–S77; Progress v2
 - **Schema/API changes:** Alembic through `0015_goal_status`
+- **Tests run and exact results (S77):**
+  - `pytest -q` → 126 passed, 6 skipped (`test_progress_v2`)
 - **Tests run and exact results (S76):**
   - `pytest -q` → 125 passed, 6 skipped (`test_plan_explain`)
 - **Tests run and exact results (S75):**
@@ -97,7 +99,7 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S76**
+- **Completed steps:** **S01–S77**
 - **Next step:** **S75 — Goal path v2 with replan preview → accept**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
@@ -206,3 +208,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S74** | `feat(web): responsive shell, landing page, and help` | bottom tabs; landing; Help; More links |
 | **S75** | `feat(goals): path v2 with chips and minutes; replan preview then accept` | replan-proposals → accept; chips; minutes |
 | **S76** | `feat(plan): ai plan explainer over deterministic planner output` | plan_explain.v1; AI chip; cache |
+| **S77** | `feat(progress): progress v2 grouped by goal with legend and upcoming reviews` | goals[]; upcoming_reviews |
