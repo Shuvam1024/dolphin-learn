@@ -172,3 +172,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `1991706` is on origin/main
 
+## S69 — Learning-session AI evaluation fixtures
+
+**Commit:** `fbf3c20` — test(ai): tutor prompt evaluation fixtures and regression suite
+
+**What:** Scripted evaluation cases for tutor prompts (hint, explain differently, misconception note, recall compare) — leaks, overlong, injection, wrong language — all must pass validators.
+
+**How:** `tests/ai_eval/` JSON fixtures (≥20 per prompt) + validators; `make ai-eval` runs them and writes `docs/evaluations/ai-eval-<date>.md`.
+
+**Why:** Tutors stay useful only if adversarial outputs are rejected before learners see them.
+
+**Acceptance:** passed — pytest 112 passed, 6 skipped; make ai-eval green; report recorded.
+
+**Push:** `fbf3c20` is on origin/main
+
