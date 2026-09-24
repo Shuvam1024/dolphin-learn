@@ -538,7 +538,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## S95 — Gate 6: learner model
 
-**Commit:** `PENDING` — docs: phase 6 learner model verified; adaptivity rules and dataset in architecture
+**Commit:** `86352dd` — docs: phase 6 learner model verified; adaptivity rules and dataset in architecture
 
 **What:** Phase 6 is verified: effort calibration, difficulty/history item selection, AI safety suite, and the learning dataset/funnel. Architecture and direction name the learner model and what stays post-ship.
 
@@ -548,5 +548,5 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Acceptance:** passed — pytest 174 passed, 6 skipped (off + fake); ai-eval green; E2E-07 green.
 
-**Push:** `PENDING` is on origin/main
+**Push:** `86352dd` is on origin/main
 
