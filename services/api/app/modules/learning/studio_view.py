@@ -104,6 +104,7 @@ def compute_actions(
     challenge: bool,
     is_last: bool,
     awaiting_self_report: bool = False,
+    stop_point: bool = False,
 ) -> dict[str, Any]:
     can_hint = activity_type in {"objective", "short_answer", "numeric"} and not recorded
     can_reveal = can_hint and help_kind == "none"
@@ -121,6 +122,8 @@ def compute_actions(
         primary = "finish"
     else:
         primary = "continue"
+    if stop_point and not awaiting_self_report and primary != "submit":
+        primary = "finish"
     return {
         "primary": primary,
         "can_hint": can_hint,
@@ -128,9 +131,34 @@ def compute_actions(
         "can_fresh_check": can_fresh,
         "can_pause": True,
         "can_explain_differently": can_explain,
-        "stop_point": is_last and recorded and not awaiting_self_report,
+        "stop_point": stop_point and not awaiting_self_report,
         "awaiting_self_report": awaiting_self_report,
+        "can_keep_going": stop_point and not is_last and not awaiting_self_report,
     }
+
+
+def _sized_remaining(
+    remaining: list[PlanActivity],
+    target: int,
+) -> tuple[int, int]:
+    if not remaining:
+        return 0, 0
+    if target <= 0:
+        return (
+            sum(item.estimated_minutes_low for item in remaining),
+            sum(item.estimated_minutes_high for item in remaining),
+        )
+    low = 0
+    high = 0
+    count = 0
+    for item in remaining:
+        next_low = low + item.estimated_minutes_low
+        if count >= 1 and next_low > target:
+            break
+        low = next_low
+        high += item.estimated_minutes_high
+        count += 1
+    return low, high
 
 
 def build_studio(
@@ -148,16 +176,24 @@ def build_studio(
             position = index
             break
     remaining = activities[position - 1 :] if activities else []
-    low = sum(item.estimated_minutes_low for item in remaining)
-    high = sum(item.estimated_minutes_high for item in remaining)
     goal = _goal_for(db, session)
     snap = activity_snapshot(db, session)
     challenge = mode == "challenge"
     tutor_on = is_enabled(db, user)
+    active = session_active_minutes(db, session)
+    target = int(getattr(session, "target_minutes", 0) or 0)
+    if target <= 0 and goal is not None:
+        from app.modules.goals.service import budget_for
 
+        budget = budget_for(db, goal)
+        if budget is not None and budget.preferred_session_minutes:
+            target = budget.preferred_session_minutes
+    low, high = _sized_remaining(remaining, target)
     lesson_title = ""
     competency_name = ""
     activity_payload: dict[str, Any] | None = None
+    current_complete = True
+    awaiting_self_report = False
     actions = compute_actions(
         activity_type="reading",
         recorded=False,
@@ -167,6 +203,7 @@ def build_studio(
         tutor_enabled=tutor_on,
         challenge=challenge,
         is_last=True,
+        stop_point=False,
     )
 
     if session.plan_activity_id is not None:
@@ -309,6 +346,12 @@ def build_studio(
                     "recall_feedback": recall_feedback,
                 },
             }
+            if activity.activity_type in {"reading", "worked_example", "reflection"}:
+                current_complete = True
+            elif awaiting_self_report:
+                current_complete = False
+            else:
+                current_complete = recorded
             actions = compute_actions(
                 activity_type=activity.activity_type,
                 recorded=recorded,
@@ -319,20 +362,13 @@ def build_studio(
                 challenge=challenge,
                 is_last=position >= total,
                 awaiting_self_report=awaiting_self_report,
+                stop_point=bool(target > 0 and active >= target and current_complete),
             )
-
-    target = 0
-    if goal is not None:
-        from app.modules.goals.service import budget_for
-
-        budget = budget_for(db, goal)
-        if budget is not None and budget.preferred_session_minutes:
-            target = budget.preferred_session_minutes
 
     return {
         "id": str(session.id),
         "status": session.status,
-        "active_minutes": session_active_minutes(db, session),
+        "active_minutes": active,
         "target_minutes": target,
         "goal": (
             {"id": str(goal.id), "title": goal.title}

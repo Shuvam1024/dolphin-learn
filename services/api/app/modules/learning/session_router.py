@@ -36,6 +36,16 @@ class SessionCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     goal_id: uuid.UUID
+    target_minutes: int | None = None
+
+    @field_validator("target_minutes")
+    @classmethod
+    def _target(cls, value: int | None) -> int | None:
+        if value is None:
+            return None
+        if value < 5 or value > 180:
+            raise ValueError("target_minutes must be between 5 and 180")
+        return value
 
 
 class SessionEventIn(BaseModel):
@@ -160,7 +170,7 @@ def post_session(
     db: Session = Depends(get_db),
 ) -> SessionOut:
     goal = get_owned_goal(db, user, body.goal_id)
-    row = start_session(db, user, goal)
+    row = start_session(db, user, goal, target_minutes=body.target_minutes)
     return _out(row, db, applied=True, goal_id=goal.id, user=user)
 
 

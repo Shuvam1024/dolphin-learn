@@ -164,6 +164,7 @@ class LearningSession(Base):
         ForeignKey("plan_activities.id", ondelete="SET NULL"), nullable=True
     )
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="active")
+    target_minutes: Mapped[int] = mapped_column(Integer, nullable=False, default=25)
     started_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

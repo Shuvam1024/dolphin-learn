@@ -9,6 +9,9 @@ export function StudioHeader({
   position,
   total,
   activeMinutes,
+  targetMinutes,
+  remainingLow,
+  remainingHigh,
   paused,
   sessionId,
 }: {
@@ -18,9 +21,17 @@ export function StudioHeader({
   position: number;
   total: number;
   activeMinutes: number;
+  targetMinutes: number;
+  remainingLow: number;
+  remainingHigh: number;
   paused: boolean;
   sessionId: string;
 }) {
+  const remainingLabel =
+    remainingLow === remainingHigh
+      ? `About ${remainingLow} minutes left in this sitting`
+      : `About ${remainingLow}–${remainingHigh} minutes left in this sitting`;
+
   return (
     <header className={styles.header}>
       <p className={styles.crumb}>
@@ -32,12 +43,13 @@ export function StudioHeader({
         <span>
           Activity {position} of {total}
         </span>
+        {targetMinutes > 0 ? <span>About {targetMinutes} minutes</span> : null}
+        <span>{remainingLabel}</span>
         <span>
           Studied in this session: {activeMinutes}{" "}
           {activeMinutes === 1 ? "minute" : "minutes"}
         </span>
         <span>{paused ? "Paused." : "In progress."}</span>
-        <span>No countdown</span>
         <span>The clock stops when you pause</span>
       </div>
       <form action={`/api/sessions/${sessionId}/event`} method="post">

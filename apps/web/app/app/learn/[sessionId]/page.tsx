@@ -126,6 +126,9 @@ export default async function StudioPage({
         position={session.position}
         total={session.total}
         activeMinutes={session.active_minutes}
+        targetMinutes={session.target_minutes ?? 0}
+        remainingLow={session.remaining_estimate?.low ?? 0}
+        remainingHigh={session.remaining_estimate?.high ?? 0}
         paused={paused}
         sessionId={session.id}
       />

@@ -47,12 +47,35 @@ def _first_activity(db: Session, user: User, goal: Goal) -> PlanActivity:
     return activity
 
 
-def start_session(db: Session, user: User, goal: Goal) -> LearningSession:
+def start_session(
+    db: Session,
+    user: User,
+    goal: Goal,
+    *,
+    target_minutes: int | None = None,
+) -> LearningSession:
+    from app.modules.goals.service import budget_for
+
     activity = _first_activity(db, user, goal)
+    minutes = target_minutes
+    if minutes is None:
+        budget = budget_for(db, goal)
+        minutes = (
+            budget.preferred_session_minutes
+            if budget is not None and budget.preferred_session_minutes
+            else 25
+        )
+    if minutes < 5 or minutes > 180:
+        raise ApiError(
+            "validation_error",
+            "target_minutes must be between 5 and 180",
+            status_code=422,
+        )
     row = LearningSession(
         user_id=user.id,
         plan_activity_id=activity.id,
         status="active",
+        target_minutes=minutes,
     )
     db.add(row)
     db.commit()

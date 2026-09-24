@@ -96,12 +96,9 @@ export default async function GoalPathPage({
             <Link href={next.href}>Continue</Link>
           </p>
         ) : (
-          <form action="/api/sessions" method="post">
-            <input type="hidden" name="goal_id" value={next.goal_id} />
-            <button className={styles.button} type="submit">
-              Continue
-            </button>
-          </form>
+          <p className={styles.meta}>
+            <Link href={`/app/goals/${overview.goal_id}/start`}>Continue</Link>
+          </p>
         )}
         <h2 className={styles.meta}>Activities</h2>
         <ol>
