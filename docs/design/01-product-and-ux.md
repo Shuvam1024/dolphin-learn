@@ -76,7 +76,21 @@ Accessible ordered list; labels: prereq / needs-practice / demonstrated / deferr
 
 ### Session Studio
 
-Title + competency; quiet progress + remaining estimated effort (**not** a punishing countdown); main content; context panel (tutor, notes, citations, lab); hint / show solution / submit / pause. Modes: `guided`, `independent_challenge`, `direct_explanation`, `explore`. Seeded path when AI unavailable. Pause/resume persists.
+Studio v2 is the learning session for every activity type. Header shows goal › lesson, activity position, **about N minutes** for this sitting, and a quiet remaining estimate (**not** a countdown). When active minutes reach the sitting target and the current activity is complete, Studio offers a **good place to stop** — Finish primary, Keep going secondary; nothing is forced.
+
+**Activity types in the body:** reading, worked example, objective, short answer, numeric, free recall, reflection. Markdown renders real code. One sticky primary action. Worked examples use “Now you try.” Free recall hides the lesson until the learner writes from memory, then self-rates.
+
+**Feedback:** after a graded attempt or reveal, the explanation and the note for *this* mistake appear (seeded choice notes; AI misconception notes for typed wrong answers, labeled). Assisted answers make the primary “Try a fresh question.”
+
+**Tutor panel:** explain differently and hint when AI is on for the learner; always labeled with the Tutor/AI chip. With AI off, the panel stays hidden and `/explain` is unavailable. Generated hints that leak the answer fall back to the seeded hint.
+
+**Sitting chooser:** new sittings start at `/app/goals/[goalId]/start` (10/15/30/45/60 or “use my usual”). Resume never asks again.
+
+**Modes:** `guided` (shipped), with slots for `independent_challenge`, `direct_explanation`, `explore`. Seeded path when AI unavailable. Pause/resume persists; the clock stops when you pause.
+
+### Session summary
+
+End-of-session summary lists what you showed on your own, practiced with help, and self-reported; watch-outs (seed and AI notes, labeled); next review; minutes studied; and a next step. No celebration, streak, or mastery-percent copy.
 
 ### Review
 

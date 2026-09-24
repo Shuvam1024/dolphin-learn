@@ -142,6 +142,19 @@ Never award `retained` / `applied` from same-session success alone.
 - Limits and audit: per-user daily cap (`AI_DAILY_CAP`), redaction of emails/tokens in variables, append-only `ai_calls` rows (`prompt_id`, model, tokens, latency, outcome).
 - Learner opt-out: `learner_profiles.ai_opt_out`; `GET /me` exposes `ai_enabled`. Degraded mode serves seeded content only — no grading or ownership changes from the model.
 
+### Graders, item pools, and evidence ceilings (Phase 3)
+
+- **Deterministic graders** in `grading.py`: objective by key; short answer by normalized text + alternates; numeric by parsed value + tolerance. The model never grades and never writes an evidence row.
+- **Item pool** (`item_pool.pick_unseen`): fresh checks and reviews prefer never-attempted items, then least-recent; `provisional` items are never selected for grading; exhausted pools set `state.repeat`.
+- **Evidence ceilings:** free-recall / `self_report` never exceeds `practicing` (shown as Self-reported); `award_retained` is skipped for self-report; a correct answer after the solution was revealed stays at practicing.
+- **Tutor prompts and validators:** `hint.v1`, `explain_differently.v1`, `misconception_note.v1`, `recall_compare.v1`. Feature validators reject answer leakage, overlong output, injection strings, and heavy non-English dumps; leaky hints fall back to the seeded hint. Scripted fixtures live in `tests/ai_eval/` (`make ai-eval`).
+
+### Sitting size and stop point (Phase 3)
+
+- `sessions.target_minutes` (Alembic `0013`, bounds 5–180; default preferred session minutes).
+- `remaining_estimate` sums remaining activities until cumulative `low` exceeds the target (≥ 1 activity).
+- `actions.stop_point` when active minutes ≥ target and the current activity is complete; `can_keep_going` offers advance without forcing finish.
+
 ---
 
 ## Content files and activity model (Phase 2)
@@ -162,8 +175,9 @@ Curricula live under repo-root `content/{domain}/` as markdown lessons plus YAML
 
 - `goal`, `lesson`, `position` / `total`, `remaining_estimate`, `target_minutes`
 - `studio_activity` with `input_kind`, choices, provisional flag, and `state` (recorded response, outcome, assistance, hint/explanation slots, misconception note, alt explanation, repeat)
-- `actions` — single primary (`submit|continue|fresh_check|finish`) plus `can_hint`, `can_reveal`, `can_fresh_check`, `can_pause`, `can_explain_differently`, `stop_point`
+- `actions` — single primary (`submit|continue|fresh_check|finish`) plus `can_hint`, `can_reveal`, `can_fresh_check`, `can_pause`, `can_explain_differently`, `stop_point`, `can_keep_going`
 - `tutor` — `{enabled, pending_request_id}`; panel stays hidden when AI is off
+- Finished sessions expose summary v2: `showed_on_your_own`, `practiced_with_help`, `self_reported`, `watch_out_for`, `next_review`, `minutes_studied`, `next_step`
 
 Challenge mode withholds `revealed_answer`. Explanations stay empty until an attempt (or reveal) is recorded. Shared TypeScript types live in `packages/contracts`.
 

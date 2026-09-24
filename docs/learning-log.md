@@ -186,3 +186,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `fbf3c20` is on origin/main
 
+## S70 — Gate 3: the learning session
+
+**Commit:** PENDING — docs: phase 3 learning session verified; studio, tutor, and activity types in ux spec
+
+**What:** Phase 3 is verified: Studio v2, feedback, worked examples, unseen pools, typed grading, free recall, tutor, sitting size, stop point, summary v2, and ai-eval. UX and architecture docs name what shipped.
+
+**How:** Full pytest with AI off and FakeProvider; `make ai-eval`; gate Playwright set; updates to `01-product-and-ux`, `02-architecture`, `05-direction`, and `prove-loop-demo` (typed answer, free recall, tutor explain, sized sitting).
+
+**Why:** A phase gate locks what is true before Home/Learn organization builds on it.
+
+**Acceptance:** passed — pytest 112 passed, 6 skipped (off + fake); ai-eval green; e2e 13 passed, 1 skipped.
+
+**Push:** PENDING
+
