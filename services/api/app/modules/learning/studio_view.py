@@ -202,6 +202,7 @@ def build_studio(
             help_state = tutor_state(db, session, activity.id)
             explanation = ""
             misconception = ""
+            misconception_source = "seed"
             show_feedback = recorded or bool(revealed)
             if show_feedback and activity.explanation:
                 explanation = activity.explanation
@@ -216,9 +217,31 @@ def build_studio(
                 notes = activity.misconceptions
                 if isinstance(notes, dict):
                     misconception = str(notes.get(key, ""))
+            if recorded and activity.activity_type in {"short_answer", "numeric"}:
+                from app.modules.learning.models import Attempt, Evaluation
+
+                latest_attempt = db.scalar(
+                    select(Attempt)
+                    .where(
+                        Attempt.session_id == session.id,
+                        Attempt.activity_version_id == activity.id,
+                    )
+                    .order_by(Attempt.submitted_at.desc())
+                )
+                if latest_attempt is not None:
+                    evaluation = db.scalar(
+                        select(Evaluation).where(Evaluation.attempt_id == latest_attempt.id)
+                    )
+                    if evaluation is not None and evaluation.feedback_json:
+                        note = evaluation.feedback_json.get("misconception_note")
+                        source = evaluation.feedback_json.get("misconception_source")
+                        if note:
+                            misconception = str(note)
+                            misconception_source = str(source or "ai")
             if not show_feedback:
                 explanation = ""
                 misconception = ""
+                misconception_source = "seed"
             body_markdown = lesson.body_markdown if lesson is not None else ""
             if activity.activity_type == "worked_example":
                 payload_body = payload.get("body_markdown") if isinstance(payload, dict) else None
@@ -243,7 +266,7 @@ def build_studio(
                     "revealed_answer": revealed,
                     "explanation": explanation,
                     "misconception_note": misconception,
-                    "misconception_source": "seed",
+                    "misconception_source": misconception_source,
                     "alt_explanation": help_state["alt_explanation"],
                     "repeat": _repeat_for_activity(db, session, activity.id),
                 },

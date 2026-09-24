@@ -50,26 +50,15 @@
   effort_minutes:
     low: 2
     high: 3
-- id: objective-4
-  type: objective
-  prompt: 'Why must parts be equal when you read a fraction?
-
-
-    a) So the denominator can name one shared size
-
-    b) So the numerator can be ignored
-
-    c) So the slash becomes multiplication'
-  choices:
-  - So the denominator can name one shared size
-  - So the numerator can be ignored
-  - So the slash becomes multiplication
-  answer: a
-  explanation: Equal parts let the denominator mean one size.
+- id: numeric-4
+  type: numeric
+  prompt: A pizza is cut into equal slices. The denominator on the label is eight. How many slices make one whole pizza?
+  answer: '8'
+  tolerance: 0
+  explanation: The denominator names how many equal parts make the whole.
   misconceptions:
-    b: The numerator still counts.
-    c: The slash is not multiplication here.
-  difficulty: 2
+    other: The denominator is the size count for one whole, not the parts you hold.
+  difficulty: 1
   effort_minutes:
     low: 2
     high: 3

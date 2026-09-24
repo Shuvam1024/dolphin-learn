@@ -178,6 +178,7 @@ def move_to_unseen_question(db: Session, user: User, session_id: uuid.UUID) -> L
         lesson.competency_id,
         {current_activity.id},
         graded=True,
+        activity_types=(current_activity.activity_type,),
     )
     if picked is None:
         raise ApiError("validation_error", "No other question is available", status_code=422)

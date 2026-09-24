@@ -14,7 +14,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## Next incomplete step
 
-**S64 — Typed grading and AI misconception notes** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
+**S65 — Free recall with a self-report ceiling** in [`design/06-first-ship-plan.md`](design/06-first-ship-plan.md).
 
 ---
 
@@ -101,4 +101,18 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 98 passed, 6 skipped (`test_tutor.py`: leak→seeded, clean AI hint, explain assistance, AI-off 404).
 
 **Push:** `c4c7819` is on origin/main
+
+## S64 — Typed grading and AI misconception notes
+
+**Commit:** `PENDING` — feat(assess): short answer and numeric grading; ai misconception note for typed mistakes
+
+**What:** Short-answer and numeric items grade deterministically (normalize text; parse decimals/fractions with tolerance). A wrong typed answer can get an AI misconception note labeled AI — the grade is decided first and never changed by the model.
+
+**How:** Extended `grading.py`; `submit_attempt` accepts choice/text/value; Alembic `0012_evaluation_feedback_json`; `misconception_note.v1` + validator; seed numeric + short_answer items; studio shows AI chip on the note.
+
+**Why:** Typed practice needs a referee that is not a model; the note is advice only.
+
+**Acceptance:** passed — pytest 102 passed, 6 skipped (`test_grading_types`, `test_ai_misconception`).
+
+**Push:** `PENDING` is on origin/main
 

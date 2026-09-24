@@ -226,6 +226,7 @@ class Evaluation(Base):
     assistance: Mapped[str] = mapped_column(String(32), nullable=False)
     outcome: Mapped[str] = mapped_column(String(64), nullable=False)
     evaluator: Mapped[str] = mapped_column(String(64), nullable=False)
+    feedback_json: Mapped[dict[str, object] | None] = mapped_column(JSONB, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

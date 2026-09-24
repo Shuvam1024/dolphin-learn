@@ -8,7 +8,7 @@ from app.modules.goals.models import Goal
 from app.modules.identity.models import User
 from app.modules.learning.accept import latest_accepted
 from app.modules.learning.evidence import record_evidence
-from app.modules.learning.grading import grade_choice
+from app.modules.learning.grading import grade
 from app.modules.learning.models import (
     ActivityVersion,
     Attempt,
@@ -21,6 +21,8 @@ from app.modules.learning.models import (
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+
+_GRADED_TYPES = frozenset({"objective", "short_answer", "numeric"})
 
 
 def _first_activity(db: Session, user: User, goal: Goal) -> PlanActivity:
@@ -87,17 +89,21 @@ def _help_kind(db: Session, row: LearningSession, activity_id: uuid.UUID) -> str
     return "none"
 
 
-def _current_objective(db: Session, session: LearningSession) -> ActivityVersion:
+def _current_graded(db: Session, session: LearningSession) -> ActivityVersion:
     if session.plan_activity_id is None:
         raise ApiError("validation_error", "Session has no activity", status_code=422)
     plan = db.get(PlanActivity, session.plan_activity_id)
     if plan is None or plan.activity_version_id is None:
         raise ApiError("validation_error", "Session has no activity", status_code=422)
     activity = db.get(ActivityVersion, plan.activity_version_id)
-    if activity is None or activity.activity_type != "objective":
+    if activity is None or activity.activity_type not in _GRADED_TYPES:
         raise ApiError("validation_error", "This activity is not a question", status_code=422)
     return activity
 
+
+def _current_objective(db: Session, session: LearningSession) -> ActivityVersion:
+    """Backward-compatible name for hint/solution routes."""
+    return _current_graded(db, session)
 
 def record_help(
     db: Session,
@@ -177,7 +183,12 @@ def activity_snapshot(db: Session, row: LearningSession) -> dict[str, str] | Non
     outcome = ""
     attempt_assistance = ""
     if latest is not None:
-        recorded = str(latest.response.get("choice", ""))
+        recorded = str(
+            latest.response.get("choice")
+            or latest.response.get("text")
+            or latest.response.get("value")
+            or ""
+        )
         attempt_assistance = str(latest.response.get("assistance", ""))
         evaluation = db.scalar(select(Evaluation).where(Evaluation.attempt_id == latest.id))
         if evaluation is not None:
@@ -206,7 +217,9 @@ def submit_attempt(
     session_id: uuid.UUID,
     *,
     idempotency_key: str,
-    choice: str,
+    choice: str | None = None,
+    text: str | None = None,
+    value: str | None = None,
 ) -> tuple[Attempt, bool]:
     """Store an immutable answer snapshot. The same key returns the first row."""
     session = get_owned_session(db, user, session_id)
@@ -218,39 +231,61 @@ def submit_attempt(
     )
     if existing is not None:
         return existing, False
-    if session.plan_activity_id is None:
-        raise ApiError("validation_error", "Session has no activity", status_code=422)
-    plan = db.get(PlanActivity, session.plan_activity_id)
-    if plan is None or plan.activity_version_id is None:
-        raise ApiError("validation_error", "Session has no activity", status_code=422)
-    activity = db.get(ActivityVersion, plan.activity_version_id)
-    if activity is None or activity.activity_type != "objective":
+    activity = _current_graded(db, session)
+    if activity.activity_type == "objective":
+        if not choice:
+            raise ApiError("validation_error", "choice is required", status_code=422)
+        response_body: dict[str, str] = {"choice": choice}
+    elif activity.activity_type == "short_answer":
+        if text is None or not str(text).strip():
+            raise ApiError("validation_error", "text is required", status_code=422)
+        response_body = {"text": str(text)}
+    elif activity.activity_type == "numeric":
+        if value is None or not str(value).strip():
+            raise ApiError("validation_error", "value is required", status_code=422)
+        response_body = {"value": str(value)}
+    else:
         raise ApiError("validation_error", "This activity is not a question", status_code=422)
+
     assistance = "assisted" if _help_kind(db, session, activity.id) != "none" else "independent"
+    response_body["prompt"] = activity.prompt
+    response_body["assistance"] = assistance
     attempt = Attempt(
         user_id=user.id,
         activity_version_id=activity.id,
         session_id=session.id,
         idempotency_key=idempotency_key,
-        response={
-            "choice": choice,
-            "prompt": activity.prompt,
-            "assistance": assistance,
-        },
+        response=response_body,
     )
     db.add(attempt)
     db.flush()
-    outcome, score = grade_choice(activity.answer_key, choice)
+    result = grade(activity, response_body)
+    feedback: dict[str, object] | None = None
+    if (
+        result.outcome == "incorrect"
+        and activity.activity_type in {"short_answer", "numeric"}
+    ):
+        from app.modules.learning.misconceptions import maybe_ai_misconception
+
+        feedback = maybe_ai_misconception(
+            db,
+            user,
+            activity,
+            learner_response=str(
+                response_body.get("text") or response_body.get("value") or ""
+            ),
+        )
     db.add(
         Evaluation(
             attempt_id=attempt.id,
-            score=score,
+            score=result.score,
             assistance=assistance,
-            outcome=outcome,
-            evaluator="deterministic",
+            outcome=result.outcome,
+            evaluator=result.evaluator,
+            feedback_json=feedback,
         )
     )
-    record_evidence(db, user, session, activity, attempt, assistance, outcome)
+    record_evidence(db, user, session, activity, attempt, assistance, result.outcome)
     try:
         db.commit()
     except IntegrityError:

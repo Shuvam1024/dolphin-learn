@@ -27,6 +27,7 @@ def pick_unseen(
     exclude_ids: set[uuid.UUID] | list[uuid.UUID] | None = None,
     *,
     graded: bool = True,
+    activity_types: tuple[str, ...] | list[str] | None = None,
 ) -> PickResult | None:
     """Never-attempted first, then least-recently attempted.
 
@@ -34,12 +35,13 @@ def pick_unseen(
     ``repeat`` is true when every eligible item has already been attempted.
     """
     excluded = {uuid.UUID(str(item)) for item in (exclude_ids or [])}
+    types = tuple(activity_types) if activity_types else GRADED_TYPES
     query = (
         select(ActivityVersion)
         .join(Lesson, ActivityVersion.lesson_id == Lesson.id)
         .where(
             Lesson.competency_id == competency_id,
-            ActivityVersion.activity_type.in_(GRADED_TYPES),
+            ActivityVersion.activity_type.in_(types),
         )
     )
     if excluded:

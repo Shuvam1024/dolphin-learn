@@ -66,7 +66,13 @@ def _reason(interval_days: int, due_now: bool) -> str:
 
 
 def _objective(db: Session, user: User, competency_id: uuid.UUID) -> ActivityVersion:
-    picked = pick_unseen(db, user, competency_id, graded=True)
+    picked = pick_unseen(
+        db,
+        user,
+        competency_id,
+        graded=True,
+        activity_types=("objective",),
+    )
     if picked is None:
         raise ApiError("validation_error", "No review question is seeded", status_code=422)
     return picked.activity

@@ -195,7 +195,9 @@ class AttemptIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     idempotency_key: str
-    choice: str
+    choice: str | None = None
+    text: str | None = None
+    value: str | None = None
 
     @field_validator("idempotency_key")
     @classmethod
@@ -207,7 +209,9 @@ class AttemptIn(BaseModel):
 
     @field_validator("choice")
     @classmethod
-    def _choice(cls, value: str) -> str:
+    def _choice(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
         cleaned = value.strip().lower()
         if cleaned not in {"a", "b", "c"}:
             raise ValueError("choice must be a, b, or c")
@@ -218,11 +222,15 @@ class AttemptOut(BaseModel):
     id: uuid.UUID
     activity_version_id: uuid.UUID
     choice: str
+    text: str = ""
+    value: str = ""
     assistance: str
     prompt: str
     outcome: str
     eligible_for_independent_evidence: bool
     created: bool
+    misconception_note: str = ""
+    misconception_source: str = ""
 
 
 @router.post("/{session_id}/attempts", response_model=AttemptOut)
@@ -238,19 +246,30 @@ def post_attempt(
         session_id,
         idempotency_key=body.idempotency_key,
         choice=body.choice,
+        text=body.text,
+        value=body.value,
     )
     evaluation = db.scalar(select(Evaluation).where(Evaluation.attempt_id == attempt.id))
     outcome = evaluation.outcome if evaluation is not None else ""
     assistance = str(attempt.response.get("assistance", "independent"))
+    note = ""
+    note_source = ""
+    if evaluation is not None and evaluation.feedback_json:
+        note = str(evaluation.feedback_json.get("misconception_note", "") or "")
+        note_source = str(evaluation.feedback_json.get("misconception_source", "") or "")
     return AttemptOut(
         id=attempt.id,
         activity_version_id=attempt.activity_version_id,
         choice=str(attempt.response.get("choice", "")),
+        text=str(attempt.response.get("text", "")),
+        value=str(attempt.response.get("value", "")),
         assistance=assistance,
         prompt=str(attempt.response.get("prompt", "")),
         outcome=outcome,
         eligible_for_independent_evidence=eligible_for_independent_evidence(assistance, outcome),
         created=created,
+        misconception_note=note,
+        misconception_source=note_source,
     )
 
 

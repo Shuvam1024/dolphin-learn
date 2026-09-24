@@ -18,6 +18,10 @@ _DEFAULTS: dict[str, dict[str, Any]] = {
         ),
         "analogy_used": True,
     },
+    "misconception_note": {
+        "note": "That answer mixes up the roles in the idea.",
+        "tag": "other",
+    },
 }
 
 

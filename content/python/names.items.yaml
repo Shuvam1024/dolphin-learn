@@ -74,3 +74,18 @@
   effort_minutes:
     low: 1
     high: 2
+- id: short-5
+  type: short_answer
+  prompt: In a few words, what does assignment do to a name?
+  answer: binds the name to a value
+  alternates:
+  - binds a name to a value
+  - rebinds the name
+  - binds the name
+  explanation: Assignment binds (or rebinds) a name to a value.
+  misconceptions:
+    other: Assignment is about binding a name, not locking a permanent box.
+  difficulty: 2
+  effort_minutes:
+    low: 2
+    high: 3
