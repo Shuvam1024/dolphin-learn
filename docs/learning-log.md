@@ -158,3 +158,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Push:** `acf9ed7` is on origin/main
 
+## S68 — Session summary v2
+
+**Commit:** `1991706` — feat(sessions): summary v2 with what you showed, what to watch, and what is next
+
+**What:** End-of-session summary lists what you showed on your own, practiced with help, and self-reported, plus watch-outs, next review, minutes studied, and a next step — without celebration copy.
+
+**How:** `summary.py` fills the v2 buckets; finish screen renders them on the kit; forbidden-words checks keep streaks and praise out.
+
+**Why:** The close of a sitting should be honest and useful, not a cheer.
+
+**Acceptance:** passed — pytest 109 passed, 6 skipped (`test_summary_v2`).
+
+**Push:** `1991706` is on origin/main
+
