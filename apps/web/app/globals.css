@@ -37,10 +37,6 @@ body {
   min-height: 100vh;
   color: var(--foreground);
   background-color: var(--background);
-  background-image:
-    radial-gradient(900px 480px at 8% -10%, rgba(31, 167, 160, 0.18), transparent 60%),
-    radial-gradient(700px 420px at 100% 0%, rgba(230, 168, 23, 0.1), transparent 55%),
-    linear-gradient(180deg, #f7fbfc 0%, var(--color-foam) 42%, #e7f2f4 100%);
   font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

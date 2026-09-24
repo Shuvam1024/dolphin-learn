@@ -1,12 +1,6 @@
-import {
-  Button,
-  Field,
-  InlineNotice,
-  Page,
-  PageHeader,
-  Stack,
-  Surface,
-} from "@/components/ui";
+import { Button, Field, InlineNotice } from "@/components/ui";
+
+import styles from "./sign-in.module.css";
 
 function isDevEnvironment() {
   return (process.env.NEXT_PUBLIC_ENVIRONMENT || "development") === "development";
@@ -35,50 +29,39 @@ export default async function SignInPage({
   const managed = authorizeUrl();
 
   return (
-    <Page>
-      <Surface>
-        <Stack gap="md">
-          <PageHeader
-            kicker="Sign in"
-            title="Dolphin"
-            subtitle={
-              dev
-                ? "Enter your email to open the learning shell. Dolphin does not store a password."
-                : "Continue with your email magic link. Dolphin does not store a password."
-            }
-          />
-          {params.error ? (
-            <InlineNotice tone="warning">
-              Sign-in did not complete. Check the email and that the API is running.
-            </InlineNotice>
-          ) : null}
-          {dev ? (
-            <form action="/api/session" method="post">
-              <Stack gap="sm">
-                <Field
-                  id="email"
-                  name="email"
-                  type="email"
-                  label="Email"
-                  autoComplete="email"
-                  required
-                />
-                <Button type="submit" variant="primary">
-                  Continue
-                </Button>
-              </Stack>
-            </form>
-          ) : managed ? (
-            <p>
-              <a href={managed}>Continue with email</a>
-            </p>
-          ) : (
-            <InlineNotice tone="warning">
-              Sign-in is not configured for this environment. Set the managed auth URLs.
-            </InlineNotice>
-          )}
-        </Stack>
-      </Surface>
-    </Page>
+    <main className={styles.shell}>
+      <div className={styles.column}>
+        <h1 className={styles.wordmark}>Dolphin</h1>
+        {params.error ? (
+          <InlineNotice tone="warning">
+            Sign-in did not complete. Check the email and that the API is running.
+          </InlineNotice>
+        ) : null}
+        {dev ? (
+          <form className={styles.form} action="/api/session" method="post">
+            <Field
+              id="email"
+              name="email"
+              type="email"
+              label="Email"
+              autoComplete="email"
+              autoFocus
+              required
+            />
+            <Button className={styles.submit} type="submit" variant="primary">
+              Continue
+            </Button>
+          </form>
+        ) : managed ? (
+          <a className={styles.managed} href={managed}>
+            Continue with email
+          </a>
+        ) : (
+          <InlineNotice tone="warning">
+            Sign-in is not configured for this environment. Set the managed auth URLs.
+          </InlineNotice>
+        )}
+      </div>
+    </main>
   );
 }

@@ -11,11 +11,13 @@
 
 .bar {
   display: none;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 8px 16px;
-  padding: 16px 20px;
+  gap: 4px 8px;
+  height: 56px;
+  padding: 0 28px;
   color: var(--color-ink);
+  background: var(--color-foam);
+  border-bottom: 1px solid rgba(11, 31, 42, 0.08);
 }
 
 @media (min-width: 768px) {
@@ -39,9 +41,9 @@
 
 .link,
 .more {
-  color: var(--color-ink);
-  font-weight: 700;
-  font-size: 15px;
+  color: var(--color-mist);
+  font-weight: 600;
+  font-size: 14px;
   min-height: 44px;
   min-width: 44px;
   display: inline-flex;
@@ -51,6 +53,7 @@
 }
 
 .link[aria-current="page"] {
+  color: var(--color-ink);
   border-bottom-color: var(--color-seafoam);
 }
 

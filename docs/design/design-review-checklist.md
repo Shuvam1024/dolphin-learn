@@ -51,7 +51,7 @@ Signed for Phase 4 — organized and adaptive. Tokens, no raw keys, one primary,
 | Screen | Route | Notes |
 |---|---|---|
 | Landing | `/` | Product in five lines; Sign in primary |
-| Home v2 | `/app` | Today hero; one primary; goal meters; reviews; evidence |
+| Home | `/app` | Continue line; goal rows; quiet reviews and evidence |
 | Learn shelf | `/app/learn` | Active / Paused / Archived |
 | Goal path v2 | `/app/goals/:id` | Minutes left; chips; replan preview → accept |
 | Wizard preview | `/app/goals/new` | Live priority; minutes; explanation |

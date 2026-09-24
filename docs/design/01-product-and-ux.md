@@ -34,7 +34,7 @@ Under 768px the shell uses **bottom tabs** for Learn / Review / Library / Progre
 
 | Surface | Role |
 |---|---|
-| **Home** (`/app`) | One next action with subtitle and minutes; goal cards; due-review count; evidence chips |
+| **Home** (`/app`) | One continue line; goal rows; quiet reviews and evidence |
 | **Learn** | Every goal organized: Active / Paused / Archived with Continue, Pause, Resume, Archive |
 | **Review** | Due queue with estimates and what fits this sitting; snooze 3h / 24h / 72h |
 | **Library** | Knowledge Vault (honest empty/coming-later until later phase) |
@@ -68,7 +68,7 @@ Within Session Studio, use a contextual workspace — do not bounce the learner 
 
 ### Home
 
-Dashboard HQ: a Today hero with one primary next action (subtitle + sitting minutes), three honest totals (minutes left, minutes studied, reviews due), goal cards with subject, next lesson, and a minutes-studied meter, plus Due reviews and Recent evidence. Empty-state → create first goal, Quick Learn secondary. Log out lives under More. **No** streak counters, leaderboards, or punitive missed-day shame.
+A flat desk. The next action is the page heading and the only primary link, with its subtitle and sitting minutes beside it, plus one line for minutes left across goals. Goals are course rows (subject, next lesson, minutes left) separated by hairlines — no meters. Reviews and recent evidence are quiet lines under that. Empty-state heading is “You are in”, then Create a goal and Quick Learn. Log out lives under More. **No** streak counters, leaderboards, mastery percents, or punitive missed-day shame.
 
 ### Goal wizard
 

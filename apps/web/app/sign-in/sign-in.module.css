@@ -1,0 +1,50 @@
+.shell {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 48px 24px;
+}
+
+.column {
+  width: min(360px, 100%);
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-align: center;
+  margin: 0 0 28px;
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+.submit.submit {
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 2px;
+}
+
+.managed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border-radius: 8px;
+  background: var(--color-ink);
+  color: var(--color-foam);
+  font-weight: 700;
+  min-height: 44px;
+  padding: 12px 18px;
+}
+
+.managed:focus-visible,
+.submit:focus-visible {
+  outline: 3px solid var(--color-seafoam);
+  outline-offset: 2px;
+}
