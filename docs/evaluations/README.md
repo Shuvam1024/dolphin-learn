@@ -1,5 +1,8 @@
-# Evaluations (reserved)
+# Evaluations
 
-No evaluation reports live here yet. Later first-ship steps (content audit, AI eval, funnel notes, v0.1 RC) will write files into this folder.
+Tutor prompt evaluation fixtures live under `services/api/tests/ai_eval/`.
 
-Until then, the Prove Loop click path is `docs/prove-loop-demo.md` and test results live in `docs/design/04-implementation-status.md`.
+- `make ai-eval` runs the scripted suite and writes `docs/evaluations/ai-eval-<date>.md` (pass rates, no learner data).
+- Optional `AI_EVAL_LIVE=1` annotates a live-provider pass; scripted FakeProvider cases stay the CI gate.
+
+Prove Loop click path: `docs/prove-loop-demo.md`. Step results: `docs/design/04-implementation-status.md`.

@@ -1,4 +1,4 @@
-.PHONY: web-lint web-type web-test api-lint api-type api-test smoke a11y perf check content
+.PHONY: web-lint web-type web-test api-lint api-type api-test smoke a11y perf check content ai-eval
 
 WEB := npm --prefix apps/web
 API := services/api
@@ -20,6 +20,9 @@ api-type:
 
 api-test:
 	cd $(API) && .venv/bin/pytest
+
+ai-eval:
+	cd $(API) && AI_EVAL_RECORD=1 .venv/bin/python -m tests.ai_eval.run
 
 smoke:
 	cd apps/web && npx playwright test
