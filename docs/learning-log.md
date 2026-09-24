@@ -241,3 +241,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 118 passed, 6 skipped.
 
 **Push:** `a14d13b` is on origin/main
+
+## S74 — Shell, landing, sign-in, Help
+
+**Commit:** `4074358` — feat(web): responsive shell, landing page, and help
+
+**What:** Mobile bottom tabs under 768px; desktop top bar. Landing states the product in five lines without a placeholder. Help explains evidence, minutes, reviews, and that the tutor never grades. More links Settings, Help, Privacy, Sign out.
+
+**How:** `nav.tsx` dual chrome; `/app/help`; `/app/settings` stub; e2e/shell.spec.ts.
+
+**Why:** Organization needs a calm shell and honest Help before path and review deepen.
+
+**Acceptance:** passed — shell e2e added; pytest 118 passed, 6 skipped.
+
+**Push:** `4074358` is on origin/main
