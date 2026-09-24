@@ -1,5 +1,6 @@
 """Study time is minutes a session was active. Time away does not count."""
 
+import os
 from datetime import datetime, timedelta, timezone
 
 from app.modules.goals.models import Goal
@@ -48,6 +49,10 @@ def active_minutes(
     seconds = int(total.total_seconds())
     if seconds < 0:
         return 0
+    # E2E only: one wall-clock second counts as one active minute so stop-point
+    # flows can be exercised without sleeping for real sittings.
+    if os.environ.get("DOLPHIN_E2E_FAST_CLOCK") == "1":
+        return seconds
     return seconds // 60
 
 

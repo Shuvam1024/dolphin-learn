@@ -7,6 +7,7 @@ export type StudioActions = {
   can_explain_differently: boolean;
   stop_point: boolean;
   awaiting_self_report?: boolean;
+  can_keep_going?: boolean;
 };
 
 export type StudioTutor = {

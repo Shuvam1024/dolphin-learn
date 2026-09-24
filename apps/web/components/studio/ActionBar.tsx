@@ -39,6 +39,13 @@ export function ActionBar({
         </form>
       )}
       <div className={styles.actionBarSecondary}>
+        {actions.can_keep_going ? (
+          <form action={`/api/sessions/${session.id}/advance`} method="post">
+            <Button type="submit" variant="secondary">
+              Keep going
+            </Button>
+          </form>
+        ) : null}
         {actions.can_hint && !activity.state.recorded ? (
           <form action={`/api/sessions/${session.id}/help`} method="post">
             <input type="hidden" name="kind" value="hint" />

@@ -25,6 +25,7 @@ export default defineConfig({
         ENVIRONMENT: "development",
         AI_PROVIDER: process.env.AI_PROVIDER ?? "",
         AI_GATEWAY_ENABLED: process.env.AI_GATEWAY_ENABLED ?? "",
+        DOLPHIN_E2E_FAST_CLOCK: process.env.DOLPHIN_E2E_FAST_CLOCK ?? "1",
       },
     },
     {

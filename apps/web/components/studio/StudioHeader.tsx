@@ -14,6 +14,7 @@ export function StudioHeader({
   remainingHigh,
   paused,
   sessionId,
+  stopPoint,
 }: {
   goalTitle: string;
   lessonTitle: string;
@@ -26,6 +27,7 @@ export function StudioHeader({
   remainingHigh: number;
   paused: boolean;
   sessionId: string;
+  stopPoint?: boolean;
 }) {
   const remainingLabel =
     remainingLow === remainingHigh
@@ -52,6 +54,9 @@ export function StudioHeader({
         <span>{paused ? "Paused." : "In progress."}</span>
         <span>The clock stops when you pause</span>
       </div>
+      {stopPoint ? (
+        <p className={styles.metaRow}>Good place to stop</p>
+      ) : null}
       <form action={`/api/sessions/${sessionId}/event`} method="post">
         <input type="hidden" name="event_type" value={paused ? "resume" : "pause"} />
         <Button type="submit" variant="quiet">

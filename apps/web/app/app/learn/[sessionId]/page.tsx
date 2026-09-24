@@ -131,6 +131,7 @@ export default async function StudioPage({
         remainingHigh={session.remaining_estimate?.high ?? 0}
         paused={paused}
         sessionId={session.id}
+        stopPoint={Boolean(session.actions?.stop_point)}
       />
       <ActivityBody
         bodyMarkdown={activity.body_markdown}
