@@ -48,7 +48,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## S60 — Feedback with explanation and misconception note
 
-**Commit:**  — feat(studio): feedback with explanation and the note for your mistake
+**Commit:** `be1d702` — feat(studio): feedback with explanation and the note for your mistake
 
 **What:** After every graded attempt (or reveal), Studio shows the explanation and — for a wrong objective choice — the seeded note for that mistake. Assisted answers make the primary "Try a fresh question." The session summary collects a "Watch out for" list.
 
@@ -58,5 +58,5 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Acceptance:** passed — pytest 84 passed, 6 skipped; studio-v2 e2e extended; content ok.
 
-**Push:**  is on origin/main
+**Push:** `be1d702` is on origin/main
 
