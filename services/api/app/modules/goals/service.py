@@ -73,12 +73,31 @@ def create_goal(
     normalized_objective: str | None,
     time_budget: TimeBudgetSpec | None,
     priority: str = "understand",
+    general: dict[str, object] | None = None,
 ) -> Goal:
+    from app.modules.goals.general import (
+        GENERAL_DOMAIN_KEY,
+        create_owned_curriculum,
+        ensure_general_domain,
+        validate_general_payload,
+    )
+
+    resolved = require_domain(db, domain_key)
+    general_payload = None
+    if resolved == GENERAL_DOMAIN_KEY:
+        ensure_general_domain(db)
+        general_payload = validate_general_payload(general)
+    elif general is not None:
+        raise ApiError(
+            "validation_error",
+            "Outcomes for Something else only apply to that subject",
+            status_code=422,
+        )
     goal = Goal(
         user_id=user.id,
         title=title,
         raw_request=raw_request,
-        domain_key=require_domain(db, domain_key),
+        domain_key=resolved,
         normalized_objective=normalized_objective,
         priority=priority,
         status="active",
@@ -87,6 +106,15 @@ def create_goal(
     db.flush()
     if time_budget is not None:
         upsert_budget(db, goal, time_budget)
+    if general_payload is not None:
+        create_owned_curriculum(
+            db,
+            user,
+            goal,
+            topic=str(general_payload["topic"]),
+            outcomes=list(general_payload["outcomes"]),  # type: ignore[arg-type]
+            notes_markdown=str(general_payload["notes_markdown"]),
+        )
     db.commit()
     db.refresh(goal)
     return goal

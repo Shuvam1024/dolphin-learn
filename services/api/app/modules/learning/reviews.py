@@ -74,6 +74,14 @@ def _objective(db: Session, user: User, competency_id: uuid.UUID) -> ActivityVer
         activity_types=("objective",),
     )
     if picked is None:
+        picked = pick_unseen(
+            db,
+            user,
+            competency_id,
+            graded=False,
+            activity_types=("free_recall",),
+        )
+    if picked is None:
         raise ApiError("validation_error", "No review question is seeded", status_code=422)
     return picked.activity
 
@@ -152,6 +160,9 @@ def queue_for_user(db: Session, user: User) -> dict[str, object]:
 def get_owned_review(db: Session, user: User, review_id: uuid.UUID) -> ReviewItem:
     item = db.get(ReviewItem, review_id)
     if item is None or item.user_id != user.id:
+        raise ApiError("not_found", "Review not found", status_code=404)
+    competency = db.get(Competency, item.competency_id)
+    if competency is not None and competency.owner_user_id not in (None, user.id):
         raise ApiError("not_found", "Review not found", status_code=404)
     return item
 

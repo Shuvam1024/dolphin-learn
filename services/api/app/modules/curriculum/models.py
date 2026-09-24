@@ -27,6 +27,12 @@ class Competency(Base):
     )
     key: Mapped[str] = mapped_column(String(128), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
+    owner_user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True
+    )
+    goal_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("goals.id", ondelete="CASCADE"), nullable=True, index=True
+    )
 
 
 class CompetencyEdge(Base):

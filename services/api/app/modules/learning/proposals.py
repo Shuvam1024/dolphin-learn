@@ -3,6 +3,7 @@
 from app.errors import ApiError
 from app.modules.curriculum.models import EDGE_REQUIRES, Competency, CompetencyEdge, Domain
 from app.modules.goals.budget import BudgetMode, TimeBudgetSpec
+from app.modules.goals.general import GENERAL_DOMAIN_KEY
 from app.modules.goals.models import Goal, TimeBudget
 from app.modules.learning.models import ActivityVersion, Lesson
 from app.modules.learning.planner import CompetencyWork, PlanProposal, propose_plan
@@ -45,15 +46,30 @@ def resolve_domain_key(db: Session, goal: Goal, override: str | None) -> str:
     return domain.key
 
 
-def work_for_domain(db: Session, domain_key: str) -> list[CompetencyWork]:
+def work_for_domain(
+    db: Session,
+    domain_key: str,
+    *,
+    goal: Goal | None = None,
+) -> list[CompetencyWork]:
     domain = db.scalar(select(Domain).where(Domain.key == domain_key))
     if domain is None:
         raise ApiError("validation_error", "Unknown domain", status_code=422)
-    competencies = list(
-        db.scalars(
-            select(Competency).where(Competency.domain_id == domain.id).order_by(Competency.key)
+    query = select(Competency).where(Competency.domain_id == domain.id)
+    if domain_key == GENERAL_DOMAIN_KEY:
+        if goal is None:
+            raise ApiError(
+                "validation_error",
+                "A Something else goal is required for this subject",
+                status_code=422,
+            )
+        query = query.where(
+            Competency.owner_user_id == goal.user_id,
+            Competency.goal_id == goal.id,
         )
-    )
+    else:
+        query = query.where(Competency.owner_user_id.is_(None))
+    competencies = list(db.scalars(query.order_by(Competency.key)))
     ids = {item.id: item for item in competencies}
     prereqs: dict[str, list[str]] = {item.key: [] for item in competencies}
     if ids:
@@ -99,6 +115,7 @@ def propose_for_goal(
     *,
     priority: str | None = None,
 ) -> PlanProposal:
-    work = work_for_domain(db, resolve_domain_key(db, goal, domain_key))
+    resolved = resolve_domain_key(db, goal, domain_key)
+    work = work_for_domain(db, resolved, goal=goal)
     chosen = priority if priority is not None else getattr(goal, "priority", None) or "understand"
     return propose_plan(work, usable_minutes(budget), priority=chosen)

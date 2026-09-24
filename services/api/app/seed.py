@@ -189,6 +189,10 @@ def seed(db: Session) -> None:
         details = "; ".join(f"{item.path}:{item.line} {item.rule}" for item in failures[:5])
         raise RuntimeError(f"content validation failed: {details}")
 
+    from app.modules.goals.general import ensure_general_domain
+
+    ensure_general_domain(db)
+
     for domain_content in load_all():
         domain = _domain(db, domain_content.domain.key, domain_content.domain.name)
         by_key = {

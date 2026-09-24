@@ -67,7 +67,7 @@ def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
     }
     prereq_keys = {
         key
-        for item in work_for_domain(db, resolve_domain_key(db, goal, None))
+        for item in work_for_domain(db, resolve_domain_key(db, goal, None), goal=goal)
         for key in item.prereq_keys
     }
     activities: list[dict[str, object]] = []

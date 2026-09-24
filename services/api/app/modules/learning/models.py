@@ -86,6 +86,9 @@ class Lesson(Base):
     body_markdown: Mapped[str] = mapped_column(Text, nullable=False, default="")
     provisional: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     source: Mapped[str] = mapped_column(String(16), nullable=False, default="seed")
+    owner_user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True
+    )
 
 
 class ActivityVersion(Base):

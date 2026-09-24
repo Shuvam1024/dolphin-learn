@@ -111,6 +111,7 @@ def build_home(db: Session, user: User) -> dict[str, object]:
         .where(
             CompetencyState.user_id == user.id,
             CompetencyState.status_facet.in_(("independently_demonstrated", "retained")),
+            (Competency.owner_user_id.is_(None)) | (Competency.owner_user_id == user.id),
         )
         .order_by(Competency.key)
         .limit(8)

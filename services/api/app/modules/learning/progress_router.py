@@ -146,7 +146,10 @@ def build_progress(db: Session, user: User) -> dict[str, object]:
     state_rows = db.execute(
         select(Competency.key, Competency.name, CompetencyState.status_facet)
         .join(Competency, Competency.id == CompetencyState.competency_id)
-        .where(CompetencyState.user_id == user.id)
+        .where(
+            CompetencyState.user_id == user.id,
+            (Competency.owner_user_id.is_(None)) | (Competency.owner_user_id == user.id),
+        )
         .order_by(Competency.key)
     ).all()
     facets = [

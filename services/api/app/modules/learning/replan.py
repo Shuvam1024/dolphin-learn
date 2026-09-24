@@ -43,7 +43,7 @@ def build_replan_proposal(
     demonstrated_keys = {key for key, _name in demonstrated}
     work = [
         item
-        for item in work_for_domain(db, resolve_domain_key(db, goal, None))
+        for item in work_for_domain(db, resolve_domain_key(db, goal, None), goal=goal)
         if item.key not in demonstrated_keys
     ]
     budget_minutes = usable_minutes(budget)

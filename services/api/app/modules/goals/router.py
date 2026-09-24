@@ -49,6 +49,31 @@ def _clean_required(value: str) -> str:
     return cleaned
 
 
+class GeneralOutcomeIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    statement: str
+    minutes: int | None = None
+
+    @field_validator("statement")
+    @classmethod
+    def _statement(cls, value: str) -> str:
+        return _clean_required(value)
+
+
+class GeneralIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    topic: str
+    outcomes: list[GeneralOutcomeIn]
+    notes_markdown: str | None = None
+
+    @field_validator("topic")
+    @classmethod
+    def _topic(cls, value: str) -> str:
+        return _clean_required(value)
+
+
 class GoalIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -58,6 +83,7 @@ class GoalIn(BaseModel):
     normalized_objective: str | None = None
     priority: PriorityLiteral = "understand"
     time_budget: TimeBudgetSpec | None = None
+    general: GeneralIn | None = None
 
     @field_validator("title", "raw_request", "domain_key")
     @classmethod
@@ -211,6 +237,11 @@ def post_goal(
         normalized_objective=body.normalized_objective,
         time_budget=body.time_budget,
         priority=body.priority,
+        general=(
+            None
+            if body.general is None
+            else body.general.model_dump()
+        ),
     )
     return _out(goal, budget_for(db, goal))
 
