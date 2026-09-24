@@ -76,7 +76,7 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 ## S62 — Unseen item pools
 
-**Commit:** `e2632e6` — feat(assess): unseen item selection; provisional items never graded
+**Commit:** `924b98d` — feat(assess): unseen item selection; provisional items never graded
 
 **What:** Fresh checks and reviews serve items the learner has not seen yet. Provisional graded items are never selected for grading. Exhausted pools mark `repeat`; a correct answer on an item whose solution was revealed stays practicing.
 
@@ -86,5 +86,5 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 
 **Acceptance:** passed — pytest 93 passed, 6 skipped (`test_item_pools.py`: avoid seen, repeat, provisional excluded, reviews rotate, ownership 404).
 
-**Push:** `e2632e6` is on origin/main
+**Push:** `924b98d` is on origin/main
 
