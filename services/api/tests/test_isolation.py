@@ -69,6 +69,12 @@ def test_cross_user_goal_session_and_attempt_are_not_found() -> None:
         client.get(f"/api/v1/goals/{goal_id}", headers=other),
         client.get(f"/api/v1/goals/{goal_id}/plan", headers=other),
         client.get(f"/api/v1/goals/{goal_id}/overview", headers=other),
+        client.post(f"/api/v1/goals/{goal_id}/replan-proposals", headers=other),
+        client.post(
+            f"/api/v1/goals/{goal_id}/replan/accept",
+            headers=other,
+            json={"proposal_hash": "stale"},
+        ),
         client.post(f"/api/v1/goals/{goal_id}/replan", headers=other),
         client.post(f"/api/v1/goals/{goal_id}/plans/accept", headers=other),
         client.get(f"/api/v1/sessions/{session_id}", headers=other),

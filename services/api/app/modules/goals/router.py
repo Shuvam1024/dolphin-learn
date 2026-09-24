@@ -24,7 +24,12 @@ from app.modules.learning.models import PlanVersion
 from app.modules.learning.overview import build_overview
 from app.modules.learning.planner import PRIORITIES, normalize_priority
 from app.modules.learning.proposals import propose_for_goal
-from app.modules.learning.replan import replan_goal
+from app.modules.learning.replan import (
+    accept_replan,
+    build_replan_proposal,
+    proposal_hash,
+    replan_goal,
+)
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from sqlalchemy.orm import Session
@@ -533,7 +538,9 @@ class OverviewActivityOut(BaseModel):
     competency_key: str
     competency_name: str = ""
     lesson_title: str = ""
+    facet: str = ""
     facet_label: str = ""
+    effort: dict[str, int] = {}
 
 
 class DeferredOut(BaseModel):
@@ -549,25 +556,124 @@ class ContinueOut(BaseModel):
     goal_id: str
 
 
+class PlanHistoryOut(BaseModel):
+    version_number: int
+    usable_minutes: int
+    rationale: str
+
+
 class OverviewOut(BaseModel):
     goal_id: str
     title: str
     version_number: int
     usable_minutes: int
     studied_minutes: int
+    remaining_minutes: int = 0
     feasibility_note: str
     why_next: str
     continue_action: ContinueOut
     activities: list[OverviewActivityOut]
     deferred: list[DeferredOut]
+    plan_history: list[PlanHistoryOut] = []
 
 
-@router.post("/{goal_id}/replan", response_model=AcceptedPlanOut)
+class ReplanProposalOut(BaseModel):
+    proposal_hash: str
+    usable_minutes: int
+    remaining_minutes: int
+    studied_minutes: int
+    scope_conflict: bool
+    included: list[ProposalItemOut]
+    deferred: list[ProposalItemOut]
+    priority_label: str = ""
+    priority_effect: str = ""
+
+
+class ReplanAcceptIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    proposal_hash: str
+
+
+@router.post("/{goal_id}/replan-proposals", response_model=ReplanProposalOut)
+def post_replan_proposal(
+    goal_id: uuid.UUID,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> ReplanProposalOut:
+    """Preview a replan. Writes nothing."""
+    goal = get_owned_goal(db, user, goal_id)
+    budget = budget_for(db, goal)
+    if budget is None:
+        raise ApiError(
+            "validation_error",
+            "Add a time budget before replanning",
+            status_code=422,
+        )
+    proposal, studied, left, _ = build_replan_proposal(db, user, goal, budget)
+    return ReplanProposalOut(
+        proposal_hash=proposal_hash(proposal, studied=studied, left=left),
+        usable_minutes=proposal.usable_minutes,
+        remaining_minutes=left,
+        studied_minutes=studied,
+        scope_conflict=proposal.scope_conflict,
+        included=[
+            ProposalItemOut(
+                competency_key=item.key,
+                name=item.name,
+                competency_name=item.name,
+                effort_low=item.effort_low,
+                effort_high=item.effort_high,
+                position=item.position,
+                practice_depth=item.practice_depth,
+            )
+            for item in proposal.included
+        ],
+        deferred=[
+            ProposalItemOut(
+                competency_key=item.key,
+                name=item.name,
+                competency_name=item.name,
+                effort_low=item.effort_low,
+                effort_high=item.effort_high,
+                reason_code=item.reason_code,
+                reason_text=reason_text(item.reason_code),
+            )
+            for item in proposal.deferred
+        ],
+        priority_label=proposal.priority_label,
+        priority_effect=proposal.priority_effect,
+    )
+
+
+@router.post("/{goal_id}/replan/accept", response_model=AcceptedPlanOut)
+def post_replan_accept(
+    goal_id: uuid.UUID,
+    body: ReplanAcceptIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> AcceptedPlanOut:
+    goal = get_owned_goal(db, user, goal_id)
+    budget = budget_for(db, goal)
+    if budget is None:
+        raise ApiError(
+            "validation_error",
+            "Add a time budget before replanning",
+            status_code=422,
+        )
+    version, _proposal = accept_replan(
+        db, user, goal, budget, expected_hash=body.proposal_hash
+    )
+    return _plan_out(db, version)
+
+
+@router.post("/{goal_id}/replan", response_model=AcceptedPlanOut, deprecated=True)
 def post_replan(
     goal_id: uuid.UUID,
     user: User = Depends(current_user),
     db: Session = Depends(get_db),
 ) -> AcceptedPlanOut:
+    """Legacy one-shot replan. Prefer replan-proposals → replan/accept."""
     goal = get_owned_goal(db, user, goal_id)
     budget = budget_for(db, goal)
     if budget is None:

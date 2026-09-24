@@ -89,7 +89,12 @@ def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
                 "competency_key": key,
                 "competency_name": name,
                 "lesson_title": lesson_title,
-                "facet_label": facet_label(facet) if facet else "",
+                "facet": facet or "unassessed",
+                "facet_label": facet_label(facet) if facet else facet_label("unassessed"),
+                "effort": {
+                    "low": row.estimated_minutes_low,
+                    "high": row.estimated_minutes_high,
+                },
             }
         )
     done = {"demonstrated", "retained", "applied"}
@@ -130,15 +135,24 @@ def build_overview(db: Session, user: User, goal: Goal) -> dict[str, object]:
         usable = usable_minutes(budget)
     if usable is None:
         usable = 0
+    from app.modules.learning.replan import plan_history
+    from app.modules.learning.study_time import remaining_minutes as rem
+
+    # Remaining is against the original budget, not the plan version's
+    # usable field (which already stores leftover minutes after a replan).
+    budget_total = usable_minutes(budget) if budget is not None else int(usable)
+    remaining = rem(int(budget_total), studied)
     return {
         "goal_id": str(goal.id),
         "title": goal.title,
         "version_number": version.version_number,
         "usable_minutes": usable,
         "studied_minutes": studied,
+        "remaining_minutes": remaining,
         "feasibility_note": " ".join(version.rationale.split()),
         "why_next": why,
         "continue_action": continue_action,
         "activities": activities,
         "deferred": deferred,
+        "plan_history": plan_history(db, user, goal),
     }

@@ -6,6 +6,7 @@ import { loadMe } from "@/lib/me";
 import { ACCESS_COOKIE, apiBaseUrl } from "@/lib/session";
 
 import styles from "../../../auth.module.css";
+import { ReplanPanel } from "./replan-panel";
 
 type Overview = {
   goal_id: string;
@@ -13,6 +14,7 @@ type Overview = {
   version_number: number;
   usable_minutes: number;
   studied_minutes: number;
+  remaining_minutes: number;
   feasibility_note: string;
   why_next: string;
   continue_action: { kind: string; href: string; goal_id: string };
@@ -24,13 +26,20 @@ type Overview = {
     competency_key: string;
     competency_name: string;
     lesson_title: string;
+    facet: string;
     facet_label: string;
+    effort: { low: number; high: number };
   }[];
   deferred: {
     competency_key: string;
     competency_name: string;
     reason_code: string;
     reason_text: string;
+  }[];
+  plan_history: {
+    version_number: number;
+    usable_minutes: number;
+    rationale: string;
   }[];
 };
 
@@ -80,17 +89,17 @@ export default async function GoalPathPage({
         <p className={styles.kicker}>Goal path</p>
         <h1 className={styles.title}>{overview.title}</h1>
         <p className={styles.meta}>Plan version {overview.version_number}</p>
+        <p className={styles.lede}>
+          About {overview.remaining_minutes} of{" "}
+          {overview.remaining_minutes + overview.studied_minutes} minutes left
+        </p>
         <p className={styles.meta}>
-          Usable minutes: {overview.usable_minutes}. Studied: {overview.studied_minutes}{" "}
+          Studied: {overview.studied_minutes}{" "}
           {overview.studied_minutes === 1 ? "minute" : "minutes"}. A date is not study time.
         </p>
         <p className={styles.lede}>{overview.feasibility_note}</p>
         <p className={styles.meta}>{overview.why_next}</p>
-        <form action={`/api/goals/${overview.goal_id}/replan`} method="post">
-          <button className={styles.button} type="submit">
-            Update plan
-          </button>
-        </form>
+        <ReplanPanel goalId={overview.goal_id} />
         {next.kind === "resume" ? (
           <p className={styles.meta}>
             <Link href={next.href}>Continue</Link>
@@ -100,15 +109,15 @@ export default async function GoalPathPage({
             <Link href={`/app/goals/${overview.goal_id}/start`}>Continue</Link>
           </p>
         )}
-        <h2 className={styles.meta}>Activities</h2>
+        <h2 className={styles.meta}>Lessons</h2>
         <ol>
           {overview.activities.map((item) => (
             <li key={item.id}>
-              {item.title}. {item.label}
+              {item.title}. {item.facet_label}. ~{item.effort.low}–{item.effort.high} min
             </li>
           ))}
         </ol>
-        <h2 className={styles.meta}>Deferred</h2>
+        <h2 className={styles.meta}>Not in this plan</h2>
         {overview.deferred.length === 0 ? (
           <p className={styles.meta}>Nothing was deferred.</p>
         ) : (
@@ -120,6 +129,18 @@ export default async function GoalPathPage({
             ))}
           </ul>
         )}
+        {overview.plan_history.length > 0 ? (
+          <details>
+            <summary className={styles.meta}>Plan history</summary>
+            <ul>
+              {overview.plan_history.map((row) => (
+                <li key={row.version_number}>
+                  Version {row.version_number} · {row.usable_minutes} minutes. {row.rationale}
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
       </section>
     </main>
   );

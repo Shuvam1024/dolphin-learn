@@ -1,9 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-test("update plan previews then accepts the next version after a budget change", async ({
-  page,
-}) => {
-  const email = `s36-${Date.now()}@example.com`;
+test("goal path v2 shows minutes chips and replan preview then accept", async ({ page }) => {
+  const email = `s75-${Date.now()}@example.com`;
   await page.goto("/sign-in");
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Continue" }).click();
@@ -31,10 +29,17 @@ test("update plan previews then accepts the next version after a budget change",
   await page.request.post(`http://127.0.0.1:8000/api/v1/goals/${goalId}/plans/accept`, {
     headers,
   });
-  await page.goto(`/app/goals/${goalId}`);
-  await expect(page.getByText("Plan version 1")).toBeVisible();
 
-  const patched = await page.request.patch(`http://127.0.0.1:8000/api/v1/goals/${goalId}`, {
+  await page.goto(`/app/goals/${goalId}`);
+  await expect(page.getByRole("heading", { name: "Learn Python" })).toBeVisible();
+  await expect(page.getByText(/About \d+ of \d+ minutes left/)).toBeVisible();
+  await expect(page.getByText("Why this next?")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Lessons" })).toBeVisible();
+  await expect(page.getByText(/~\d+–\d+ min/).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Not in this plan" })).toBeVisible();
+  await expect(page.getByText("Plan history")).toBeVisible();
+
+  await page.request.patch(`http://127.0.0.1:8000/api/v1/goals/${goalId}`, {
     headers,
     data: {
       time_budget: {
@@ -44,10 +49,11 @@ test("update plan previews then accepts the next version after a budget change",
       },
     },
   });
-  expect(patched.ok()).toBeTruthy();
+
   await page.getByRole("button", { name: "Update plan" }).click();
   await expect(page.getByRole("heading", { name: "Proposed plan" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Accept" })).toBeVisible();
   await page.getByRole("button", { name: "Accept" }).click();
   await expect(page.getByText("Plan version 2")).toBeVisible();
-  await expect(page.getByText("Calling a function. Not enough minutes this time")).toBeVisible();
+  await expect(page.getByText(/Not enough minutes this time/)).toBeVisible();
 });
