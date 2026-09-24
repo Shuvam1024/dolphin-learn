@@ -228,6 +228,9 @@ def request_hint(
             "source": source,
         },
     )
+    from app.analytics.events import emit_hint_requested
+
+    emit_hint_requested(db, user.id, session_id=session.id, activity_version_id=activity.id)
     db.commit()
     return {
         "kind": "hint",
@@ -290,6 +293,9 @@ def request_explain(
             "analogy_used": "true" if analogy_used else "false",
         },
     )
+    from app.analytics.events import emit_explain_requested
+
+    emit_explain_requested(db, user.id, session_id=session.id, activity_version_id=activity.id)
     db.commit()
     return {
         "explanation_markdown": explanation,

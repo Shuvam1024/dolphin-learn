@@ -78,6 +78,10 @@ def start_session(
         target_minutes=minutes,
     )
     db.add(row)
+    db.flush()
+    from app.analytics.events import emit_session_started
+
+    emit_session_started(db, user.id, row.id, goal_id=goal.id)
     db.commit()
     db.refresh(row)
     return row
@@ -317,6 +321,15 @@ def submit_attempt(
         )
     )
     record_evidence(db, user, session, activity, attempt, assistance, result.outcome)
+    from app.analytics.events import emit_activity_submitted
+
+    emit_activity_submitted(
+        db,
+        user.id,
+        attempt_id=attempt.id,
+        activity_version_id=activity.id,
+        session_id=session.id,
+    )
     try:
         db.commit()
     except IntegrityError:

@@ -115,6 +115,9 @@ def create_goal(
             outcomes=list(general_payload["outcomes"]),  # type: ignore[arg-type]
             notes_markdown=str(general_payload["notes_markdown"]),
         )
+    from app.analytics.events import emit_goal_created
+
+    emit_goal_created(db, user.id, goal.id, domain_key=resolved)
     db.commit()
     db.refresh(goal)
     return goal

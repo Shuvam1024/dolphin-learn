@@ -93,6 +93,17 @@ def accept_replan(
         "Accepted from a replan preview."
     )
     version = save_accepted_version(db, user, goal, proposal, note)
+    from app.analytics.events import emit_plan_replanned
+
+    emit_plan_replanned(
+        db,
+        user.id,
+        goal.id,
+        plan_version_id=version.id,
+        version_number=version.version_number,
+    )
+    db.commit()
+    db.refresh(version)
     return version, proposal
 
 
@@ -133,4 +144,15 @@ def replan_goal(
         "Plan proposals still need an explicit accept. This replan wrote a new version."
     )
     version = save_accepted_version(db, user, goal, proposal, note)
+    from app.analytics.events import emit_plan_replanned
+
+    emit_plan_replanned(
+        db,
+        user.id,
+        goal.id,
+        plan_version_id=version.id,
+        version_number=version.version_number,
+    )
+    db.commit()
+    db.refresh(version)
     return version, proposal

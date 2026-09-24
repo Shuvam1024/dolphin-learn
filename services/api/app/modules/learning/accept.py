@@ -118,7 +118,7 @@ def save_accepted_version(
                 )
             )
             position += 1
-    db.commit()
+    db.flush()
     db.refresh(version)
     return version
 
@@ -129,8 +129,19 @@ def accept_proposal(
     goal: Goal,
     budget: TimeBudget,
 ) -> tuple[PlanVersion, PlanProposal]:
+    from app.analytics.events import emit_plan_accepted
+
     proposal = propose_for_goal(db, goal, budget, None)
     version = save_accepted_version(db, user, goal, proposal)
+    emit_plan_accepted(
+        db,
+        user.id,
+        goal.id,
+        plan_version_id=version.id,
+        version_number=version.version_number,
+    )
+    db.commit()
+    db.refresh(version)
     return version, proposal
 
 

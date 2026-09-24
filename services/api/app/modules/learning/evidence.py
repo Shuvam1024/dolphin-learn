@@ -249,6 +249,14 @@ def move_to_unseen_question(db: Session, user: User, session_id: uuid.UUID) -> L
             },
         )
     )
+    from app.analytics.events import emit_independent_check_completed
+
+    emit_independent_check_completed(
+        db,
+        user.id,
+        session_id=session.id,
+        activity_version_id=picked.activity.id,
+    )
     db.commit()
     db.refresh(session)
     return session

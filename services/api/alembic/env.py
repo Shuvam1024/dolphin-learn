@@ -2,6 +2,7 @@
 
 from logging.config import fileConfig
 
+import app.analytics.events  # noqa: F401
 import app.modules.curriculum.models  # noqa: F401
 import app.modules.goals.models  # noqa: F401
 import app.modules.identity.models  # noqa: F401

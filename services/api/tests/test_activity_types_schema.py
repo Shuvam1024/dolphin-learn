@@ -24,10 +24,20 @@ def test_activity_types_schema_backfill_and_constraints() -> None:
     with SessionLocal() as db:
         seed(db)
         objective = db.scalar(
-            select(ActivityVersion).where(ActivityVersion.activity_type == "objective").limit(1)
+            select(ActivityVersion)
+            .where(
+                ActivityVersion.activity_type == "objective",
+                ActivityVersion.source == "seed",
+            )
+            .limit(1)
         )
         reading = db.scalar(
-            select(ActivityVersion).where(ActivityVersion.activity_type == "reading").limit(1)
+            select(ActivityVersion)
+            .where(
+                ActivityVersion.activity_type == "reading",
+                ActivityVersion.source == "seed",
+            )
+            .limit(1)
         )
         assert objective is not None
         assert reading is not None

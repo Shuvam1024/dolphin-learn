@@ -246,6 +246,15 @@ def submit_review_attempt(
     if extended:
         item.interval_days = _next_interval(item.interval_days)
     item.due_at = datetime.now(timezone.utc) + timedelta(days=item.interval_days)
+    from app.analytics.events import emit_activity_submitted, emit_review_completed
+
+    emit_activity_submitted(
+        db,
+        user.id,
+        attempt_id=attempt.id,
+        activity_version_id=activity.id,
+    )
+    emit_review_completed(db, user.id, review_item_id=item.id, outcome=label)
     db.commit()
     db.refresh(item)
     return {
@@ -277,6 +286,9 @@ def snooze_review(
     interval_before = item.interval_days
     item.due_at = datetime.now(timezone.utc) + timedelta(hours=hours)
     db.add(ReviewEvent(review_item_id=item.id, outcome="snooze"))
+    from app.analytics.events import emit_review_snoozed
+
+    emit_review_snoozed(db, user.id, review_item_id=item.id, hours=hours)
     db.commit()
     db.refresh(item)
     return {
