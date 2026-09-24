@@ -1,4 +1,4 @@
-"""Honest end-of-session summary built from stored attempts. No celebration copy."""
+"""Honest end-of-session summary built from stored attempts."""
 
 import uuid
 from datetime import datetime, timezone
@@ -12,8 +12,10 @@ from app.modules.learning.models import (
     LearningSession,
     Lesson,
     PlanActivity,
+    ReviewItem,
     SessionEvent,
 )
+from app.modules.learning.study_time import session_active_minutes
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -27,6 +29,19 @@ def _plan_version_id(db: Session, session: LearningSession):
     return plan.plan_version_id
 
 
+def _goal_id(db: Session, session: LearningSession) -> str:
+    from app.modules.learning.models import LearningPath, PlanVersion
+
+    version_id = _plan_version_id(db, session)
+    if version_id is None:
+        return ""
+    version = db.get(PlanVersion, version_id)
+    if version is None:
+        return ""
+    path = db.get(LearningPath, version.learning_path_id)
+    return str(path.goal_id) if path is not None else ""
+
+
 def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
     rows = db.execute(
         select(Attempt, Evaluation, Competency.key, Competency.name, Lesson.title)
@@ -38,6 +53,9 @@ def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
         .order_by(Attempt.submitted_at, Attempt.id)
     ).all()
 
+    showed: list[dict[str, str]] = []
+    practiced: list[dict[str, str]] = []
+    self_reported: list[dict[str, str]] = []
     topics: list[dict[str, str]] = []
     seen_topics: set[str] = set()
     independent: list[dict[str, str]] = []
@@ -55,18 +73,29 @@ def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
                     "title": title,
                 }
             )
-        if evaluation.assistance == "independent":
-            independent.append(
-                {
-                    "attempt_id": str(attempt.id),
-                    "competency_key": key,
-                    "competency_name": name,
-                    "outcome": evaluation.outcome,
-                    "choice": str(attempt.response.get("choice", "")),
-                }
-            )
-            if evaluation.outcome == "correct":
-                demonstrated.add(key)
+        item = {
+            "attempt_id": str(attempt.id),
+            "competency_key": key,
+            "competency_name": name,
+            "lesson_title": title,
+            "outcome": evaluation.outcome,
+            "choice": str(
+                attempt.response.get("choice")
+                or attempt.response.get("text")
+                or attempt.response.get("value")
+                or ""
+            ),
+        }
+        if evaluation.evaluator == "self_report" and evaluation.outcome == "self_reported":
+            self_reported.append({**item, "rating": str(attempt.response.get("self_rating", ""))})
+        elif evaluation.assistance == "independent" and evaluation.outcome == "correct":
+            showed.append(item)
+            independent.append(item)
+            demonstrated.add(key)
+        elif evaluation.assistance == "assisted":
+            practiced.append(item)
+        elif evaluation.assistance == "independent":
+            independent.append(item)
 
     unresolved: list[dict[str, str]] = []
     version_id = _plan_version_id(db, session)
@@ -113,14 +142,20 @@ def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
     for attempt, evaluation, key, name, title in rows:
         if evaluation.outcome == "correct":
             continue
-        activity = db.get(ActivityVersion, attempt.activity_version_id)
-        if activity is None or not activity.misconceptions:
-            continue
-        choice = str(attempt.response.get("choice", ""))
-        notes = activity.misconceptions
         note = ""
-        if isinstance(notes, dict):
-            note = str(notes.get(choice, "")).strip()
+        source = "seed"
+        if evaluation.feedback_json:
+            note = str(evaluation.feedback_json.get("misconception_note", "") or "").strip()
+            source = str(evaluation.feedback_json.get("misconception_source", "ai") or "ai")
+        if not note:
+            activity = db.get(ActivityVersion, attempt.activity_version_id)
+            if activity is None or not activity.misconceptions:
+                continue
+            choice = str(attempt.response.get("choice", ""))
+            notes = activity.misconceptions
+            if isinstance(notes, dict):
+                note = str(notes.get(choice, "")).strip()
+            source = "seed"
         if not note or note in seen_notes:
             continue
         seen_notes.add(note)
@@ -130,9 +165,40 @@ def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
                 "competency_name": name,
                 "lesson_title": title,
                 "note": note,
-                "choice": choice,
+                "choice": str(attempt.response.get("choice", "")),
+                "source": source,
             }
         )
+
+    next_review: dict[str, object] | None = None
+    review = db.scalar(
+        select(ReviewItem)
+        .where(ReviewItem.user_id == session.user_id)
+        .order_by(ReviewItem.due_at)
+    )
+    if review is not None:
+        competency = db.get(Competency, review.competency_id)
+        days = max(
+            0,
+            int((review.due_at - datetime.now(timezone.utc)).total_seconds() // 86400),
+        )
+        next_review = {
+            "lesson": competency.name if competency is not None else "",
+            "in_days": days,
+        }
+
+    goal_id = _goal_id(db, session)
+    next_step = {
+        "kind": "home",
+        "href": "/app",
+        "label": "Back to Home",
+    }
+    if goal_id:
+        next_step = {
+            "kind": "goal",
+            "href": f"/app/goals/{goal_id}",
+            "label": "Back to your path",
+        }
 
     return {
         "topics": topics,
@@ -140,6 +206,12 @@ def build_summary(db: Session, session: LearningSession) -> dict[str, object]:
         "unresolved": unresolved,
         "suggested_review": suggested,
         "watch_out_for": watch_out,
+        "showed_on_your_own": showed,
+        "practiced_with_help": practiced,
+        "self_reported": self_reported,
+        "next_review": next_review,
+        "minutes_studied": session_active_minutes(db, session),
+        "next_step": next_step,
         "note": "This summary counts stored attempts only. It does not claim retention.",
     }
 

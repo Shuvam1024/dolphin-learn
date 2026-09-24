@@ -141,3 +141,34 @@ test("wrong choice shows misconception note; solution then answer offers a fresh
   await expect(page.getByRole("button", { name: "Next activity" })).toHaveCount(0);
   await expect(page.getByText(/congratulat|great job|well done/i)).toHaveCount(0);
 });
+
+test("session summary v2 shows showed / practiced / next without celebration", async ({ page }) => {
+  await signIn(page, `s68-sum-${Date.now()}@example.com`);
+  const { sessionId, headers, goalId } = await startPythonSession(page);
+  const listed = await page.request.get(`http://127.0.0.1:8000/api/v1/goals/${goalId}/plan`, {
+    headers,
+  });
+  const activities = (await listed.json()).activities as Array<{ id: string; title: string }>;
+  const question = activities.find((item) => item.title.endsWith("objective"));
+  await page.request.patch(`http://127.0.0.1:8000/api/v1/sessions/${sessionId}`, {
+    headers,
+    data: {
+      event: {
+        client_event_id: "to-obj-sum",
+        event_type: "progress",
+        payload: { plan_activity_id: question?.id },
+      },
+    },
+  });
+  await page.goto(`/app/learn/${sessionId}`);
+  await page.getByRole("radio", { name: /bound to the value 3/ }).check();
+  await page.getByRole("button", { name: "Submit answer" }).click();
+  await page.getByRole("button", { name: "Finish session" }).click();
+  await expect(page.getByRole("heading", { name: "Session finished" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "What you showed on your own" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Practiced with help" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Self-reported" })).toBeVisible();
+  await expect(page.getByText(/Minutes studied:/i)).toBeVisible();
+  await expect(page.getByRole("link", { name: "Back to your path" })).toBeVisible();
+  await expect(page.getByText(/congratulat|great job|streak|well done/i)).toHaveCount(0);
+});

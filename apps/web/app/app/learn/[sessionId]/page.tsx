@@ -60,34 +60,45 @@ export default async function StudioPage({
         <p className={styles.crumb}>Session summary</p>
         <h1 className={styles.title}>Session finished</h1>
         <p className={styles.metaRow}>{summary.note}</p>
-        <h2>Independent attempts</h2>
-        <ul>
-          {summary.independent_attempts.map((item) => (
-            <li key={item.attempt_id}>
-              {item.competency_name}: {item.outcome} ({item.choice})
-            </li>
-          ))}
-        </ul>
-        <h2>Unresolved</h2>
-        {summary.unresolved.length === 0 ? (
-          <p>No unresolved questions in this session.</p>
+        <p className={styles.metaRow}>
+          Minutes studied: {summary.minutes_studied ?? session.active_minutes}
+        </p>
+        <h2>What you showed on your own</h2>
+        {(summary.showed_on_your_own ?? summary.independent_attempts).length === 0 ? (
+          <p>Nothing independent in this session.</p>
         ) : (
           <ul>
-            {summary.unresolved.map((item) => (
-              <li key={item.title}>
-                {item.title}. {item.reason}
+            {(summary.showed_on_your_own ?? summary.independent_attempts).map((item) => (
+              <li key={item.attempt_id || `${item.competency_key}-${item.choice}`}>
+                {item.competency_name}: {item.outcome} ({item.choice})
               </li>
             ))}
           </ul>
         )}
-        <h2>Suggested review</h2>
-        <ul>
-          {summary.suggested_review.map((item) => (
-            <li key={item.competency_key}>
-              {item.competency_name}. {item.reason}
-            </li>
-          ))}
-        </ul>
+        <h2>Practiced with help</h2>
+        {(summary.practiced_with_help ?? []).length === 0 ? (
+          <p>No assisted practice in this session.</p>
+        ) : (
+          <ul>
+            {(summary.practiced_with_help ?? []).map((item) => (
+              <li key={item.attempt_id || `${item.competency_key}-helped`}>
+                {item.competency_name}: {item.outcome}
+              </li>
+            ))}
+          </ul>
+        )}
+        <h2>Self-reported</h2>
+        {(summary.self_reported ?? []).length === 0 ? (
+          <p>No self-reported recall in this session.</p>
+        ) : (
+          <ul>
+            {(summary.self_reported ?? []).map((item) => (
+              <li key={item.attempt_id || `${item.competency_key}-self`}>
+                {item.competency_name}: {item.rating || "self-reported"}
+              </li>
+            ))}
+          </ul>
+        )}
         <h2>Watch out for</h2>
         {(summary.watch_out_for ?? []).length === 0 ? (
           <p>Nothing flagged from this session.</p>
@@ -96,10 +107,25 @@ export default async function StudioPage({
             {(summary.watch_out_for ?? []).map((item) => (
               <li key={`${item.competency_key}-${item.note}`}>
                 {item.competency_name}: {item.note}
+                {item.source === "ai" ? " (AI)" : ""}
               </li>
             ))}
           </ul>
         )}
+        {summary.next_review ? (
+          <>
+            <h2>Next review</h2>
+            <p>
+              {String(summary.next_review.lesson)} in{" "}
+              {String(summary.next_review.in_days)} days
+            </p>
+          </>
+        ) : null}
+        {summary.next_step ? (
+          <p>
+            <a href={summary.next_step.href}>{summary.next_step.label}</a>
+          </p>
+        ) : null}
       </main>
     );
   }

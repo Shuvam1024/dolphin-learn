@@ -59,6 +59,8 @@ export type SummaryItem = {
   outcome: string;
   choice: string;
   note?: string;
+  source?: string;
+  rating?: string;
 };
 
 export type StudioSession = {
@@ -92,6 +94,12 @@ export type StudioSession = {
     unresolved: SummaryItem[];
     suggested_review: SummaryItem[];
     watch_out_for?: SummaryItem[];
+    showed_on_your_own?: SummaryItem[];
+    practiced_with_help?: SummaryItem[];
+    self_reported?: SummaryItem[];
+    next_review?: { lesson: string; in_days: number } | null;
+    minutes_studied?: number;
+    next_step?: { kind: string; href: string; label: string } | null;
     note: string;
   } | null;
 };

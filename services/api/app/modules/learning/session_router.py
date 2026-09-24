@@ -93,6 +93,8 @@ class SummaryItemOut(BaseModel):
     outcome: str = ""
     choice: str = ""
     note: str = ""
+    source: str = ""
+    rating: str = ""
 
 
 class SummaryOut(BaseModel):
@@ -101,6 +103,12 @@ class SummaryOut(BaseModel):
     unresolved: list[SummaryItemOut]
     suggested_review: list[SummaryItemOut]
     watch_out_for: list[SummaryItemOut] = []
+    showed_on_your_own: list[SummaryItemOut] = []
+    practiced_with_help: list[SummaryItemOut] = []
+    self_reported: list[SummaryItemOut] = []
+    next_review: dict[str, object] | None = None
+    minutes_studied: int = 0
+    next_step: dict[str, str] | None = None
     note: str
 
 
