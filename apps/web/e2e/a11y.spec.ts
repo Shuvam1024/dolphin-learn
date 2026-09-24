@@ -114,14 +114,25 @@ test("axe baseline over empty and populated /app routes", async ({ page, request
     found.push(...(await scan(page, route, "populated")));
   }
 
+  const byRoute: Record<string, Omit<Violation, "route">[]> = {};
+  for (const item of found) {
+    const { route, ...rest } = item;
+    (byRoute[route] ??= []).push(rest);
+  }
+
   const baselinePath = path.join(__dirname, "a11y-baseline.json");
   writeFileSync(
     baselinePath,
     JSON.stringify(
       {
         recorded_at: new Date().toISOString(),
-        note: "S51 baseline only. Later gates require zero serious/critical.",
+        note: "S58 Gate 2 baseline: serious/critical by route. Later gates require zero.",
         serious_or_critical: found,
+        by_route: byRoute,
+        totals: {
+          serious_or_critical: found.length,
+          routes_with_findings: Object.keys(byRoute).length,
+        },
       },
       null,
       2,

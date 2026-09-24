@@ -1,11 +1,17 @@
 # Dolphin Implementation Status
 
-- **Last updated:** September 23, 2026
-- **Milestone completed:** S01–S57; Phase 2 through studio payload contract
-- **Verified working user journey:** Learner-facing payloads and screens show competency names and plain reason/facet labels; keys stay in the API for machines.
-- **Implemented modules/features:** Prior surface plus `learning/copy.py` and activity content fields (`item_id`, `payload`, `provisional`, seven types) (`FACET_LABEL`, `REASON_TEXT`, `AI_LABEL`); home/progress/overview/reviews/proposals/summary carry `competency_name` / `facet_label` / `reason_text` / `lesson_title`; web Home, Progress, Review, path, wizard, and session summary render names; contracts types for named fields; `e2e/no-raw-keys.spec.ts`.
-- **Implemented modules/features:** Prior surface plus `studio_view` session payload (position, estimate, actions, tutor slots). Vault/RAG/sandbox still later.
+- **Last updated:** September 24, 2026
+- **Milestone completed:** S01–S58; Phase 2 foundations gate
+- **Verified working user journey:** Learner-facing payloads and screens show competency names and plain reason/facet labels; keys stay in the API for machines. Content loads from files; AI gateway works off and with FakeProvider; Session Studio payload carries actions and tutor slots.
+- **Implemented modules/features:** Prior surface plus verification harness, Clear Depth UI kit, `learning/copy.py`, activity content fields, `content/` loader, `ai_gateway` + FakeProvider, `studio_view` session payload. Vault/RAG/sandbox still later.
 - **Schema/API changes:** Alembic through `0011_ai_calls`
+- **Tests run and exact results (S58 Gate 2):**
+  - `AI_PROVIDER=` pytest → 81 passed, 6 skipped; ruff/mypy clean; `python -m app.content.validate` → content ok
+  - `AI_PROVIDER=fake` pytest → 81 passed, 6 skipped
+  - web: tsc/eslint clean; vitest 7 passed; playwright smoke 22 passed
+  - `make a11y` → 1 passed; `e2e/a11y-baseline.json` 13 serious/critical by route (contrast)
+  - `make perf` → API 6 passed (p95 home 62.5ms, progress 6.2ms, reviews/due 45.4ms, overview 33.8ms, session 16.7ms, plan-proposals 9.1ms; budget 250ms); page budgets 1 passed (LCP under 2500ms)
+  - contracts: StudioActions/Tutor/State present in `packages/contracts`
 - **Tests run and exact results (S57):**
   - `pytest -q` → 81 passed, 6 skipped (incl. studio_view action table + ownership)
   - `ruff` / `mypy` clean; contracts include StudioActions/Tutor/State
@@ -35,8 +41,8 @@
   - `ruff` / `mypy` / `tsc` / `vitest` clean
 - **Known bugs/security/accessibility concerns:** Axe baseline lists remaining contrast findings on older screens until later kit migration.
 - **Build plan:** `docs/design/06-first-ship-plan.md` (S51–S105)
-- **Completed steps:** **S01–S57**
-- **Next step:** **S58 — Gate 2: foundations**
+- **Completed steps:** **S01–S58**
+- **Next step:** **S59 — Studio v2 renderer**
 
 Design package SoT: `docs/design/`. This file is the only live tracker. `docs/implementation-status.md` is a pointer here. Teach notes from S58 onward go in `docs/learning-log.md`.
 
@@ -51,8 +57,9 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | 1B | Delayed retention (S41–S42) | Done |
 | 1C | Physical study time (S43–S46) | Done |
 | 1D | Honest demo content (S47–S50) | Done |
-| 2 | Foundations (S51–S58) | In progress (next: S58 gate) |
-| Later | Phases 3–7 per first-ship plan | Later |
+| 2 | Foundations (S51–S58) | Done |
+| 3 | The learning session (S59–S70) | Next (S59) |
+| Later | Phases 4–7 per first-ship plan | Later |
 
 ---
 
@@ -123,3 +130,4 @@ Design package SoT: `docs/design/`. This file is the only live tracker. `docs/im
 | **S55** | `feat(content): curricula as validated markdown and yaml with a loader` | content/ files; loader+rules; seed from files; CI content job |
 | **S56** | `feat(ai): provider-agnostic gateway with typed outputs, limits, audit, and fake provider` | Gateway+FakeProvider; ai_calls; ai_enabled on /me; CI ai-fake |
 | **S57** | `feat(sessions): studio payload with position, estimate, state, actions, and tutor slots` | studio_view actions; explanation hidden pre-attempt; contracts |
+| **S58** | `docs: phase 2 foundations verified; content model, ai gateway, and studio contract in architecture` | Gate 2 green; architecture + brand updated |

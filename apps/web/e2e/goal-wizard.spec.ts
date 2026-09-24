@@ -49,7 +49,7 @@ test("keyboard-only wizard saves a goal and keeps fields on back", async ({ page
   await page.getByRole("button", { name: "Save goal" }).focus();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("heading", { name: "Goal saved" })).toBeVisible();
-  await expect(page.getByText("Names and values")).toBeVisible();
+  await expect(page.getByText("Names and values", { exact: true })).toBeVisible();
   await expect(page.getByText("120 minutes in one sitting")).toBeVisible();
   await expect(page.getByText("Priority: Focus one topic")).toBeVisible();
 

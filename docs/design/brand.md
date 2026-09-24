@@ -35,6 +35,8 @@
 
 **App type ramp (S52):** display 28–40px, body 16–17px, meta 14px.
 
+**UI kit (S52):** primitives under `apps/web/components/ui` — Button (`primary` ink / `secondary` seafoam outline / `quiet`), Field, Notice, Chip, Card. Sign-in and adult gate use the kit; axe zero serious/critical on those two screens. Learner copy uses competency names and plain facet/reason labels (S53), never raw keys.
+
 **Avoid:** indigo–purple AI cliché; cream + terracotta serif cliché; streak/leaderboard chrome.
 
 ---

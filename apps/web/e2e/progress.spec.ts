@@ -6,6 +6,7 @@ test("progress explains unassessed gaps and shows a real facet", async ({ page }
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "I am 18 or older and I understand" }).click();
+  await expect(page.getByRole("heading", { name: "You are in" })).toBeVisible();
 
   await page.goto("/app/progress");
   await expect(page.getByRole("heading", { name: "No evidence yet" })).toBeVisible();

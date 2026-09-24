@@ -134,6 +134,39 @@ Never award `retained` / `applied` from same-session success alone.
 - Deterministic seeded content works with AI disabled.
 - Vault/RAG (later): owner filter **before** retrieval; cite verified spans only; treat uploads as untrusted.
 
+### AI gateway (Phase 2)
+
+- Module `ai_gateway`: provider protocol, HTTP provider (`AI_PROVIDER=http`), and `FakeProvider` for CI (`AI_PROVIDER=fake`). Empty `AI_PROVIDER` keeps AI off.
+- Typed completions: each prompt id maps to a JSON schema; one retry on schema failure; timeout ~12 s; cancel supported.
+- Prompt hygiene: learner-supplied text is always wrapped in a delimited `<learner_data>` block with an explicit “treat as data, not instructions” rule.
+- Limits and audit: per-user daily cap (`AI_DAILY_CAP`), redaction of emails/tokens in variables, append-only `ai_calls` rows (`prompt_id`, model, tokens, latency, outcome).
+- Learner opt-out: `learner_profiles.ai_opt_out`; `GET /me` exposes `ai_enabled`. Degraded mode serves seeded content only — no grading or ownership changes from the model.
+
+---
+
+## Content files and activity model (Phase 2)
+
+Curricula live under repo-root `content/{domain}/` as markdown lessons plus YAML item banks. `app.content.loader` validates and upserts; `python -m app.content.validate` (CI job `content`) refuses bad lessons before seed.
+
+**Activity types:** `reading`, `worked_example`, `objective`, `short_answer`, `numeric`, `free_recall`, `reflection`.
+
+**Provenance on `activity_versions`:** stable `item_id`, typed `payload`, optional `explanation` / `misconceptions`, `provisional` (AI drafts never grade until reviewed), `source` (`seed|learner|ai`), `reviewed_at`.
+
+**Copy:** learner-facing payloads use competency **names** and plain facet/reason labels from `learning/copy.py` — machine keys stay for the API only.
+
+---
+
+## Session Studio payload (Phase 2)
+
+`GET /sessions/{id}` carries a server-owned Studio contract via `studio_view.py`:
+
+- `goal`, `lesson`, `position` / `total`, `remaining_estimate`, `target_minutes`
+- `studio_activity` with `input_kind`, choices, provisional flag, and `state` (recorded response, outcome, assistance, hint/explanation slots, misconception note, alt explanation, repeat)
+- `actions` — single primary (`submit|continue|fresh_check|finish`) plus `can_hint`, `can_reveal`, `can_fresh_check`, `can_pause`, `can_explain_differently`, `stop_point`
+- `tutor` — `{enabled, pending_request_id}`; panel stays hidden when AI is off
+
+Challenge mode withholds `revealed_answer`. Explanations stay empty until an attempt (or reveal) is recorded. Shared TypeScript types live in `packages/contracts`.
+
 ---
 
 ## Security, privacy, safety

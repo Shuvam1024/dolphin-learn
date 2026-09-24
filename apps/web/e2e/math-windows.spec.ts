@@ -25,7 +25,7 @@ test("two-week math plan counts 30-minute days, not 14 times 24 hours", async ({
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await page.getByRole("button", { name: "Save goal" }).click();
   await expect(page.getByText("30 minutes a day for 14 days")).toBeVisible();
-  await expect(page.getByText("math.fractions.parts")).toBeVisible();
+  await expect(page.getByText("A fraction as parts of a whole")).toBeVisible();
   await expect(page.getByRole("button", { name: "Accept plan" })).toBeEnabled();
   await page.getByRole("button", { name: "Accept plan" }).click();
   await expect(page.getByRole("heading", { name: "Plan accepted" })).toBeVisible();
@@ -55,8 +55,8 @@ test("two-week math plan counts 30-minute days, not 14 times 24 hours", async ({
 
   await page.getByRole("link", { name: "Back to home" }).click();
   await page.getByRole("button", { name: "Start a session for Fractions" }).click();
-  await expect(page.getByText("three parts out of four")).toBeVisible();
+  await expect(page.getByText("three equal parts out of four")).toBeVisible();
   await page.getByRole("button", { name: "Next activity" }).click();
-  await expect(page.getByText("What is 1/4 + 2/4?")).toBeVisible();
-  await expect(page.getByRole("radio", { name: /3\/4/ })).toBeVisible();
+  await expect(page.getByText("In 3/4, what does the 4 name?")).toBeVisible();
+  await expect(page.getByRole("radio", { name: /equal parts make the whole/ })).toBeVisible();
 });
