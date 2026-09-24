@@ -1,0 +1,76 @@
+# Production compose — web, api, postgres, one-shot migrate (S101)
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dolphin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dolphin}
+      POSTGRES_DB: ${POSTGRES_DB:-dolphin}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dolphin} -d ${POSTGRES_DB:-dolphin}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    build:
+      context: ../services/api
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-dolphin}:${POSTGRES_PASSWORD:-dolphin}@db:5432/${POSTGRES_DB:-dolphin}
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["alembic", "upgrade", "head"]
+    restart: "no"
+
+  api:
+    build:
+      context: ../services/api
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-dolphin}:${POSTGRES_PASSWORD:-dolphin}@db:5432/${POSTGRES_DB:-dolphin}
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      AUTH_JWKS_URL: ${AUTH_JWKS_URL:-}
+      AUTH_ISSUER_URL: ${AUTH_ISSUER_URL:-}
+      AUTH_AUDIENCE: ${AUTH_AUDIENCE:-dolphin-api}
+      AI_GATEWAY_ENABLED: ${AI_GATEWAY_ENABLED:-false}
+      AI_PROVIDER: ${AI_PROVIDER:-}
+      AI_API_KEY: ${AI_API_KEY:-}
+      METRICS_USER: ${METRICS_USER:-metrics}
+      METRICS_PASSWORD: ${METRICS_PASSWORD:-changeme}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/ready')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: ../apps/web
+      dockerfile: Dockerfile
+    environment:
+      API_BASE_URL: http://api:8000
+      NEXT_PUBLIC_ENVIRONMENT: ${NEXT_PUBLIC_ENVIRONMENT:-production}
+      NEXT_PUBLIC_AUTH_AUTHORIZE_URL: ${NEXT_PUBLIC_AUTH_AUTHORIZE_URL:-}
+      NEXT_PUBLIC_AUTH_CLIENT_ID: ${NEXT_PUBLIC_AUTH_CLIENT_ID:-}
+      AUTH_TOKEN_URL: ${AUTH_TOKEN_URL:-}
+      AUTH_CLIENT_ID: ${AUTH_CLIENT_ID:-}
+      AUTH_CLIENT_SECRET: ${AUTH_CLIENT_SECRET:-}
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres-data:
