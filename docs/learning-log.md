@@ -409,3 +409,17 @@ After each completed step, add a heading `## Snn — <title>` with commit hash, 
 **Acceptance:** passed — pytest 139 passed, 6 skipped (`test_provisional_outline`).
 
 **Push:** `e7949df` is on origin/main
+
+## S86 — AI item drafting → human review
+
+**Commit:** `c1c646b` — feat(content): ai item drafting with reviewer approval before graded use
+
+**What:** A CLI drafts graded items into provisional `.drafts.yaml` files. Near-duplicates are rejected. Nothing provisional is seeded as graded.
+
+**How:** `python -m app.content.draft_items --competency …`; Jaccard ≥ 0.8 reject; content-review checklist AI steps.
+
+**Why:** Speed without teaching something wrong — a person still stamps review.
+
+**Acceptance:** passed — pytest 142 passed, 6 skipped (`test_item_drafts`).
+
+**Push:** `c1c646b` is on origin/main
