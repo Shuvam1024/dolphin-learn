@@ -1,0 +1,212 @@
+.shell {
+  width: min(1080px, 100%);
+  margin: 0 auto;
+  padding: 20px 20px 40px;
+}
+
+.hero,
+.panel,
+.empty,
+.error {
+  background: var(--color-foam-elevated);
+  color: var(--color-ink);
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 18px 50px rgba(11, 31, 42, 0.06);
+}
+
+.hero {
+  padding: 32px 28px;
+}
+
+.kicker {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: var(--color-foam);
+  color: var(--color-ink);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  margin: 0 0 10px;
+}
+
+.lede {
+  color: var(--color-mist);
+  font-size: var(--text-body);
+  line-height: 1.5;
+  margin: 0 0 20px;
+  max-width: 42rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.stat {
+  background: var(--color-foam);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.statValue {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.statLabel {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-mist);
+  font-size: var(--text-meta);
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.stackPanel {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 800px) {
+  .grid {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: -0.03em;
+  margin: 0 0 14px;
+}
+
+.goalList {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.goal {
+  background: var(--color-foam);
+  border-radius: 16px;
+  padding: 16px 16px 14px;
+}
+
+.goalHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-bottom: 6px;
+}
+
+.goalTitle {
+  font-weight: 700;
+  font-size: 17px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.goalTitle:focus-visible {
+  outline: 3px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
+.meta {
+  color: var(--color-mist);
+  font-size: var(--text-meta);
+  line-height: 1.45;
+  margin: 0 0 10px;
+}
+
+.meter {
+  display: block;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(11, 31, 42, 0.08);
+  overflow: hidden;
+}
+
+.meterFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-seafoam);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.follow {
+  margin-top: 8px;
+}
+
+.quiet {
+  color: var(--color-mist);
+  font-size: var(--text-meta);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.quiet:focus-visible {
+  outline: 3px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
+@media (max-width: 639px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .hero,
+  .panel,
+  .empty,
+  .error {
+    padding: 24px 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meterFill {
+    transition: none;
+  }
+}
+
+html[data-text="large"] .lede,
+html[data-text="large"] .meta,
+html[data-text="large"] .statLabel {
+  font-size: 17px;
+}

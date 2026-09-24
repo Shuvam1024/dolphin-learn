@@ -68,7 +68,7 @@ Within Session Studio, use a contextual workspace — do not bounce the learner 
 
 ### Home
 
-One primary next action with subtitle and minutes; goal cards with subject and next lesson; due-review count; recent evidence chips. Empty-state → create first goal. Log out lives under More. **No** streak counters, leaderboards, or punitive missed-day shame.
+Dashboard HQ: a Today hero with one primary next action (subtitle + sitting minutes), three honest totals (minutes left, minutes studied, reviews due), goal cards with subject, next lesson, and a minutes-studied meter, plus Due reviews and Recent evidence. Empty-state → create first goal, Quick Learn secondary. Log out lives under More. **No** streak counters, leaderboards, or punitive missed-day shame.
 
 ### Goal wizard
 

@@ -35,6 +35,8 @@ test("home v2: one primary, lesson names, no Log out", async ({ page }) => {
 
   await page.goto("/app");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Goals" })).toBeVisible();
+  await expect(page.getByText("minutes left across goals")).toBeVisible();
   const primaries = page.getByRole("link", { name: /Continue Learn Python|Create a goal/i });
   await expect(primaries.first()).toBeVisible();
   await expect(page.getByText(/next:/i)).toBeVisible();

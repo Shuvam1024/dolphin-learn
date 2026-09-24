@@ -1,6 +1,6 @@
 export { Page, PageHeader } from "./page";
 export { Surface } from "./surface";
-export { Button } from "./button";
+export { Button, ButtonLink } from "./button";
 export { Chip } from "./chip";
 export type { ChipTone } from "./chip";
 export { Field } from "./field";
